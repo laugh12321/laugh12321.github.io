@@ -7,13 +7,13 @@
 
 
 
-    <meta name="description" content="最近邻算法介绍 K-近邻算法之前，首先说一说最近邻算法。最近邻算法（Nearest Neighbor，简称：NN），其针对未知类别数据 $x$，在训练集中找到与 $x$ 最相似的训练样本 $y$，用 $y$ 的样本对应的类别作为未知类别数据 $x$ 的类别，从而达到分类的效果。  如上图所示，通过计算数据 $X{u}$ （未知样本）和已知类别 ${\omega{1},\omega{2},\omeg">
+    <meta name="description" content="最近邻算法介绍 K-近邻算法之前，首先说一说最近邻算法。最近邻算法（Nearest Neighbor，简称：NN），其针对未知类别数据 $x$，在训练集中找到与 $x$ 最相似的训练样本 $y$，用 $y$ 的样本对应的类别作为未知类别数据 $x$ 的类别，从而达到分类的效果。  如上图所示，通过计算数据 $X_{u}$ （未知样本）和已知类别 ${\omega_{1},\omega_{2},\o">
 <meta name="keywords" content="Machine Learning,Python,K-Nearest Neighbors">
 <meta property="og:type" content="article">
 <meta property="og:title" content="机器学习| K-近邻算法详解 (Python 语言描述)">
-<meta property="og:url" content="http://www.laugh12321.cn/2019/01/07/K-Nearest Neighbors/index.html">
+<meta property="og:url" content="https://www.laugh12321.cn/2019/01/07/K-Nearest Neighbors/index.html">
 <meta property="og:site_name" content="Laugh&#39;s blog">
-<meta property="og:description" content="最近邻算法介绍 K-近邻算法之前，首先说一说最近邻算法。最近邻算法（Nearest Neighbor，简称：NN），其针对未知类别数据 $x$，在训练集中找到与 $x$ 最相似的训练样本 $y$，用 $y$ 的样本对应的类别作为未知类别数据 $x$ 的类别，从而达到分类的效果。  如上图所示，通过计算数据 $X{u}$ （未知样本）和已知类别 ${\omega{1},\omega{2},\omeg">
+<meta property="og:description" content="最近邻算法介绍 K-近邻算法之前，首先说一说最近邻算法。最近邻算法（Nearest Neighbor，简称：NN），其针对未知类别数据 $x$，在训练集中找到与 $x$ 最相似的训练样本 $y$，用 $y$ 的样本对应的类别作为未知类别数据 $x$ 的类别，从而达到分类的效果。  如上图所示，通过计算数据 $X_{u}$ （未知样本）和已知类别 ${\omega_{1},\omega_{2},\o">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/K-Nearest%20Neighbors/1.png">
 <meta property="og:image" content="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/K-Nearest%20Neighbors/2.png">
@@ -24,7 +24,7 @@
 <meta property="og:updated_time" content="2019-01-25T04:04:51.277Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="机器学习| K-近邻算法详解 (Python 语言描述)">
-<meta name="twitter:description" content="最近邻算法介绍 K-近邻算法之前，首先说一说最近邻算法。最近邻算法（Nearest Neighbor，简称：NN），其针对未知类别数据 $x$，在训练集中找到与 $x$ 最相似的训练样本 $y$，用 $y$ 的样本对应的类别作为未知类别数据 $x$ 的类别，从而达到分类的效果。  如上图所示，通过计算数据 $X{u}$ （未知样本）和已知类别 ${\omega{1},\omega{2},\omeg">
+<meta name="twitter:description" content="最近邻算法介绍 K-近邻算法之前，首先说一说最近邻算法。最近邻算法（Nearest Neighbor，简称：NN），其针对未知类别数据 $x$，在训练集中找到与 $x$ 最相似的训练样本 $y$，用 $y$ 的样本对应的类别作为未知类别数据 $x$ 的类别，从而达到分类的效果。  如上图所示，通过计算数据 $X_{u}$ （未知样本）和已知类别 ${\omega_{1},\omega_{2},\o">
 <meta name="twitter:image" content="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/K-Nearest%20Neighbors/1.png">
 
 
@@ -37,7 +37,7 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.7.2/css/bulma.css">
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Ubuntu:400,600|Source+Code+Pro">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/atom-one-light.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/atelier-sulphurpool-dark.css">
 
 
     
@@ -170,7 +170,7 @@
         <div class="content">
             <h3 id="最近邻算法"><a href="#最近邻算法" class="headerlink" title="最近邻算法"></a>最近邻算法</h3><p>介绍 K-近邻算法之前，首先说一说最近邻算法。最近邻算法（Nearest Neighbor，简称：NN），其针对未知类别数据 $x$，在训练集中找到与 $x$ 最相似的训练样本 $y$，用 $y$ 的样本对应的类别作为未知类别数据 $x$ 的类别，从而达到分类的效果。</p>
 <p><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/K-Nearest%20Neighbors/1.png" alt=""></p>
-<p>如上图所示，通过计算数据 $X<em>{u}$ （未知样本）和已知类别 ${\omega</em>{1},\omega<em>{2},\omega</em>{3}}$ （已知样本）之间的距离，判断 $X<em>{u}$ 与不同训练集的相似度，最终判断 $X</em>{u}$ 的类别。显然，这里将<font color="green">绿色未知样本</font>类别判定与<font color="red">红色已知样本</font>类别相同较为合适。</p>
+<p>如上图所示，通过计算数据 $X_{u}$ （未知样本）和已知类别 ${\omega_{1},\omega_{2},\omega_{3}}$ （已知样本）之间的距离，判断 $X_{u}$ 与不同训练集的相似度，最终判断 $X_{u}$ 的类别。显然，这里将<font color="green">绿色未知样本</font>类别判定与<font color="red">红色已知样本</font>类别相同较为合适。</p>
 <a id="more"></a>
 <h3 id="K-近邻算法"><a href="#K-近邻算法" class="headerlink" title="K-近邻算法"></a>K-近邻算法</h3><p>K-近邻（K-Nearest Neighbors，简称：KNN）算法是最近邻（NN）算法的一个推广，也是机器学习分类算法中最简单的方法之一。KNN 算法的核心思想和最近邻算法思想相似，都是通过寻找和未知样本相似的类别进行分类。但 NN 算法中只依赖 1 个样本进行决策，在分类时过于绝对，会造成分类效果差的情况，为解决 NN 算法的缺陷，KNN 算法采用 K 个相邻样本的方式共同决策未知样本的类别,这样在决策中容错率相对于 NN 算法就要高很多，分类效果也会更好。</p>
 <p><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/K-Nearest%20Neighbors/2.png" alt=""></p>
@@ -196,8 +196,7 @@
 <p>计算距离的方法有很多，本实验介绍两个最为常用的距离公式：<strong>曼哈顿距离</strong>和<strong>欧式距离</strong>。这两个距离的计算图示如下：</p>
 <p><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/K-Nearest%20Neighbors/4.png" alt=""></p>
 <h4 id="曼哈顿距离"><a href="#曼哈顿距离" class="headerlink" title="曼哈顿距离"></a>曼哈顿距离</h4><p>曼哈顿距离又称马氏距离，出租车距离，是计算距离最简单的方式之一。公式如下：</p>
-<script type="math/tex; mode=display">
-d_{man}=\sum_{i=1}^{N}\left | X_{i}-Y_{i} \right |</script><p>其中： </p>
+<p>$$<br>d_{man}=\sum_{i=1}^{N}\left | X_{i}-Y_{i} \right |<br>$$<br>其中： </p>
 <ul>
 <li>$X$,$Y$：两个数据点</li>
 <li>$N$：每个数据中有 $N$ 个特征值</li>
@@ -207,8 +206,7 @@ d_{man}=\sum_{i=1}^{N}\left | X_{i}-Y_{i} \right |</script><p>其中： </p>
 <figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-string">"""曼哈顿距离计算</span></span><br><span class="line"><span class="hljs-string">"""</span></span><br><span class="line"><span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">d_man</span><span class="hljs-params">(x, y)</span>:</span></span><br><span class="line">    d = np.sum(np.abs(x - y))</span><br><span class="line">    <span class="hljs-keyword">return</span> d</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">x = np.array([<span class="hljs-number">3.1</span>, <span class="hljs-number">3.2</span>])</span><br><span class="line">print(<span class="hljs-string">"x:"</span>, x)</span><br><span class="line">y = np.array([<span class="hljs-number">2.5</span>, <span class="hljs-number">2.8</span>])</span><br><span class="line">print(<span class="hljs-string">"y:"</span>, y)</span><br><span class="line">d_man = d_man(x, y)</span><br><span class="line">print(d_man)</span><br></pre></td></tr></table></figure>
 <figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">x: [<span class="hljs-number">3.1</span> <span class="hljs-number">3.2</span>]</span><br><span class="line">y: [<span class="hljs-number">2.5</span> <span class="hljs-number">2.8</span>]</span><br><span class="line"><span class="hljs-number">1.0000000000000004</span></span><br></pre></td></tr></table></figure>
 <h4 id="欧式距离"><a href="#欧式距离" class="headerlink" title="欧式距离"></a>欧式距离</h4><p>欧式距离源自 $N$ 维欧氏空间中两点之间的距离公式。表达式如下:</p>
-<script type="math/tex; mode=display">
-d_{euc}= \sqrt{\sum_{i=1}^{N}(X_{i}-Y_{i})^{2}}</script><p>其中：</p>
+<p>$$<br>d_{euc}= \sqrt{\sum_{i=1}^{N}(X_{i}-Y_{i})^{2}}<br>$$<br>其中：</p>
 <ul>
 <li>$X$, $Y$ ：两个数据点</li>
 <li>$N$：每个数据中有 $N$ 个特征值</li>
@@ -370,7 +368,7 @@ d_{euc}= \sqrt{\sum_{i=1}^{N}(X_{i}-Y_{i})^{2}}</script><p>其中：</p>
                         分类
                     </p>
                     <p class="title has-text-weight-normal">
-                        22
+                        19
                     </p>
                 </div>
             </div>
@@ -510,38 +508,6 @@ d_{euc}= \sqrt{\sum_{i=1}^{N}(X_{i}-Y_{i})^{2}}</script><p>其中：</p>
             </h3>
             <ul class="menu-list">
             <li>
-        <a class="level is-marginless" href="/categories/Blog/">
-            <span class="level-start">
-                <span class="level-item">Blog</span>
-            </span>
-            <span class="level-end">
-                <span class="level-item tag">1</span>
-            </span>
-        </a><ul><li>
-        <a class="level is-marginless" href="/categories/Blog/GitHub-Pages/">
-            <span class="level-start">
-                <span class="level-item">GitHub Pages</span>
-            </span>
-            <span class="level-end">
-                <span class="level-item tag">1</span>
-            </span>
-        </a></li></ul></li><li>
-        <a class="level is-marginless" href="/categories/Jekyll/">
-            <span class="level-start">
-                <span class="level-item">Jekyll</span>
-            </span>
-            <span class="level-end">
-                <span class="level-item tag">1</span>
-            </span>
-        </a><ul><li>
-        <a class="level is-marginless" href="/categories/Jekyll/Blog/">
-            <span class="level-start">
-                <span class="level-item">Blog</span>
-            </span>
-            <span class="level-end">
-                <span class="level-item tag">1</span>
-            </span>
-        </a></li></ul></li><li>
         <a class="level is-marginless" href="/categories/Machine-Learning/">
             <span class="level-start">
                 <span class="level-item">Machine Learning</span>
@@ -604,6 +570,30 @@ d_{euc}= \sqrt{\sum_{i=1}^{N}(X_{i}-Y_{i})^{2}}</script><p>其中：</p>
             </span>
             <span class="level-end">
                 <span class="level-item tag">2</span>
+            </span>
+        </a></li></ul></li><li>
+        <a class="level is-marginless" href="/categories/博客/">
+            <span class="level-start">
+                <span class="level-item">博客</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">2</span>
+            </span>
+        </a><ul><li>
+        <a class="level is-marginless" href="/categories/博客/GitHub-Pages/">
+            <span class="level-start">
+                <span class="level-item">GitHub Pages</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">1</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/博客/主题优化/">
+            <span class="level-start">
+                <span class="level-item">主题优化</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">1</span>
             </span>
         </a></li></ul></li><li>
         <a class="level is-marginless" href="/categories/机器学习/">
