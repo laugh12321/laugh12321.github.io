@@ -31,7 +31,7 @@
 <meta property="og:image" content="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/Support%20vector%20machine/output_08.png">
 <meta property="og:image" content="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/Support%20vector%20machine/output_09.png">
 <meta property="og:image" content="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/Support%20vector%20machine/output_10.png">
-<meta property="og:updated_time" content="2019-01-25T07:16:29.165Z">
+<meta property="og:updated_time" content="2019-01-25T14:05:02.481Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="机器学习| 支持向量机详解 (Python 语言描述)">
 <meta name="twitter:description" content="在前面的文章中，我们对线性分布和非线性分布的数据处理方法进行了简单的介绍和实际的实验操作，当前还有一种机器学习方法，它在解决小样本、非线性及高维模式识别中都表现出了许多独特的优势，在样本量较小的情况，其实际运用效果甚至超过了神经网络，并且其不仅可以应用于线性分布数据，还可以用于非线性分布数据，相比于其他基本机器学习分类算法如逻辑回归、KNN、朴素贝叶斯等，其最终效果的表现一般都会优于这些方法。">
@@ -231,20 +231,21 @@ var _hmt = _hmt || [];
 <p>我们通常使用拉格朗日乘子法来求解最优化问题，将原始问题转化为对偶问题，通过解对偶问题得到原始问题的解。对公式（3）使用拉格朗日乘子法可得到其「对偶问题」。具体来说，对每条约束添加拉格朗日乘子 \(\alpha_i \geq 0\)，则该问题的拉格朗日函数可写为：<br>$$<br>L(w,b,\alpha)=\frac{1}{2}\left | w\right |^2+\sum\limits_{i=1}^{m}\alpha_i(1-y_i(wx_i+b)) \tag{4}<br>$$<br>我们通过将公式（4）分别对 \(w\) 和 `b` 求偏导为 <code>0</code> 并代入原式中，可以将 `w` 和 `b` 消去，得到公式（3）的对偶问题：<br>$$<br>\max\limits_{\alpha} \sum\limits_{i=1}^{N}\alpha_i-\frac{1}{2}\sum\limits_{i=1}^{N}\sum\limits_{j=1}^{N}\alpha_i \alpha_j y_i y_j x_i x_j \tag{5a}<br>$$</p>
 <p>$$<br>s.t. \sum\limits_{i=1}^{N}\alpha_i y_i=0,\tag{5b}<br>$$</p>
 <p>$$<br>\alpha_i \geq 0,i=1,2,\cdots,N  \tag{5c}<br>$$</p>
-<p>解出最优解 $$\alpha^<em>=(\alpha_1^</em>,\alpha_2^<em>,…,\alpha_N^</em>)$$ 后，基于此我们可以求得最优解 $$w^<em>$$, $$b^</em>$$，由此得到分离超平面：</p>
+<p>解出最优解 \(\alpha^<em>=(\alpha_1^</em>,\alpha_2^<em>,…,\alpha_N^</em>)\) 后，基于此我们可以求得最优解 \(w^<em>\), \(b^</em>\)，由此得到分离超平面：</p>
 <p>$$<br>w^<em>x+b^</em>=0  \tag{6}<br>$$</p>
 <p>使用符号函数求得正负类之间的分类决策函数为：</p>
 <p>$$<br>f(x)=sign(w^<em>x+b^</em>) \tag{7}<br>$$</p>
 <h3 id="软间隔表示及求解"><a href="#软间隔表示及求解" class="headerlink" title="软间隔表示及求解"></a>软间隔表示及求解</h3><p>上面，我们介绍了线性可分条件下的最大硬间隔的推导求解方法。在很多时候，我们还会遇到下面这种情况。你可以发现，在实心点和空心点中各混入了零星的不同类别的数据点。对于这种情况，数据集就变成了严格意义上的线性不可分。但是，造成这种线性不可分的原因往往是因为包含「噪声」数据，它同样可以被看作是不严格条件下的线性可分。</p>
 <p>当我们使用支持向量机求解这类问题时，就会把最大间隔称之为最大「软间隔」，而软间隔就意味着可以容许零星噪声数据被误分类。</p>
 <p><img width="300px" style="border:2px dashed #000000;" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/Support%20vector%20machine/3.png"></p>
-<p>当出现上图所示的样本点不是严格线性可分的情况时，某些样本点 \((x_i,y_i)\) 就不能满足函数间隔 $$\geqslant 1$$ 的约束条件，即公式（3b）中的约束条件。为了解决这个问题，可以对每个样本点 $$(x_i,y_i)$$ 引入一个松弛变量 $$\xi_i \geq 0$$，使得函数间隔加上松弛变量 $$\geqslant 1$$，即约束条件转化为：<br>$$<br>y_i(wx_i+b) \geq 1-\xi_i \tag{8}<br>$$<br>同时，对每个松弛变量 $$\xi_i$$ 支付一个代价 $$\xi_i$$，目标函数由原来的 $$\frac{1}{2}||w||^2$$ 变成：<br>$$<br>\frac{1}{2}\left | w \right |^2+C\sum\limits_{j=1}^{N}\xi_i \tag{9}<br>$$<br>这里，$$C&gt;0$$ 称为惩罚参数，一般根据实际情况确定。$$C$$ 值越大对误分类的惩罚增大，最优化问题即为：<br>$$<br>\min\limits_{w,b,\xi} \frac{1}{2}\left | w \right |^2+C\sum\limits_{i=1}^{N}\xi_i \tag{10a}<br>$$</p>
+<p>当出现上图所示的样本点不是严格线性可分的情况时，某些样本点 \((x_i,y_i)\) 就不能满足函数间隔 \(\geqslant 1\) 的约束条件，即公式（3b）中的约束条件。为了解决这个问题，可以对每个样本点 \((x_i,y_i)\) 引入一个松弛变量 \(\xi_i \geq 0\)，使得函数间隔加上松弛变量 \(\geqslant 1\)，即约束条件转化为：<br>$$<br>y_i(wx_i+b) \geq 1-\xi_i \tag{8}<br>$$<br>同时，对每个松弛变量 \(\xi_i\) 支付一个代价 \(\xi_i\)，目标函数由原来的 \(\frac{1}{2}||w||^2\) 变成：<br>$$<br>\frac{1}{2}\left | w \right |^2+C\sum\limits_{j=1}^{N}\xi_i \tag{9}<br>$$<br>这里，`C&gt;0` 称为惩罚参数，一般根据实际情况确定。`C` 值越大对误分类的惩罚增大，最优化问题即为：<br>$$<br>\min\limits_{w,b,\xi} \frac{1}{2}\left | w \right |^2+C\sum\limits_{i=1}^{N}\xi_i \tag{10a}<br>$$</p>
 <p>$$<br>s.t. y_i(wx_i+b) \geq 1-\xi_i,i=1,2,…,N \tag{10b}<br>$$</p>
 <p>$$<br>\xi_i\geq 0,i=1,2,…,N \tag{10c}<br>$$</p>
-<p>这就是软间隔支持向量机的表示过程。同理，我们可以使用拉格朗日乘子法将其转换为对偶问题求解：<br>$$<br>\max\limits_{\alpha}  \frac{1}{2}\sum\limits_{i=1}^{N}\sum\limits_{j=1}^{N}\alpha_i\alpha_jy_iy_j(x_i*x_j)-\sum\limits_{i=1}^{N}\alpha_i \tag{11a}<br>$$</p>
+<p>这就是软间隔支持向量机的表示过程。同理，我们可以使用拉格朗日乘子法将其转换为对偶问题求解：</p>
+<p>$$<br>\max\limits_{\alpha}  \frac{1}{2}\sum\limits_{i=1}^{N}\sum\limits_{j=1}^{N}\alpha_i\alpha_jy_iy_j(x_i*x_j)-\sum\limits_{i=1}^{N}\alpha_i \tag{11a}<br>$$</p>
 <p>$$<br>s.t. \sum\limits_{i=1}^{N}\alpha_iy_i=0 \tag{11b}<br>$$</p>
 <p>$$<br>0 \leq \alpha_i \leq C ,i=1,2,…,N\tag{11c}<br>$$</p>
-<p>解出最优解 $$\alpha^<em>=(\alpha_1^</em>,\alpha_2^<em>,…,\alpha_N^</em>)$$ 后，基于此我们可以求得最优解 $$w^<em>$$, $$b^</em>$$，由此得到分离超平面：<br>$$<br>w^<em>x+b^</em>=0  \tag{12}<br>$$<br>使用符号函数求得正负类之间的分类决策函数为：<br>$$<br>f(x)=sign(w^<em>x+b^</em>) \tag{13}<br>$$</p>
+<p>解出最优解 $$\alpha^<em>=(\alpha_1^</em>,\alpha_2^<em>,…,\alpha_N^</em>)$$ 后，基于此我们可以求得最优解 $$w^<em>$$, `b^</em>`，由此得到分离超平面：<br>$$<br>w^<em>x+b^</em>=0  \tag{12}<br>$$<br>使用符号函数求得正负类之间的分类决策函数为：<br>$$<br>f(x)=sign(w^<em>x+b^</em>) \tag{13}<br>$$</p>
 <h3 id="线性支持向量机分类实现"><a href="#线性支持向量机分类实现" class="headerlink" title="线性支持向量机分类实现"></a>线性支持向量机分类实现</h3><p>上面，我们对硬间隔和软间隔支持向量机的求解过程进行了推演，推导过程比较复杂不需要完全掌握，但至少要知道硬间隔和软间隔区别。接下来，我们就使用 Python 对支持向量机找寻最大间隔的过程进行实战。由于支持向量机纯 Python 实现太过复杂，所以本次直接使用 scikit-learn 完成。</p>
 <p>scikit-learn 中的支持向量机分类器对应的类及参数为：</p>
 <figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sklearn.svm.SVC(C=<span class="hljs-number">1.0</span>, kernel=<span class="hljs-string">'rbf'</span>, degree=<span class="hljs-number">3</span>, gamma=<span class="hljs-string">'auto'</span>, coef0=<span class="hljs-number">0.0</span>, shrinking=<span class="hljs-keyword">True</span>, probability=<span class="hljs-keyword">False</span>, tol=<span class="hljs-number">0.001</span>, cache_size=<span class="hljs-number">200</span>, class_weight=<span class="hljs-keyword">None</span>, verbose=<span class="hljs-keyword">False</span>, max_iter=<span class="hljs-number">-1</span>, decision_function_shape=<span class="hljs-string">'ovr'</span>, random_state=<span class="hljs-keyword">None</span>)</span><br></pre></td></tr></table></figure>
@@ -601,10 +602,21 @@ var _hmt = _hmt || [];
             <li>
                 <a class="level is-mobile" href="https://www.itfire.cn/" target="_blank">
                     <span class="level-left">
-                        <span class="level-item">如鱼说|仓鼠的博客</span>
+                        <span class="level-item">仓鼠‘s blog</span>
                     </span>
                     <span class="level-right">
                         <span class="level-item tag">www.itfire.cn</span>
+                    </span>
+                </a>
+            </li>
+        
+            <li>
+                <a class="level is-mobile" href="https://blog.wzy1999.wang/" target="_blank">
+                    <span class="level-left">
+                        <span class="level-item">执念</span>
+                    </span>
+                    <span class="level-right">
+                        <span class="level-item tag">blog.wzy1999.wang</span>
                     </span>
                 </a>
             </li>

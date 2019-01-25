@@ -17,10 +17,11 @@
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/mlg_01.png">
 <meta property="og:image" content="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/mlg_02.png">
+<meta property="og:image" content="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/add_03.png">
 <meta property="og:image" content="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/mlg_03.png">
 <meta property="og:image" content="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/mlg_04.png">
 <meta property="og:image" content="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/mlg_05.png">
-<meta property="og:updated_time" content="2019-01-25T07:30:23.459Z">
+<meta property="og:updated_time" content="2019-01-25T14:59:17.634Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="机器学习术语表">
 <meta name="twitter:description" content="本术语表中列出了一般的机器学习术语和 TensorFlow 专用术语的定义。 提示：你可以通过中文名称拼音首字母快速检索。">
@@ -171,7 +172,7 @@ var _hmt = _hmt || [];
                 <span class="level-item has-text-grey">
                     
                     
-                    32 分钟 读完 (大约 4869 个字)
+                    32 分钟 读完 (大约 4846 个字)
                 </span>
                 
             </div>
@@ -202,7 +203,7 @@ var _hmt = _hmt || [];
 </ul>
 <p>One-Hot 编码常用于表示拥有有限个可能值的字符串或标识符。例如，假设某个指定的植物学数据集记录了 15000 个不同的物种，其中每个物种都用独一无二的字符串标识符来表示。在特征工程过程中，您可能需要将这些字符串标识符编码为 One-Hot 向量，向量的大小为 15000。</p>
 <h3 id="独立同分布"><a href="#独立同分布" class="headerlink" title="独立同分布"></a>独立同分布</h3><p>独立就是每次抽样之间是没有关系的,不会相互影响。</p>
-<p>同分布，意味着随机变量 $$X_1$$ 和 $$X_2$$ 具有相同的分布形状和相同的分布参数，对离散随机变量具有相同的分布律，对连续随机变量具有相同的概率密度函数，有着相同的分布函数，相同的期望、方差。</p>
+<p>同分布，意味着随机变量 `X_1` 和 `X_2` 具有相同的分布形状和相同的分布参数，对离散随机变量具有相同的分布律，对连续随机变量具有相同的概率密度函数，有着相同的分布函数，相同的期望、方差。</p>
 <p>例如，某个网页的访问者在短时间内的分布可能为独立同分布，即分布在该短时间内没有变化，且一位用户的访问行为通常与另一位用户的访问行为无关。</p>
 <h3 id="迭代｜Iteration"><a href="#迭代｜Iteration" class="headerlink" title="迭代｜Iteration"></a>迭代｜Iteration</h3><p>模型的权重在训练期间的一次更新，迭代包含计算参数在单个<strong>批量</strong>数据的梯度损失。</p>
 <h2 id="F"><a href="#F" class="headerlink" title="F"></a>F</h2><hr>
@@ -216,8 +217,7 @@ var _hmt = _hmt || [];
 
 <h2 id="H"><a href="#H" class="headerlink" title="H"></a>H</h2><hr>
 <h3 id="混淆矩阵｜Confusion-Matrix"><a href="#混淆矩阵｜Confusion-Matrix" class="headerlink" title="混淆矩阵｜Confusion Matrix"></a>混淆矩阵｜Confusion Matrix</h3><p>一种 NxN 表格，用于总结分类模型的预测成效；即标签和模型预测的分类之间的关联。在混淆矩阵中，一个轴表示模型预测的标签，另一个轴表示实际标签。N 表示类别个数。在二元分类问题中，N=2。例如，下面显示了一个二元分类问题的混淆矩阵示例：</p>
-<table><br><thead><br><tr><br><th></th><br><th>肿瘤（预测的标签）</th><br><th>非肿瘤（预测的标签）</th><br></tr><br></thead><br><tbody><br><tr><br><td>肿瘤（实际标签）</td><br><td>18</td><br><td>1</td><br></tr><br><tr><br><td>非肿瘤（实际标签）</td><br><td>6</td><br><td>452</td><br></tr><br></tbody><br></table>
-
+<p><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/add_03.png" alt=""></p>
 <p>上面的混淆矩阵显示，在 19 个实际有肿瘤的样本中，该模型正确地将 18 个归类为有肿瘤（18 个真正例），错误地将 1 个归类为没有肿瘤（1 个假负例）。同样，在 458 个实际没有肿瘤的样本中，模型归类正确的有 452 个（452 个真负例），归类错误的有 6 个（6 个假正例）。</p>
 <p>多类别分类问题的混淆矩阵有助于确定出错模式。例如，某个混淆矩阵可以揭示，某个经过训练以识别手写数字的模型往往会将 4 错误地预测为 9，将 7 错误地预测为 1。混淆矩阵包含计算各种效果指标（包括精确率和召回率）所需的充足信息。</p>
 <h2 id="J"><a href="#J" class="headerlink" title="J"></a>J</h2><hr>
@@ -256,7 +256,7 @@ var _hmt = _hmt || [];
 <h3 id="密集层｜Dense-Layer"><a href="#密集层｜Dense-Layer" class="headerlink" title="密集层｜Dense Layer"></a>密集层｜Dense Layer</h3><p>是全连接层的同义词。</p>
 <h2 id="P"><a href="#P" class="headerlink" title="P"></a>P</h2><hr>
 <h3 id="批次｜Batch"><a href="#批次｜Batch" class="headerlink" title="批次｜Batch"></a>批次｜Batch</h3><p>模型训练的一次迭代（即一次梯度更新）中使用样本簇。</p>
-<h3 id="偏差｜Bias"><a href="#偏差｜Bias" class="headerlink" title="偏差｜Bias"></a>偏差｜Bias</h3><p>距离原点的截距或偏移。偏差（也称为偏差项）在机器学习模型中以 $$b$$ 或 $$w_0$$ 表示。例如，在下面的公式中，偏差为 $$b$$：</p>
+<h3 id="偏差｜Bias"><a href="#偏差｜Bias" class="headerlink" title="偏差｜Bias"></a>偏差｜Bias</h3><p>距离原点的截距或偏移。偏差（也称为偏差项）在机器学习模型中以 `b` 或 `w_0` 表示。例如，在下面的公式中，偏差为 `b`：</p>
 <p>$$y’ = b + w_1x_1 + w_2x_2 + … w_nx_n$$</p>
 <p>请勿与「预测偏差」混淆。</p>
 <h3 id="批次规模｜Batch-Size"><a href="#批次规模｜Batch-Size" class="headerlink" title="批次规模｜Batch Size"></a>批次规模｜Batch Size</h3><p>模型迭代一次，使用的样本集的大小。</p>
@@ -571,10 +571,21 @@ var _hmt = _hmt || [];
             <li>
                 <a class="level is-mobile" href="https://www.itfire.cn/" target="_blank">
                     <span class="level-left">
-                        <span class="level-item">如鱼说|仓鼠的博客</span>
+                        <span class="level-item">仓鼠‘s blog</span>
                     </span>
                     <span class="level-right">
                         <span class="level-item tag">www.itfire.cn</span>
+                    </span>
+                </a>
+            </li>
+        
+            <li>
+                <a class="level is-mobile" href="https://blog.wzy1999.wang/" target="_blank">
+                    <span class="level-left">
+                        <span class="level-item">执念</span>
+                    </span>
+                    <span class="level-right">
+                        <span class="level-item tag">blog.wzy1999.wang</span>
                     </span>
                 </a>
             </li>
