@@ -134,6 +134,12 @@
                 <div class="column is-8-tablet is-8-desktop is-6-widescreen has-order-2 column-main">
     <div class="card">
     
+    <div class="card-image">
+        <a href="/2019/01/07/K-Nearest Neighbors/" class="image is-7by1">
+            <img class="thumbnail" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/photo/06.jpg" alt="机器学习| K-近邻算法详解 (Python 语言描述)">
+        </a>
+    </div>
+    
     <div class="card-content article ">
         
         <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
@@ -141,7 +147,7 @@
                 <time class="level-item has-text-grey" datetime="2019-01-06T16:00:00.000Z">2019-01-07</time>
                 
                 <div class="level-item">
-                <a class="has-link-grey -link" href="/categories/Machine-Learning/">Machine Learning</a>&nbsp;/&nbsp;<a class="has-link-grey -link" href="/categories/Machine-Learning/K-Nearest-Neighbors/">K-Nearest Neighbors</a>&nbsp;/&nbsp;<a class="has-link-grey -link" href="/categories/Machine-Learning/K-Nearest-Neighbors/Python/">Python</a>
+                <a class="has-link-grey -link" href="/categories/机器学习/">机器学习</a>&nbsp;/&nbsp;<a class="has-link-grey -link" href="/categories/机器学习/K-近邻算法/">K-近邻算法</a>
                 </div>
                 
                 
@@ -160,9 +166,7 @@
             
         </h1>
         <div class="content">
-            <h3 id="最近邻算法"><a href="#最近邻算法" class="headerlink" title="最近邻算法"></a>最近邻算法</h3><p>介绍 K-近邻算法之前，首先说一说最近邻算法。最近邻算法（Nearest Neighbor，简称：NN），其针对未知类别数据 $x$，在训练集中找到与 $x$ 最相似的训练样本 $y$，用 $y$ 的样本对应的类别作为未知类别数据 $x$ 的类别，从而达到分类的效果。</p>
-<p><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/K-Nearest%20Neighbors/1.png" alt=""></p>
-<p>如上图所示，通过计算数据 $X_{u}$ （未知样本）和已知类别 ${\omega_{1},\omega_{2},\omega_{3}}$ （已知样本）之间的距离，判断 $X_{u}$ 与不同训练集的相似度，最终判断 $X_{u}$ 的类别。显然，这里将<font color="green">绿色未知样本</font>类别判定与<font color="red">红色已知样本</font>类别相同较为合适。</p>
+            <h3 id="最近邻算法"><a href="#最近邻算法" class="headerlink" title="最近邻算法"></a>最近邻算法</h3><p>介绍 K-近邻算法之前，首先说一说最近邻算法。最近邻算法（Nearest Neighbor，简称：NN），其针对未知类别数据 `x`，在训练集中找到与 `x` 最相似的训练样本 `y`，用 `y` 的样本对应的类别作为未知类别数据 `x` 的类别，从而达到分类的效果。</p>
         </div>
         
         
@@ -187,6 +191,12 @@
 
     <div class="card">
     
+    <div class="card-image">
+        <a href="/2019/01/04/PolynomialRegression/" class="image is-7by1">
+            <img class="thumbnail" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/photo/05.jpg" alt="机器学习|多项式回归算法详解 (Python 语言描述)">
+        </a>
+    </div>
+    
     <div class="card-content article ">
         
         <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
@@ -194,14 +204,14 @@
                 <time class="level-item has-text-grey" datetime="2019-01-03T16:00:00.000Z">2019-01-04</time>
                 
                 <div class="level-item">
-                <a class="has-link-grey -link" href="/categories/Machine-Learning/">Machine Learning</a>&nbsp;/&nbsp;<a class="has-link-grey -link" href="/categories/Machine-Learning/Polynomial-Regression/">Polynomial Regression</a>&nbsp;/&nbsp;<a class="has-link-grey -link" href="/categories/Machine-Learning/Polynomial-Regression/Python/">Python</a>
+                <a class="has-link-grey -link" href="/categories/机器学习/">机器学习</a>&nbsp;/&nbsp;<a class="has-link-grey -link" href="/categories/机器学习/多项式回归/">多项式回归</a>
                 </div>
                 
                 
                 <span class="level-item has-text-grey">
                     
                     
-                    22 分钟 读完 (大约 3227 个字)
+                    22 分钟 读完 (大约 3228 个字)
                 </span>
                 
             </div>
@@ -214,12 +224,6 @@
         </h1>
         <div class="content">
             <h2 id="多项式回归介绍"><a href="#多项式回归介绍" class="headerlink" title="多项式回归介绍"></a>多项式回归介绍</h2><p>在线性回归中，我们通过建立自变量 <code>x</code> 的一次方程来拟合数据。而非线性回归中，则需要建立因变量和自变量之间的非线性关系。从直观上讲，也就是拟合的直线变成了「曲线」。</p>
-<p>如下图所示，是某地区人口数量的变化数据。如果我们使用线性方差去拟合数据，那么就会存在「肉眼可见」的误差。而对于这样的数据，使用一条曲线去拟合则更符合数据的发展趋势。</p>
-<p><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/polynomial%20regression/1.png" alt="此处输入图片的描述"></p>
-<p>对于非线性回归问题而言，最简单也是最常见的方法就是本次实验要讲解的「多项式回归」。多项式是中学时期就会接触到的概念，这里引用 <a href="https://zh.wikipedia.org/wiki/%E5%A4%9A%E9%A0%85%E5%BC%8F" target="_blank" rel="noopener">维基百科</a> 的定义如下：</p>
-<blockquote>
-<p>多项式（Polynomial）是代数学中的基础概念，是由称为未知数的变量和称为系数的常量通过有限次加法、加减法、乘法以及自然数幂次的乘方运算得到的代数表达式。多项式是整式的一种。未知数只有一个的多项式称为一元多项式；例如 $x^2-3x+4$ 就是一个一元多项式。未知数不止一个的多项式称为多元多项式，例如 $x^3-2xyz^2+2yz+1$ 就是一个三元多项式。</p>
-</blockquote>
         </div>
         
         
@@ -277,7 +281,6 @@
         </h1>
         <div class="content">
             <p>对于回归预测结果，通常会有平均绝对误差、平均绝对百分比误差、均方误差等多个指标进行评价。这里，我们先介绍最常用的3个：</p>
-<p><strong>平均绝对误差（MAE）</strong><br>就是绝对误差的平均值，它的计算公式如下：<br>$$<br>MAE(y,\hat{y}) = \frac{1}{n}(\sum_{i = 1}^{n}\left | y - \hat{y} \right |)<br>$$<br>其中，`y_{i}` 表示真实值，`\hat y_{i}` 表示预测值，`n` 则表示值的个数。MAE 的值越小，说明预测模型拥有更好的精确度。</p>
         </div>
         
         
@@ -431,7 +434,7 @@
                         分类
                     </p>
                     <p class="title has-text-weight-normal">
-                        18
+                        15
                     </p>
                 </div>
             </div>
@@ -571,30 +574,6 @@
             </h3>
             <ul class="menu-list">
             <li>
-        <a class="level is-marginless" href="/categories/Machine-Learning/">
-            <span class="level-start">
-                <span class="level-item">Machine Learning</span>
-            </span>
-            <span class="level-end">
-                <span class="level-item tag">2</span>
-            </span>
-        </a><ul><li>
-        <a class="level is-marginless" href="/categories/Machine-Learning/K-Nearest-Neighbors/">
-            <span class="level-start">
-                <span class="level-item">K-Nearest Neighbors</span>
-            </span>
-            <span class="level-end">
-                <span class="level-item tag">1</span>
-            </span>
-        </a></li><li>
-        <a class="level is-marginless" href="/categories/Machine-Learning/Polynomial-Regression/">
-            <span class="level-start">
-                <span class="level-item">Polynomial Regression</span>
-            </span>
-            <span class="level-end">
-                <span class="level-item tag">1</span>
-            </span>
-        </a></li></ul></li><li>
         <a class="level is-marginless" href="/categories/Python/">
             <span class="level-start">
                 <span class="level-item">Python</span>
@@ -656,9 +635,25 @@
                 <span class="level-item">机器学习</span>
             </span>
             <span class="level-end">
-                <span class="level-item tag">5</span>
+                <span class="level-item tag">7</span>
             </span>
         </a><ul><li>
+        <a class="level is-marginless" href="/categories/机器学习/K-近邻算法/">
+            <span class="level-start">
+                <span class="level-item">K-近邻算法</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">1</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/机器学习/多项式回归/">
+            <span class="level-start">
+                <span class="level-item">多项式回归</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">1</span>
+            </span>
+        </a></li><li>
         <a class="level is-marginless" href="/categories/机器学习/支持向量机/">
             <span class="level-start">
                 <span class="level-item">支持向量机</span>
@@ -797,7 +792,7 @@
             
             <a href="/2019/01/07/K-Nearest Neighbors/" class="media-left">
                 <p class="image is-64x64">
-                    <img class="thumbnail" src="/images/thumbnail.svg" alt="机器学习| K-近邻算法详解 (Python 语言描述)">
+                    <img class="thumbnail" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/photo/06.jpg" alt="机器学习| K-近邻算法详解 (Python 语言描述)">
                 </p>
             </a>
             
@@ -806,7 +801,7 @@
                     <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-01-06T16:00:00.000Z">2019-01-07</time></div>
                     <a href="/2019/01/07/K-Nearest Neighbors/" class="has-link-black-ter is-size-6">机器学习| K-近邻算法详解 (Python 语言描述)</a>
                     <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/Machine-Learning/">Machine Learning</a> / <a class="has-link-grey -link" href="/categories/Machine-Learning/K-Nearest-Neighbors/">K-Nearest Neighbors</a>
+                        <a class="has-link-grey -link" href="/categories/机器学习/">机器学习</a> / <a class="has-link-grey -link" href="/categories/机器学习/K-近邻算法/">K-近邻算法</a>
                     </p>
                 </div>
             </div>
@@ -1120,7 +1115,7 @@
             
             <a href="/2019/01/07/K-Nearest Neighbors/" class="media-left">
                 <p class="image is-64x64">
-                    <img class="thumbnail" src="/images/thumbnail.svg" alt="机器学习| K-近邻算法详解 (Python 语言描述)">
+                    <img class="thumbnail" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/photo/06.jpg" alt="机器学习| K-近邻算法详解 (Python 语言描述)">
                 </p>
             </a>
             
@@ -1129,7 +1124,7 @@
                     <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-01-06T16:00:00.000Z">2019-01-07</time></div>
                     <a href="/2019/01/07/K-Nearest Neighbors/" class="has-link-black-ter is-size-6">机器学习| K-近邻算法详解 (Python 语言描述)</a>
                     <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/Machine-Learning/">Machine Learning</a> / <a class="has-link-grey -link" href="/categories/Machine-Learning/K-Nearest-Neighbors/">K-Nearest Neighbors</a>
+                        <a class="has-link-grey -link" href="/categories/机器学习/">机器学习</a> / <a class="has-link-grey -link" href="/categories/机器学习/K-近邻算法/">K-近邻算法</a>
                     </p>
                 </div>
             </div>

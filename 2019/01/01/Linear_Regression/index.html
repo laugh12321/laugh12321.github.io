@@ -207,23 +207,30 @@
 <figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">from</span> matplotlib <span class="hljs-keyword">import</span> pyplot <span class="hljs-keyword">as</span> plt</span><br><span class="line">%matplotlib inline</span><br><span class="line"></span><br><span class="line">plt.scatter(x, y)</span><br><span class="line">plt.xlabel(<span class="hljs-string">"Area"</span>)</span><br><span class="line">plt.ylabel(<span class="hljs-string">"Price"</span>)</span><br></pre></td></tr></table></figure>
 <p><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/linear%20regression/out_00.png" alt=""></p>
 <p>正如上面所说，线性回归即通过线性方程（<code>1</code> 次函数）去拟合数据点。那么，我们令函数的表达式为：</p>
-<p>$$ y(x, w) = w_0 + w_1x \tag{1} $$</p>
-<p>公式（1）是典型的一元一次函数表达式，我们通过组合不同的 `w_0` 和 `w_1` 的值得到不同的拟合直线。我们对公式（1）进行代码实现：</p>
+<script type="math/tex; mode=display">y(x, w) = w_0 + w_1x \tag{1}</script><p>公式（1）是典型的一元一次函数表达式，我们通过组合不同的 `w_0` 和 `w_1` 的值得到不同的拟合直线。我们对公式（1）进行代码实现：</p>
 <figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">f</span><span class="hljs-params">(x, w0, w1)</span>:</span></span><br><span class="line">    y = w0 + w1 * x</span><br><span class="line">    <span class="hljs-keyword">return</span> y</span><br></pre></td></tr></table></figure>
 <p>那么，<strong>哪一条直线最能反应出数据的变化趋势呢？</strong></p>
-<p>如下图所示，当我们使用 $$y(x, w) = w_0 + w_1x$$ 对数据进行拟合时，我们能得到拟合的整体误差，即图中蓝色线段的长度总和。如果某一条直线对应的误差值最小，是不是就代表这条直线最能反映数据点的分布趋势呢？</p>
+<p>如下图所示，当我们使用 <script type="math/tex">y(x, w) = w_0 + w_1x</script> 对数据进行拟合时，我们能得到拟合的整体误差，即图中蓝色线段的长度总和。如果某一条直线对应的误差值最小，是不是就代表这条直线最能反映数据点的分布趋势呢？</p>
 <p><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/linear%20regression/4.png" alt=""></p>
-<h3 id="平方损失函数"><a href="#平方损失函数" class="headerlink" title="平方损失函数"></a>平方损失函数</h3><p>正如上面所说，如果一个数据点为 (`x_{i}`, `y_{i}`)，那么它对应的误差就为:</p>
-<p>$$y_{i}-(w_0 + w_1x_{i}) \tag2$$</p>
-<p>上面的误差往往也称之为残差。但是在机器学习中，我们更喜欢称作「损失」，即真实值和预测值之间的偏离程度。那么，对应 n 个全部数据点而言，其对应的残差损失总和就为：<br>$$<br>\sum\limits_{i = 1}^n (y_{i}-(w_0 + w_1x_{i})) \tag3<br>$$<br>在线性回归中，我们更偏向于使用均方误差作为衡量损失的指标，而均方误差即为残差的平方和。公式如下：</p>
-<p>$$<br>\sum\limits_{i = 1}^n (y_{i}-(w_0 + w_1x_{i}))^2\tag4<br>$$<br>对于公式（4）而言，机器学习中有一个专门的名词，那就是「平方损失函数」。而为了得到拟合参数 `w_0` 和 `w_1` 最优的数值，我们的目标就是让公式（4）对应的平方损失函数最小。</p>
+<h3 id="平方损失函数"><a href="#平方损失函数" class="headerlink" title="平方损失函数"></a>平方损失函数</h3><p>正如上面所说，如果一个数据点为 (`x<em>{i}`, `y</em>{i}`)，那么它对应的误差就为:</p>
+<script type="math/tex; mode=display">y_{i}-(w_0 + w_1x_{i}) \tag2</script><p>上面的误差往往也称之为残差。但是在机器学习中，我们更喜欢称作「损失」，即真实值和预测值之间的偏离程度。那么，对应 n 个全部数据点而言，其对应的残差损失总和就为：</p>
+<script type="math/tex; mode=display">
+\sum\limits_{i = 1}^n (y_{i}-(w_0 + w_1x_{i})) \tag3</script><p>在线性回归中，我们更偏向于使用均方误差作为衡量损失的指标，而均方误差即为残差的平方和。公式如下：</p>
+<script type="math/tex; mode=display">
+\sum\limits_{i = 1}^n (y_{i}-(w_0 + w_1x_{i}))^2\tag4</script><p>对于公式（4）而言，机器学习中有一个专门的名词，那就是「平方损失函数」。而为了得到拟合参数 `w_0` 和 `w_1` 最优的数值，我们的目标就是让公式（4）对应的平方损失函数最小。</p>
 <p>同样，我们可以对公式（4）进行代码实现：</p>
 <figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">square_loss</span><span class="hljs-params">(x, y, w0, w1)</span>:</span></span><br><span class="line">    loss = sum(np.square(y - (w0 + w1*x)))</span><br><span class="line">    <span class="hljs-keyword">return</span> loss</span><br></pre></td></tr></table></figure>
 <h3 id="最小二乘法及代数求解"><a href="#最小二乘法及代数求解" class="headerlink" title="最小二乘法及代数求解"></a>最小二乘法及代数求解</h3><p>最小二乘法是用于求解线性回归拟合参数 `w` 的一种常用方法。最小二乘法中的「二乘」代表平方，最小二乘也就是最小平方。而这里的平方就是指代上面的平方损失函数。</p>
 <p>简单来讲，最小二乘法也就是求解平方损失函数最小值的方法。那么，到底该怎样求解呢？这就需要使用到高等数学中的知识。推导如下：</p>
 <p>首先，平方损失函数为：</p>
-<p>$$<br>f = \sum\limits_{i = 1}^n (y_{i}-(w_0 + w_1x_{i}))^2 \tag5<br>$$<br>我们的目标是求取平方损失函数 `min(f)` 最小时，对应的 `w`。首先求 `f` 的 <code>1</code> 阶偏导数：</p>
-<p>$$<br>\frac{\partial f}{\partial w_{0}}=-2(\sum_{i=1}^{n}{y_i}-nw_{0}-w_{1}\sum_{i=1}^{n}{x_i})\<br>\frac{\partial f}{\partial w_{1}}=-2(\sum_{i=1}^{n}{x_iy_i}-w_{0}\sum_{i=1}^{n}{x_i}-w_{1}\sum_{i=1}^{n}{x_i}^2) \tag6<br>$$<br>然后，我们令 \(\frac{\partial f}{\partial w_{0}}=0\) 以及 \(\frac{\partial f}{\partial w_{1}}=0\)，解得：<br>$$<br>w_{1}=\frac {n\sum_{}^{}{x_iy_i}-\sum_{}^{}{x_i}\sum_{}^{}{y_i}}  {n\sum_{}^{}{x_i}^2-(\sum_{}^{}{x_i})^2}\<br>w_{0}=\frac {\sum_{}^{}{x_i}^2\sum_{}^{}{y_i}-\sum_{}^{}{x_i}\sum_{}^{}{x_iy_i}}  {n\sum_{}^{}{x_i}^2-(\sum_{}^{}{x_i})^2}\tag7<br>$$<br>到目前为止，已经求出了平方损失函数最小时对应的 `w` 参数值，这也就是最佳拟合直线。</p>
+<script type="math/tex; mode=display">
+f = \sum\limits_{i = 1}^n (y_{i}-(w_0 + w_1x_{i}))^2 \tag5</script><p>我们的目标是求取平方损失函数 `min(f)` 最小时，对应的 `w`。首先求 `f` 的 <code>1</code> 阶偏导数：</p>
+<script type="math/tex; mode=display">
+\frac{\partial f}{\partial w_{0}}=-2(\sum_{i=1}^{n}{y_i}-nw_{0}-w_{1}\sum_{i=1}^{n}{x_i})\\
+\frac{\partial f}{\partial w_{1}}=-2(\sum_{i=1}^{n}{x_iy_i}-w_{0}\sum_{i=1}^{n}{x_i}-w_{1}\sum_{i=1}^{n}{x_i}^2) \tag6</script><p>然后，我们令 \(\frac{\partial f}{\partial w<em>{0}}=0\) 以及 \(\frac{\partial f}{\partial w</em>{1}}=0\)，解得：</p>
+<script type="math/tex; mode=display">
+w_{1}=\frac {n\sum_{}^{}{x_iy_i}-\sum_{}^{}{x_i}\sum_{}^{}{y_i}}  {n\sum_{}^{}{x_i}^2-(\sum_{}^{}{x_i})^2}\\
+w_{0}=\frac {\sum_{}^{}{x_i}^2\sum_{}^{}{y_i}-\sum_{}^{}{x_i}\sum_{}^{}{x_iy_i}}  {n\sum_{}^{}{x_i}^2-(\sum_{}^{}{x_i})^2}\tag7</script><p>到目前为止，已经求出了平方损失函数最小时对应的 `w` 参数值，这也就是最佳拟合直线。</p>
 <h3 id="线性回归-Python-实现"><a href="#线性回归-Python-实现" class="headerlink" title="线性回归 Python 实现"></a>线性回归 Python 实现</h3><p>我们将公式（7）求解得到 `w` 的过程进行代码实现：</p>
 <figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">w_calculator</span><span class="hljs-params">(x, y)</span>:</span></span><br><span class="line">    n = len(x)</span><br><span class="line">    w1 = (n*sum(x*y) - sum(x)*sum(y))/(n*sum(x*x) - sum(x)*sum(x))</span><br><span class="line">    w0 = (sum(x*x)*sum(y) - sum(x)*sum(x*y))/(n*sum(x*x)-sum(x)*sum(x))</span><br><span class="line">    <span class="hljs-keyword">return</span> w0, w1</span><br></pre></td></tr></table></figure>
 <p>于是，可以向函数 <code>w_calculator(x, y)</code> 中传入 <code>x</code> 和 <code>y</code> 得到 `w_0` 和 `w_1` 的值。</p>
@@ -251,7 +258,7 @@
 </ul>
 <figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-string">"""scikit-learn 线性回归拟合</span></span><br><span class="line"><span class="hljs-string">"""</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">from</span> sklearn.linear_model <span class="hljs-keyword">import</span> LinearRegression</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># 定义线性回归模型</span></span><br><span class="line">model = LinearRegression()</span><br><span class="line">model.fit(x.reshape(len(x),<span class="hljs-number">1</span>), y) <span class="hljs-comment"># 训练, reshape 操作把数据处理成 fit 能接受的形状</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># 得到模型拟合参数</span></span><br><span class="line">model.intercept_, model.coef_</span><br></pre></td></tr></table></figure>
 <figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(<span class="hljs-number">41.33509168550615</span>, array([<span class="hljs-number">0.75458428</span>]))</span><br></pre></td></tr></table></figure>
-<p>我们通过 <code>model.intercept_</code> 得到拟合的截距项，即上面的 `w_{0}`，通过 <code>model.coef_</code> 得到 `x` 的系数，即上面的 `w_{1}`。对比发现，结果是<strong>完全一致</strong>的。</p>
+<p>我们通过 <code>model.intercept_</code> 得到拟合的截距项，即上面的 `w<em>{0}`，通过 `model.coef</em><code>得到 \</code>x` 的系数，即上面的 `w_{1}`。对比发现，结果是<strong>完全一致</strong>的。</p>
 <p>同样，我们可以预测 <code>150</code> 平米房产的价格：</p>
 <figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">model.predict([[<span class="hljs-number">150</span>]])</span><br></pre></td></tr></table></figure>
 <figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">array([<span class="hljs-number">154.52273298</span>])</span><br></pre></td></tr></table></figure>
@@ -261,7 +268,11 @@
 <p>首先，一元线性函数的表达式为 `y(x, w) = w_0 + w_1x`，表达成矩阵形式为：</p>
 <p><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/linear%20regression/add_00.png" alt=""></p>
 <p>即：\(y(x, w) = XW \tag{8b}\)</p>
-<p>（8）式中，`W` 为<br><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/linear%20regression/add_01.png" alt=""><br>，而 `X` 则是<br><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/linear%20regression/add_02.png" alt=""><br>矩阵。然后，平方损失函数为：<br>$$<br>f = \sum\limits_{i = 1}^n (y_{i}-(w_0 + w_1x_{i}))^2 =(y-XW)^T(y-XW)\tag{9}<br>$$<br>此时，对矩阵求偏导数（超纲）得到：<br><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/linear%20regression/add_03.png" alt=""><br>当矩阵 `X^TX` 满秩（不满秩后面的实验中会讨论）时，`(X^TX)^{-1}X^TX=E`，且 `EW=W`。所以，`(X^TX)^{-1}X^TXW=(X^TX)^{-1}X^Ty`。最终得到：<br>$$<br>W=(X^TX)^{-1}X^Ty \tag{11}<br>$$<br>我们可以针对公式（11）进行代码实现：</p>
+<p>（8）式中，`W` 为<br><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/linear%20regression/add_01.png" alt=""><br>，而 `X` 则是<br><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/linear%20regression/add_02.png" alt=""><br>矩阵。然后，平方损失函数为：</p>
+<script type="math/tex; mode=display">
+f = \sum\limits_{i = 1}^n (y_{i}-(w_0 + w_1x_{i}))^2 =(y-XW)^T(y-XW)\tag{9}</script><p>此时，对矩阵求偏导数（超纲）得到：<br><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/linear%20regression/add_03.png" alt=""><br>当矩阵 `X^TX` 满秩（不满秩后面的实验中会讨论）时，`(X^TX)^{-1}X^TX=E`，且 `EW=W`。所以，`(X^TX)^{-1}X^TXW=(X^TX)^{-1}X^Ty`。最终得到：</p>
+<script type="math/tex; mode=display">
+W=(X^TX)^{-1}X^Ty \tag{11}</script><p>我们可以针对公式（11）进行代码实现：</p>
 <figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">w_matrix</span><span class="hljs-params">(x, y)</span>:</span></span><br><span class="line">    w = (x.T * x).I * x.T * y</span><br><span class="line">    <span class="hljs-keyword">return</span> w</span><br></pre></td></tr></table></figure>
 <p>我们针对原 <code>x</code> 数据添加截距项系数 <code>1</code>。</p>
 <figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">x = np.matrix([[<span class="hljs-number">1</span>,<span class="hljs-number">56</span>],[<span class="hljs-number">1</span>,<span class="hljs-number">72</span>],[<span class="hljs-number">1</span>,<span class="hljs-number">69</span>],[<span class="hljs-number">1</span>,<span class="hljs-number">88</span>],[<span class="hljs-number">1</span>,<span class="hljs-number">102</span>],[<span class="hljs-number">1</span>,<span class="hljs-number">86</span>],[<span class="hljs-number">1</span>,<span class="hljs-number">76</span>],[<span class="hljs-number">1</span>,<span class="hljs-number">79</span>],[<span class="hljs-number">1</span>,<span class="hljs-number">94</span>],[<span class="hljs-number">1</span>,<span class="hljs-number">74</span>]])</span><br><span class="line">y = np.matrix([<span class="hljs-number">92</span>, <span class="hljs-number">102</span>, <span class="hljs-number">86</span>, <span class="hljs-number">110</span>, <span class="hljs-number">130</span>, <span class="hljs-number">99</span>, <span class="hljs-number">96</span>, <span class="hljs-number">102</span>, <span class="hljs-number">105</span>, <span class="hljs-number">92</span>])</span><br><span class="line"></span><br><span class="line">w_matrix(x, y.reshape(<span class="hljs-number">10</span>,<span class="hljs-number">1</span>))</span><br></pre></td></tr></table></figure>
@@ -402,7 +413,7 @@
                         分类
                     </p>
                     <p class="title has-text-weight-normal">
-                        18
+                        15
                     </p>
                 </div>
             </div>
@@ -542,30 +553,6 @@
             </h3>
             <ul class="menu-list">
             <li>
-        <a class="level is-marginless" href="/categories/Machine-Learning/">
-            <span class="level-start">
-                <span class="level-item">Machine Learning</span>
-            </span>
-            <span class="level-end">
-                <span class="level-item tag">2</span>
-            </span>
-        </a><ul><li>
-        <a class="level is-marginless" href="/categories/Machine-Learning/K-Nearest-Neighbors/">
-            <span class="level-start">
-                <span class="level-item">K-Nearest Neighbors</span>
-            </span>
-            <span class="level-end">
-                <span class="level-item tag">1</span>
-            </span>
-        </a></li><li>
-        <a class="level is-marginless" href="/categories/Machine-Learning/Polynomial-Regression/">
-            <span class="level-start">
-                <span class="level-item">Polynomial Regression</span>
-            </span>
-            <span class="level-end">
-                <span class="level-item tag">1</span>
-            </span>
-        </a></li></ul></li><li>
         <a class="level is-marginless" href="/categories/Python/">
             <span class="level-start">
                 <span class="level-item">Python</span>
@@ -627,9 +614,25 @@
                 <span class="level-item">机器学习</span>
             </span>
             <span class="level-end">
-                <span class="level-item tag">5</span>
+                <span class="level-item tag">7</span>
             </span>
         </a><ul><li>
+        <a class="level is-marginless" href="/categories/机器学习/K-近邻算法/">
+            <span class="level-start">
+                <span class="level-item">K-近邻算法</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">1</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/机器学习/多项式回归/">
+            <span class="level-start">
+                <span class="level-item">多项式回归</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">1</span>
+            </span>
+        </a></li><li>
         <a class="level is-marginless" href="/categories/机器学习/支持向量机/">
             <span class="level-start">
                 <span class="level-item">支持向量机</span>
@@ -768,7 +771,7 @@
             
             <a href="/2019/01/07/K-Nearest Neighbors/" class="media-left">
                 <p class="image is-64x64">
-                    <img class="thumbnail" src="/images/thumbnail.svg" alt="机器学习| K-近邻算法详解 (Python 语言描述)">
+                    <img class="thumbnail" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/photo/06.jpg" alt="机器学习| K-近邻算法详解 (Python 语言描述)">
                 </p>
             </a>
             
@@ -777,7 +780,7 @@
                     <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-01-06T16:00:00.000Z">2019-01-07</time></div>
                     <a href="/2019/01/07/K-Nearest Neighbors/" class="has-link-black-ter is-size-6">机器学习| K-近邻算法详解 (Python 语言描述)</a>
                     <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/Machine-Learning/">Machine Learning</a> / <a class="has-link-grey -link" href="/categories/Machine-Learning/K-Nearest-Neighbors/">K-Nearest Neighbors</a>
+                        <a class="has-link-grey -link" href="/categories/机器学习/">机器学习</a> / <a class="has-link-grey -link" href="/categories/机器学习/K-近邻算法/">K-近邻算法</a>
                     </p>
                 </div>
             </div>
@@ -1091,7 +1094,7 @@
             
             <a href="/2019/01/07/K-Nearest Neighbors/" class="media-left">
                 <p class="image is-64x64">
-                    <img class="thumbnail" src="/images/thumbnail.svg" alt="机器学习| K-近邻算法详解 (Python 语言描述)">
+                    <img class="thumbnail" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/photo/06.jpg" alt="机器学习| K-近邻算法详解 (Python 语言描述)">
                 </p>
             </a>
             
@@ -1100,7 +1103,7 @@
                     <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-01-06T16:00:00.000Z">2019-01-07</time></div>
                     <a href="/2019/01/07/K-Nearest Neighbors/" class="has-link-black-ter is-size-6">机器学习| K-近邻算法详解 (Python 语言描述)</a>
                     <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/Machine-Learning/">Machine Learning</a> / <a class="has-link-grey -link" href="/categories/Machine-Learning/K-Nearest-Neighbors/">K-Nearest Neighbors</a>
+                        <a class="has-link-grey -link" href="/categories/机器学习/">机器学习</a> / <a class="has-link-grey -link" href="/categories/机器学习/K-近邻算法/">K-近邻算法</a>
                     </p>
                 </div>
             </div>
