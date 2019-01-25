@@ -67,6 +67,16 @@
 
     
     
+<script>
+var _hmt = _hmt || [];
+(function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?b159f3ddbb6d9197633e49de94480102";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
     
     
 
@@ -174,7 +184,7 @@
 <p>这里将介绍两种排序算法，他们都突破了 $n^2$ 复杂度的障碍，它们是快速排序和合并排序。</p>
 <h2 id="快速排序简介"><a href="#快速排序简介" class="headerlink" title="快速排序简介"></a>快速排序简介</h2><p>快速排序所使用的策略可以概括如下：</p>
 <ol>
-<li>首先，从列表的中点位置选取一项。这一项叫做基准点<script type="math/tex">(pivot)</script>。</li>
+<li>首先，从列表的中点位置选取一项。这一项叫做基准点$$(pivot)$$。</li>
 <li>将列表中的项分区，以便小于基准点的所有项都移动到基准点的左边，而剩下的项都移动到基准点的右边。根据相关的实际项，基准点自身的最终位置也是变化的。例如，如果基准点自身是最大的项，它会位于列表的最右边，如果基准点是最小值，它会位于最左边。但是，不管基准点最终位于何处，这个位置都是它在完全排序的列表中的最终位置。</li>
 <li>分而治之。对于在基准点分割列表而形成的子列表，递归地重复应用该过程。一个子列表包含了基准点左边的所有的项（现在是最小的项），另一个子列表包含了基准点右边的所有的项（现在是较大的项）。</li>
 <li>每次遇到少于2个项的一个子列表，就结束这个过程。</li>
@@ -215,28 +225,23 @@
         <div class="buttons is-centered">
             
                 
-<div class="notification is-danger">
-    You forgot to set the <code>qrcode</code> for Alipay. Please set it in <code>_config.yml</code>.
-</div>
+<a class="button is-info donate">
+    <span class="icon is-small">
+        <i class="fab fa-alipay"></i>
+    </span>
+    <span>支付宝</span>
+    <div class="qrcode"><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/reward/alipay-reward-image.jpg" alt="支付宝"></div>
+</a>
 
                 
                 
-<div class="notification is-danger">
-    You forgot to set the <code>qrcode</code> for Wechat. Please set it in <code>_config.yml</code>.
-</div>
-
-                
-                <!-- Visit https://www.paypal.com/donate/buttons/ to get your donate button -->
-
-<div class="notification is-danger">
-    You forgot to set the <code>business</code> and <code>currency_code</code> for Paypal. Please set it in <code>_config.yml</code>.
-</div>
-
-                
-                
-<div class="notification is-danger">
-    You forgot to set the <code>url</code> Patreon. Please set it in <code>_config.yml</code>.
-</div>
+<a class="button is-success donate">
+    <span class="icon is-small">
+        <i class="fab fa-weixin"></i>
+    </span>
+    <span>微信</span>
+    <div class="qrcode"><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/reward/wechat-reward-image.jpg" alt="微信"></div>
+</a>
 
                 
         </div>
@@ -267,6 +272,27 @@
 </div>
 
 
+
+<div class="card">
+    <div class="card-content">
+        <h3 class="title is-5 has-text-weight-normal">评论</h3>
+        
+<div id="valine-thread"></div>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+<script>
+    new Valine({
+        el: '#valine-thread' ,
+        notify: true,
+        verify: false,
+        app_id: 'zzN9t0v9tihDucYhBujOYJUJ-gzGzoHsz',
+        app_key: 'gngT5gD2rOh2hc7C62097Ql6',
+        placeholder: 'Say something...'
+    });
+</script>
+
+    </div>
+</div>
 </div>
                 
 
