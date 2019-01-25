@@ -7,18 +7,18 @@
 
 
 
-    <meta name="description" content="对于回归预测结果，通常会有平均绝对误差、平均绝对百分比误差、均方误差等多个指标进行评价。这里，我们先介绍最常用的3个： 平均绝对误差（MAE）就是绝对误差的平均值，它的计算公式如下：$$MAE(y,\hat{y}) = \frac{1}{n}(\sum_{i = 1}^{n}\left | y - \hat{y} \right |)$$其中，$y_{i}$ 表示真实值，$\hat y_{i}$ 表">
+    <meta name="description" content="对于回归预测结果，通常会有平均绝对误差、平均绝对百分比误差、均方误差等多个指标进行评价。这里，我们先介绍最常用的3个： 平均绝对误差（MAE）就是绝对误差的平均值，它的计算公式如下：$$MAE(y,\hat{y}) = \frac{1}{n}(\sum_{i = 1}^{n}\left | y - \hat{y} \right |)$$其中，`y_{i}` 表示真实值，`\hat y_{i}` 表">
 <meta name="keywords" content="Machine Learning,Linear Regression,Python,MAE,MSE,MAPE">
 <meta property="og:type" content="article">
 <meta property="og:title" content="机器学习|线性回归三大评价指标实现『MAE, MSE, MAPE』（Python语言描述）">
 <meta property="og:url" content="https://www.laugh12321.cn/2019/01/02/evaluation_index_with_Linear_Regression/index.html">
 <meta property="og:site_name" content="Laugh&#39;s blog">
-<meta property="og:description" content="对于回归预测结果，通常会有平均绝对误差、平均绝对百分比误差、均方误差等多个指标进行评价。这里，我们先介绍最常用的3个： 平均绝对误差（MAE）就是绝对误差的平均值，它的计算公式如下：$$MAE(y,\hat{y}) = \frac{1}{n}(\sum_{i = 1}^{n}\left | y - \hat{y} \right |)$$其中，$y_{i}$ 表示真实值，$\hat y_{i}$ 表">
+<meta property="og:description" content="对于回归预测结果，通常会有平均绝对误差、平均绝对百分比误差、均方误差等多个指标进行评价。这里，我们先介绍最常用的3个： 平均绝对误差（MAE）就是绝对误差的平均值，它的计算公式如下：$$MAE(y,\hat{y}) = \frac{1}{n}(\sum_{i = 1}^{n}\left | y - \hat{y} \right |)$$其中，`y_{i}` 表示真实值，`\hat y_{i}` 表">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-01-25T04:07:41.779Z">
+<meta property="og:updated_time" content="2019-01-25T11:50:32.553Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="机器学习|线性回归三大评价指标实现『MAE, MSE, MAPE』（Python语言描述）">
-<meta name="twitter:description" content="对于回归预测结果，通常会有平均绝对误差、平均绝对百分比误差、均方误差等多个指标进行评价。这里，我们先介绍最常用的3个： 平均绝对误差（MAE）就是绝对误差的平均值，它的计算公式如下：$$MAE(y,\hat{y}) = \frac{1}{n}(\sum_{i = 1}^{n}\left | y - \hat{y} \right |)$$其中，$y_{i}$ 表示真实值，$\hat y_{i}$ 表">
+<meta name="twitter:description" content="对于回归预测结果，通常会有平均绝对误差、平均绝对百分比误差、均方误差等多个指标进行评价。这里，我们先介绍最常用的3个： 平均绝对误差（MAE）就是绝对误差的平均值，它的计算公式如下：$$MAE(y,\hat{y}) = \frac{1}{n}(\sum_{i = 1}^{n}\left | y - \hat{y} \right |)$$其中，`y_{i}` 表示真实值，`\hat y_{i}` 表">
 
 
 
@@ -135,6 +135,12 @@
             <div class="columns">
                 <div class="column is-8-tablet is-8-desktop is-6-widescreen has-order-2 column-main"><div class="card">
     
+    <div class="card-image">
+        <span class="image is-7by1">
+            <img class="thumbnail" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/photo/04.jpg" alt="机器学习|线性回归三大评价指标实现『MAE, MSE, MAPE』（Python语言描述）">
+        </span>
+    </div>
+    
     <div class="card-content article ">
         
         <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
@@ -142,14 +148,14 @@
                 <time class="level-item has-text-grey" datetime="2019-01-01T16:00:00.000Z">2019-01-02</time>
                 
                 <div class="level-item">
-                <a class="has-link-grey -link" href="/categories/Machine-Learning/">Machine Learning</a>&nbsp;/&nbsp;<a class="has-link-grey -link" href="/categories/Machine-Learning/Linear-Regression/">Linear Regression</a>&nbsp;/&nbsp;<a class="has-link-grey -link" href="/categories/Machine-Learning/Linear-Regression/Python/">Python</a>
+                <a class="has-link-grey -link" href="/categories/机器学习/">机器学习</a>&nbsp;/&nbsp;<a class="has-link-grey -link" href="/categories/机器学习/线性回归/">线性回归</a>
                 </div>
                 
                 
                 <span class="level-item has-text-grey">
                     
                     
-                    4 分钟 读完 (大约 671 个字)
+                    4 分钟 读完 (大约 673 个字)
                 </span>
                 
             </div>
@@ -162,14 +168,19 @@
         </h1>
         <div class="content">
             <p>对于回归预测结果，通常会有平均绝对误差、平均绝对百分比误差、均方误差等多个指标进行评价。这里，我们先介绍最常用的3个：</p>
-<p><strong>平均绝对误差（MAE）</strong><br>就是绝对误差的平均值，它的计算公式如下：<br>$$<br>MAE(y,\hat{y}) = \frac{1}{n}(\sum_{i = 1}^{n}\left | y - \hat{y} \right |)<br>$$<br>其中，$y_{i}$ 表示真实值，$\hat y_{i}$ 表示预测值，$n$ 则表示值的个数。MAE 的值越小，说明预测模型拥有更好的精确度。<a id="more"></a>我们可以尝试使用 Python 实现 MAE 计算函数：</p>
+<p><strong>平均绝对误差（MAE）</strong><br>就是绝对误差的平均值，它的计算公式如下：<br>$$<br>MAE(y,\hat{y}) = \frac{1}{n}(\sum_{i = 1}^{n}\left | y - \hat{y} \right |)<br>$$<br>其中，`y_{i}` 表示真实值，`\hat y_{i}` 表示预测值，`n` 则表示值的个数。MAE 的值越小，说明预测模型拥有更好的精确度。</p>
+<a id="more"></a>
+<p>我们可以尝试使用 Python 实现 MAE 计算函数：</p>
 <figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np</span><br><span class="line"></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">mae_value</span><span class="hljs-params">(y_true, y_pred)</span>:</span></span><br><span class="line">    <span class="hljs-string">"""</span></span><br><span class="line"><span class="hljs-string">    参数:</span></span><br><span class="line"><span class="hljs-string">    y_true -- 测试集目标真实值</span></span><br><span class="line"><span class="hljs-string">    y_pred -- 测试集目标预测值</span></span><br><span class="line"><span class="hljs-string">    </span></span><br><span class="line"><span class="hljs-string">    返回:</span></span><br><span class="line"><span class="hljs-string">    mae -- MAE 评价指标</span></span><br><span class="line"><span class="hljs-string">    """</span></span><br><span class="line">    </span><br><span class="line">    n = len(y_true)</span><br><span class="line">    mae = sum(np.abs(y_true - y_pred))/n</span><br><span class="line">    <span class="hljs-keyword">return</span> mae</span><br></pre></td></tr></table></figure>
-<p><strong>均方误差（MSE）</strong><br>它表示误差的平方的期望值，它的计算公式如下：<br>$$<br>{MSE}(y, \hat{y} ) = \frac{1}{n} \sum_{i=1}^{n} (y_i - \hat{y})^{2}<br>$$</p>
-<p>其中，$y_{i}$ 表示真实值，$\hat y_{i}$ 表示预测值，$n$ 则表示值的个数。MSE 的值越小，说明预测模型拥有更好的精确度。同样，我们可以尝试使用 Python 实现 MSE 计算函数：</p>
+<p><strong>均方误差（MSE）</strong></p>
+<p>它表示误差的平方的期望值，它的计算公式如下：<br>$$<br>{MSE}(y, \hat{y} ) = \frac{1}{n} \sum_{i=1}^{n} (y_i - \hat{y})^{2}<br>$$</p>
+<p>其中，`y_{i}` 表示真实值，`\hat y_{i}` 表示预测值，`n` 则表示值的个数。MSE 的值越小，说明预测模型拥有更好的精确度。</p>
+<p>同样，我们可以尝试使用 Python 实现 MSE 计算函数：</p>
 <figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np</span><br><span class="line"></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">mse_value</span><span class="hljs-params">(y_true, y_pred)</span>:</span></span><br><span class="line">    <span class="hljs-string">"""</span></span><br><span class="line"><span class="hljs-string">    参数:</span></span><br><span class="line"><span class="hljs-string">    y_true -- 测试集目标真实值</span></span><br><span class="line"><span class="hljs-string">    y_pred -- 测试集目标预测值</span></span><br><span class="line"><span class="hljs-string">    </span></span><br><span class="line"><span class="hljs-string">    返回:</span></span><br><span class="line"><span class="hljs-string">    mse -- MSE 评价指标</span></span><br><span class="line"><span class="hljs-string">    """</span></span><br><span class="line">    </span><br><span class="line">    n = len(y_true)</span><br><span class="line">    mse = sum(np.square(y_true - y_pred))/n</span><br><span class="line">    <span class="hljs-keyword">return</span> mse</span><br></pre></td></tr></table></figure>
-<p><strong>平均绝对百分比误差 $MAPE$</strong>。</p>
-<p>$MAPE$ 是 $MAD$ 的变形，它是一个百分比值，因此比其他统计量更容易理解。例如，如果 $MAPE$ 为 $5$，则表示预测结果较真实结果平均偏离 $5%$。$MAPE$ 的计算公式如下：<br>$$<br>{MAPE}(y, \hat{y} ) = \frac{\sum_{i=1}^{n}{|\frac{y_{i}-\hat y_{i}}{y_{i}}|}}{n} \times 100<br>$$</p>
-<p>其中，$y_{i}$ 表示真实值，$\hat y_{i}$ 表示预测值，$n$ 则表示值的个数。$MAPE$ 的值越小，说明预测模型拥有更好的精确度。使用 Python 实现 MSE 计算函数：</p>
+<p><strong>平均绝对百分比误差（MAPE）</strong>。</p>
+<p>`MAPE` 是 `MAD` 的变形，它是一个百分比值，因此比其他统计量更容易理解。例如，如果 `MAPE` 为 `5`，则表示预测结果较真实结果平均偏离 `5%`。`MAPE` 的计算公式如下：<br>$$<br>{MAPE}(y, \hat{y} ) = \frac{\sum_{i=1}^{n}{|\frac{y_{i}-\hat y_{i}}{y_{i}}|}}{n} \times 100<br>$$</p>
+<p>其中，`y_{i}` 表示真实值，`\hat y_{i}` 表示预测值，`n` 则表示值的个数。`MAPE` 的值越小，说明预测模型拥有更好的精确度。</p>
+<p>使用 Python 实现 MSE 计算函数：</p>
 <figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np</span><br><span class="line"></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">mape</span><span class="hljs-params">(y_true, y_pred)</span>:</span></span><br><span class="line">    <span class="hljs-string">"""</span></span><br><span class="line"><span class="hljs-string">    参数:</span></span><br><span class="line"><span class="hljs-string">    y_true -- 测试集目标真实值</span></span><br><span class="line"><span class="hljs-string">    y_pred -- 测试集目标预测值</span></span><br><span class="line"><span class="hljs-string">    </span></span><br><span class="line"><span class="hljs-string">    返回:</span></span><br><span class="line"><span class="hljs-string">    mape -- MAPE 评价指标</span></span><br><span class="line"><span class="hljs-string">    """</span></span><br><span class="line">    </span><br><span class="line">    n = len(y_true)</span><br><span class="line">    mape = sum(np.abs((y_true - y_pred)/y_true))/n*<span class="hljs-number">100</span></span><br><span class="line">    <span class="hljs-keyword">return</span> mape</span><br></pre></td></tr></table></figure>
 <hr>
 <p><strong>参考</strong>：</p>
@@ -305,7 +316,7 @@
                         分类
                     </p>
                     <p class="title has-text-weight-normal">
-                        20
+                        18
                     </p>
                 </div>
             </div>
@@ -450,20 +461,12 @@
                 <span class="level-item">Machine Learning</span>
             </span>
             <span class="level-end">
-                <span class="level-item tag">3</span>
+                <span class="level-item tag">2</span>
             </span>
         </a><ul><li>
         <a class="level is-marginless" href="/categories/Machine-Learning/K-Nearest-Neighbors/">
             <span class="level-start">
                 <span class="level-item">K-Nearest Neighbors</span>
-            </span>
-            <span class="level-end">
-                <span class="level-item tag">1</span>
-            </span>
-        </a></li><li>
-        <a class="level is-marginless" href="/categories/Machine-Learning/Linear-Regression/">
-            <span class="level-start">
-                <span class="level-item">Linear Regression</span>
             </span>
             <span class="level-end">
                 <span class="level-item tag">1</span>
@@ -538,7 +541,7 @@
                 <span class="level-item">机器学习</span>
             </span>
             <span class="level-end">
-                <span class="level-item tag">4</span>
+                <span class="level-item tag">5</span>
             </span>
         </a><ul><li>
         <a class="level is-marginless" href="/categories/机器学习/支持向量机/">
@@ -562,7 +565,7 @@
                 <span class="level-item">线性回归</span>
             </span>
             <span class="level-end">
-                <span class="level-item tag">1</span>
+                <span class="level-item tag">2</span>
             </span>
         </a></li></ul></li><li>
         <a class="level is-marginless" href="/categories/深度学习/">
