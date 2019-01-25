@@ -7,18 +7,18 @@
 
 
 
-    <meta name="description" content="​在讲解基础的排序算法之前，先来介绍排序算法经常会用到的 $$ swap $$ 函数——用来交换列表中的两项的位置">
+    <meta name="description" content="​在讲解基础的排序算法之前，先来介绍排序算法经常会用到的 swap 函数——用来交换列表中的两项的位置">
 <meta name="keywords" content="python,排序算法">
 <meta property="og:type" content="article">
 <meta property="og:title" content="【Python 排序算法】—— 基本排序算法">
 <meta property="og:url" content="https://www.laugh12321.cn/2018/11/28/python-basic-sort/index.html">
 <meta property="og:site_name" content="Laugh&#39;s blog">
-<meta property="og:description" content="​在讲解基础的排序算法之前，先来介绍排序算法经常会用到的 $$ swap $$ 函数——用来交换列表中的两项的位置">
+<meta property="og:description" content="​在讲解基础的排序算法之前，先来介绍排序算法经常会用到的 swap 函数——用来交换列表中的两项的位置">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:updated_time" content="2019-01-25T07:55:36.381Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="【Python 排序算法】—— 基本排序算法">
-<meta name="twitter:description" content="​在讲解基础的排序算法之前，先来介绍排序算法经常会用到的 $$ swap $$ 函数——用来交换列表中的两项的位置">
+<meta name="twitter:description" content="​在讲解基础的排序算法之前，先来介绍排序算法经常会用到的 swap 函数——用来交换列表中的两项的位置">
 
 
 
@@ -167,30 +167,68 @@
             
         </h1>
         <div class="content">
-            <p>​在讲解基础的排序算法之前，先来介绍排序算法经常会用到的 $$ swap $$ 函数——用来交换列表中的两项的位置</p>
+            <p>​在讲解基础的排序算法之前，先来介绍排序算法经常会用到的 <script type="math/tex">swap</script> 函数——用来交换列表中的两项的位置</p>
 <a id="more"></a>
 <figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">swap</span><span class="hljs-params">(lyst, i, j)</span>:</span></span><br><span class="line">    <span class="hljs-string">"""Exchanges the items at positions i and j."""</span></span><br><span class="line">    <span class="hljs-comment"># You could say lyst[i], lyst[j] = lyst[j], lyst[i]</span></span><br><span class="line">    <span class="hljs-comment"># but the following code shows what is really going on</span></span><br><span class="line">    temp = lyst[i]</span><br><span class="line">    lyst[i] = lyst[j]</span><br><span class="line">    lyst[j] = temp</span><br></pre></td></tr></table></figure>
-<h2 id="选择排序-selection-sort"><a href="#选择排序-selection-sort" class="headerlink" title="选择排序 | $$ selection \, sort $$"></a>选择排序 | $$ selection \, sort $$</h2><p>​可能最简单的策略就是搜索整个列表，找到最小项的位置。如果该位置不是列表的第一个位置，算法就会交换这两个位置的项。然后，算法回到第 2 个位置并且重复这个过程，如果必要的话，将最小项和第 2 个位置的项交换。当算法到达整个过程的最后一个位置，列表就是排序好的了。这就是选择排序算法的基本思路。</p>
+<h2 id="选择排序-selection-sort"><a href="#选择排序-selection-sort" class="headerlink" title="选择排序 | selection \, sort"></a>选择排序 | <script type="math/tex">selection \, sort</script></h2><p>​可能最简单的策略就是搜索整个列表，找到最小项的位置。如果该位置不是列表的第一个位置，算法就会交换这两个位置的项。然后，算法回到第 2 个位置并且重复这个过程，如果必要的话，将最小项和第 2 个位置的项交换。当算法到达整个过程的最后一个位置，列表就是排序好的了。这就是选择排序算法的基本思路。</p>
 <p>​下表展示了对于 5 个项的一个列表进行选择排序，在每一次搜索和交换之后的状态。因为每次经过主循环时，都会选择一个要移动的项，即在每一轮都只是交换两项，这两项的后面用 <code>*</code> 表示，并且表中已经排好序的部分用阴影表示。</p>
-<table><br>    <tr><br>        <th>未排序的列表</th><th>第 1 轮后</th><th>第 2 轮后</th><th>第 3 轮后</th><th>第 4 轮后</th><br>    </tr><br>    <tr><br>        <td><p>5</p></td><td bgcolor="DarkGray"><p>1<em></em></p></td><td bgcolor="DarkGray"><p>1</p></td><td bgcolor="DarkGray"><p>1</p></td><td bgcolor="DarkGray"><p>1</p></td><br>    </tr><br>    <tr><br>        <td><p>3</p></td><td><p>3</p></td><td bgcolor="DarkGray"><p>2</p></td><td bgcolor="DarkGray"><p>2</p></td><td bgcolor="DarkGray"><p>2</p></td><br>    </tr><br>    <tr><br>        <td><p>1</p></td><td><p>5<em></em></p></td><td><p>5</p></td><td bgcolor="DarkGray"><p>3</p></td><td bgcolor="DarkGray"><p>3</p></td><br>    </tr><br>    <tr><br>        <td><p>2</p></td><td><p>2</p></td><td><p>3<em></em></p></td><td><p>5</p></td><td bgcolor="DarkGray"><p>4<em></em></p></td><br>    </tr><br>    <tr><br>        <td><p>4</p></td><td><p>4</p></td><td><p>4</p></td><td><p>4</p></td><td><p>5</p></td><br>    </tr><br></table>
+<table>
+    <tr>
+        <th>未排序的列表</th><th>第 1 轮后</th><th>第 2 轮后</th><th>第 3 轮后</th><th>第 4 轮后</th>
+    </tr>
+    <tr>
+        <td><p>5</p></td><td bgcolor="DarkGray"><p>1*</p></td><td bgcolor="DarkGray"><p>1</p></td><td bgcolor="DarkGray"><p>1</p></td><td bgcolor="DarkGray"><p>1</p></td>
+    </tr>
+    <tr>
+        <td><p>3</p></td><td><p>3</p></td><td bgcolor="DarkGray"><p>2*</p></td><td bgcolor="DarkGray"><p>2</p></td><td bgcolor="DarkGray"><p>2</p></td>
+    </tr>
+    <tr>
+        <td><p>1</p></td><td><p>5*</p></td><td><p>5</p></td><td bgcolor="DarkGray"><p>3*</p></td><td bgcolor="DarkGray"><p>3</p></td>
+    </tr>
+    <tr>
+        <td><p>2</p></td><td><p>2</p></td><td><p>3*</p></td><td><p>5*</p></td><td bgcolor="DarkGray"><p>4*</p></td>
+    </tr>
+    <tr>
+        <td><p>4</p></td><td><p>4</p></td><td><p>4</p></td><td><p>4</p></td><td><p>5*</p></td>
+    </tr>
+</table>
 
 <p>如下是选择排序的 Python 描述：</p>
 <figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">selectionSort</span><span class="hljs-params">(lyst)</span>:</span></span><br><span class="line">    i = <span class="hljs-number">0</span></span><br><span class="line">    <span class="hljs-keyword">while</span> i &lt; len(lyst) - <span class="hljs-number">1</span>:      <span class="hljs-comment"># Do n - 1 searches</span></span><br><span class="line">        minIndex = i              <span class="hljs-comment"># for the smallest</span></span><br><span class="line">        j = i + <span class="hljs-number">1</span></span><br><span class="line">        <span class="hljs-keyword">while</span> j &lt; len(lyst):      <span class="hljs-comment">#  Start a search</span></span><br><span class="line">            <span class="hljs-keyword">if</span> lyst[j] &lt; lyst[minIndex]:</span><br><span class="line">                minIndex = j</span><br><span class="line">            j += <span class="hljs-number">1</span></span><br><span class="line">        <span class="hljs-keyword">if</span> minIndex != i:         <span class="hljs-comment"># Exchange if need</span></span><br><span class="line">            swap(lyst, minIndex, i)</span><br><span class="line">        i += <span class="hljs-number">1</span></span><br></pre></td></tr></table></figure>
-<p>​该算法的复杂度为 $$ O(n^2) $$。由于数据项交换只是在外围循环中进行，所以在最坏情况和平均情况下，选择排序的这一额外开销都是线性的。</p>
-<h2 id="冒泡排序-bubble-sort"><a href="#冒泡排序-bubble-sort" class="headerlink" title="冒泡排序 | $$bubble \,sort $$"></a>冒泡排序 | $$bubble \,sort $$</h2><p>​冒泡排序法相对容易理解和编码。其策略是从列表的开头出开始，并且比较一对数据项，直到移动到列表的末尾。每当成对的两项之间顺序不正确的时候，算法就交换其位置。这个过程的效果就是将最大的项以冒泡的方式排到列表的末尾。然后，算法从列表头到倒数第 2 个列表项重复这一过程，依此类推，直到该算法从列表的最后一项开始执行。此时，列表是已经排序好的。</p>
+<p>​该算法的复杂度为 <script type="math/tex">O(n^2)</script>。由于数据项交换只是在外围循环中进行，所以在最坏情况和平均情况下，选择排序的这一额外开销都是线性的。</p>
+<h2 id="冒泡排序-bubble-sort"><a href="#冒泡排序-bubble-sort" class="headerlink" title="冒泡排序 | bubble \,sort"></a>冒泡排序 | <script type="math/tex">bubble \,sort</script></h2><p>​冒泡排序法相对容易理解和编码。其策略是从列表的开头出开始，并且比较一对数据项，直到移动到列表的末尾。每当成对的两项之间顺序不正确的时候，算法就交换其位置。这个过程的效果就是将最大的项以冒泡的方式排到列表的末尾。然后，算法从列表头到倒数第 2 个列表项重复这一过程，依此类推，直到该算法从列表的最后一项开始执行。此时，列表是已经排序好的。</p>
 <p>​下表展示了对 5 个项的一个列表进行冒泡排序的过程。这个过程把嵌套的循环执行了 4 次，将最大的项冒泡的列表的末尾。再一次，只有交换的项用<code>*</code>标出，并且排好序的部分用阴影表示。</p>
-<table><br>    <tr><br>        <th>未排序的列表</th><th>第 1 轮后</th><th>第 2 轮后</th><th>第 3 轮后</th><th>第 4 轮后</th><br>    </tr><br>    <tr><br>        <td><p>5</p></td><td><p>4<em></em></p></td><td><p>4</p></td><td><p>4</p></td><td><p>4</p></td><br>    </tr><br>    <tr><br>        <td><p>4</p></td><td><p>5</p></td><td><p>2<em></em></p></td><td><p>2</p></td><td><p>2</p></td><br>    </tr><br>    <tr><br>        <td><p>2</p></td><td><p>2</p></td><td><p>5</p></td><td><p>1<em></em></p></td><td><p>1</p></td><br>    </tr><br>    <tr><br>        <td><p>1</p></td><td><p>1</p></td><td><p>1</p></td><td><p>5</p></td><td><p>3</p></td><br>    </tr><br>    <tr><br>        <td><p>3</p></td><td><p>3</p></td><td><p>3</p></td><td><p>3</p></td><td bgcolor="DarkGray"><p>5*</p></td><br>    </tr><br></table>
+<table>
+    <tr>
+        <th>未排序的列表</th><th>第 1 轮后</th><th>第 2 轮后</th><th>第 3 轮后</th><th>第 4 轮后</th>
+    </tr>
+    <tr>
+        <td><p>5</p></td><td><p>4*</p></td><td><p>4</p></td><td><p>4</p></td><td><p>4</p></td>
+    </tr>
+    <tr>
+        <td><p>4</p></td><td><p>5*</p></td><td><p>2*</p></td><td><p>2</p></td><td><p>2</p></td>
+    </tr>
+    <tr>
+        <td><p>2</p></td><td><p>2</p></td><td><p>5*</p></td><td><p>1*</p></td><td><p>1</p></td>
+    </tr>
+    <tr>
+        <td><p>1</p></td><td><p>1</p></td><td><p>1</p></td><td><p>5*</p></td><td><p>3</p></td>
+    </tr>
+    <tr>
+        <td><p>3</p></td><td><p>3</p></td><td><p>3</p></td><td><p>3</p></td><td bgcolor="DarkGray"><p>5*</p></td>
+    </tr>
+</table>
 
 <p>如下是冒泡排序的 Python 描述：</p>
 <figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">bubbleSort</span><span class="hljs-params">(lyst)</span>:</span></span><br><span class="line">    n = len(lyst)   </span><br><span class="line">    <span class="hljs-keyword">while</span> n &gt; <span class="hljs-number">1</span>:                           <span class="hljs-comment"># Do n - 1 bubbles</span></span><br><span class="line">        i = <span class="hljs-number">1</span>                              <span class="hljs-comment"># Start each bubble</span></span><br><span class="line">        <span class="hljs-keyword">while</span> i &lt; n:</span><br><span class="line">            <span class="hljs-keyword">if</span> lyst[i] &lt; lyst[i - <span class="hljs-number">1</span>]:      <span class="hljs-comment"># Exchange if need</span></span><br><span class="line">                swap(lyst, i, i - <span class="hljs-number">1</span>)</span><br><span class="line">            i += <span class="hljs-number">1</span></span><br><span class="line">        n -= <span class="hljs-number">1</span></span><br></pre></td></tr></table></figure>
-<p>​和选择排序一样，冒泡排序的复杂度也是$$O(n^2)$$。如果列表是已经排好的，冒泡排序不会执行任何交换。然而，在最坏的情况下，冒泡排序的交换超过线性方式。</p>
+<p>​和选择排序一样，冒泡排序的复杂度也是<script type="math/tex">O(n^2)</script>。如果列表是已经排好的，冒泡排序不会执行任何交换。然而，在最坏的情况下，冒泡排序的交换超过线性方式。</p>
 <p>​可以对冒泡排序进行一个小的调整，将其在最好的情况下的性能提高到线性阶。如果在通过主循环的时候，没有发生交换，那么列表就是已经排序的。这种情况可能发生在任何一轮，但是，在最好的情况下，第 1 轮就会发生。可以使用一个布尔标记来记录交换动作的出现，并且当内部循环没有设置这个标记的时候，就从函数返回。如下是修改后的冒泡排序函数：</p>
 <figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">bubbleSortWithTweak</span><span class="hljs-params">(lyst)</span>:</span></span><br><span class="line">    n = len(lyst)</span><br><span class="line">    <span class="hljs-keyword">while</span> n &gt; <span class="hljs-number">1</span>:</span><br><span class="line">        swapped = <span class="hljs-keyword">False</span></span><br><span class="line">        i = <span class="hljs-number">1</span></span><br><span class="line">        <span class="hljs-keyword">while</span> i &lt; n:</span><br><span class="line">            <span class="hljs-keyword">if</span> lyst[i] &lt; lyst[i - <span class="hljs-number">1</span>]:       <span class="hljs-comment"># Exchange if need</span></span><br><span class="line">                swap(lyst, i, i - <span class="hljs-number">1</span>)</span><br><span class="line">                swapped = <span class="hljs-keyword">True</span></span><br><span class="line">            i += <span class="hljs-number">1</span></span><br><span class="line">        <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> swapped: <span class="hljs-keyword">return</span>              <span class="hljs-comment"># Return if no swaps</span></span><br><span class="line">        n -= <span class="hljs-number">1</span></span><br></pre></td></tr></table></figure>
-<p><strong><font color="red">注意：</font></strong>这一修改只是改进了最好情况下的行为。在平均情况下，这个版本的复杂度仍为$$O(n^2)$$。</p>
-<h2 id="插入排序-insertion-sort"><a href="#插入排序-insertion-sort" class="headerlink" title="插入排序 | $$ insertion \,sort $$"></a>插入排序 | $$ insertion \,sort $$</h2><p>​修改过后的冒泡排序，对于已经排好的列表来说，其性能比选择排序要好。但是，如果列表中的项是没有顺序的，修改过后的冒泡排序的性能任然是很糟糕的。</p>
+<p><strong><font color="red">注意：</font></strong>这一修改只是改进了最好情况下的行为。在平均情况下，这个版本的复杂度仍为<script type="math/tex">O(n^2)</script>。</p>
+<h2 id="插入排序-insertion-sort"><a href="#插入排序-insertion-sort" class="headerlink" title="插入排序 | insertion \,sort"></a>插入排序 | <script type="math/tex">insertion \,sort</script></h2><p>​修改过后的冒泡排序，对于已经排好的列表来说，其性能比选择排序要好。但是，如果列表中的项是没有顺序的，修改过后的冒泡排序的性能任然是很糟糕的。</p>
 <p>插入排序法试图以一种不同的方式来对列表进行排列，其策略如下：</p>
 <ul>
-<li><p>在第 i 轮通过列表的时候（$$ 1 \leq i \leq n-1 $$）,第 i 个项应该插入到列表的前 i 个项之中的正确位置。</p>
+<li><p>在第 i 轮通过列表的时候（<script type="math/tex">1 \leq i \leq n-1</script>）,第 i 个项应该插入到列表的前 i 个项之中的正确位置。</p>
 </li>
 <li><p>在第 i 轮之后，前 i 个项应该是排好序的。</p>
 </li>
@@ -202,9 +240,28 @@
 <p>如下是 insertionSort 函数的代码：</p>
 <figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">insertionSort</span><span class="hljs-params">(lyst)</span>:</span></span><br><span class="line">    i = <span class="hljs-number">1</span></span><br><span class="line">    <span class="hljs-keyword">while</span> i &lt; len(lyst):</span><br><span class="line">        itemToInsert = lyst[i]</span><br><span class="line">        j = i - <span class="hljs-number">1</span></span><br><span class="line">        <span class="hljs-keyword">while</span> j &gt;= <span class="hljs-number">0</span>:</span><br><span class="line">            <span class="hljs-keyword">if</span> itemToInsert &lt; lyst[j]:</span><br><span class="line">                lyst[j + <span class="hljs-number">1</span>] = lyst[j]</span><br><span class="line">                j -= <span class="hljs-number">1</span></span><br><span class="line">            <span class="hljs-keyword">else</span>:</span><br><span class="line">                <span class="hljs-keyword">break</span></span><br><span class="line">        lyst[j + <span class="hljs-number">1</span>] = itemToInsert</span><br><span class="line">        i += <span class="hljs-number">1</span></span><br></pre></td></tr></table></figure>
 <p>​下表展示了对 5 个项的一个列表进行插入排序，以及在每一次通过外围循环后的状态。在下一个轮次中插入的项用一个箭头标记出来，在将这个项插入之后，用<code>*</code>将其标记。</p>
-<table><br>    <tr><br>        <th>未排序的列表</th><th>第 1 轮后</th><th>第 2 轮后</th><th>第 3 轮后</th><th>第 4 轮后</th><br>    </tr><br>    <tr><br>        <td><p>2</p></td><td><p>2</p></td><td bgcolor="DarkGray"><p>1<em></em></p></td><td bgcolor="DarkGray"><p>1</p></td><td bgcolor="DarkGray"><p>1</p></td><br>    </tr><br>    <tr><br>        <td><p>5&#8592;</p></td><td><p>5(没有插入)</p></td><td><p>2</p></td><td bgcolor="DarkGray"><p>2</p></td><td bgcolor="DarkGray"><p>2</p></td><br>    </tr><br>    <tr><br>        <td><p>1</p></td><td><p>1&#8592;</p></td><td><p>5</p></td><td><p>4</p></td><td bgcolor="DarkGray"><p>3*</p></td><br>    </tr><br>    <tr><br>        <td><p>4</p></td><td><p>4</p></td><td><p>4&#8592;</p></td><td><p>5</p></td><td bgcolor="DarkGray"><p>4</p></td><br>    </tr><br>    <tr><br>        <td><p>3</p></td><td><p>3</p></td><td><p>3</p></td><td><p>3&#8592;</p></td><td bgcolor="DarkGray"><p>5</p></td><br>    </tr><br></table>
+<table>
+    <tr>
+        <th>未排序的列表</th><th>第 1 轮后</th><th>第 2 轮后</th><th>第 3 轮后</th><th>第 4 轮后</th>
+    </tr>
+    <tr>
+        <td><p>2</p></td><td><p>2</p></td><td bgcolor="DarkGray"><p>1*</p></td><td bgcolor="DarkGray"><p>1</p></td><td bgcolor="DarkGray"><p>1</p></td>
+    </tr>
+    <tr>
+        <td><p>5&#8592;</p></td><td><p>5(没有插入)</p></td><td><p>2</p></td><td bgcolor="DarkGray"><p>2</p></td><td bgcolor="DarkGray"><p>2</p></td>
+    </tr>
+    <tr>
+        <td><p>1</p></td><td><p>1&#8592;</p></td><td><p>5</p></td><td><p>4*</p></td><td bgcolor="DarkGray"><p>3*</p></td>
+    </tr>
+    <tr>
+        <td><p>4</p></td><td><p>4</p></td><td><p>4&#8592;</p></td><td><p>5</p></td><td bgcolor="DarkGray"><p>4</p></td>
+    </tr>
+    <tr>
+        <td><p>3</p></td><td><p>3</p></td><td><p>3</p></td><td><p>3&#8592;</p></td><td bgcolor="DarkGray"><p>5</p></td>
+    </tr>
+</table>
 
-<p>​插入排序的最坏情况的复杂的为 $$ O(n^2) $$。列表中排好序的项越多，插入排序的效果越好，在最好的情况下，列表本来就是有序的，那么，插入排序的复杂度是线性阶的。然而，在平均情况下，插入排序的复杂度仍然是二次方阶的。</p>
+<p>​插入排序的最坏情况的复杂的为 <script type="math/tex">O(n^2)</script>。列表中排好序的项越多，插入排序的效果越好，在最好的情况下，列表本来就是有序的，那么，插入排序的复杂度是线性阶的。然而，在平均情况下，插入排序的复杂度仍然是二次方阶的。</p>
 
         </div>
         

@@ -192,7 +192,7 @@
 </ul>
 <p>One-Hot 编码常用于表示拥有有限个可能值的字符串或标识符。例如，假设某个指定的植物学数据集记录了 15000 个不同的物种，其中每个物种都用独一无二的字符串标识符来表示。在特征工程过程中，您可能需要将这些字符串标识符编码为 One-Hot 向量，向量的大小为 15000。</p>
 <h3 id="独立同分布"><a href="#独立同分布" class="headerlink" title="独立同分布"></a>独立同分布</h3><p>独立就是每次抽样之间是没有关系的,不会相互影响。</p>
-<p>同分布，意味着随机变量 $$X_1$$ 和 $$X_2$$ 具有相同的分布形状和相同的分布参数，对离散随机变量具有相同的分布律，对连续随机变量具有相同的概率密度函数，有着相同的分布函数，相同的期望、方差。</p>
+<p>同分布，意味着随机变量 <script type="math/tex">X_1</script> 和 <script type="math/tex">X_2</script> 具有相同的分布形状和相同的分布参数，对离散随机变量具有相同的分布律，对连续随机变量具有相同的概率密度函数，有着相同的分布函数，相同的期望、方差。</p>
 <p>例如，某个网页的访问者在短时间内的分布可能为独立同分布，即分布在该短时间内没有变化，且一位用户的访问行为通常与另一位用户的访问行为无关。</p>
 <h3 id="迭代｜Iteration"><a href="#迭代｜Iteration" class="headerlink" title="迭代｜Iteration"></a>迭代｜Iteration</h3><p>模型的权重在训练期间的一次更新，迭代包含计算参数在单个<strong>批量</strong>数据的梯度损失。</p>
 <h2 id="F"><a href="#F" class="headerlink" title="F"></a>F</h2><hr>
@@ -206,7 +206,27 @@
 
 <h2 id="H"><a href="#H" class="headerlink" title="H"></a>H</h2><hr>
 <h3 id="混淆矩阵｜Confusion-Matrix"><a href="#混淆矩阵｜Confusion-Matrix" class="headerlink" title="混淆矩阵｜Confusion Matrix"></a>混淆矩阵｜Confusion Matrix</h3><p>一种 NxN 表格，用于总结分类模型的预测成效；即标签和模型预测的分类之间的关联。在混淆矩阵中，一个轴表示模型预测的标签，另一个轴表示实际标签。N 表示类别个数。在二元分类问题中，N=2。例如，下面显示了一个二元分类问题的混淆矩阵示例：</p>
-<table><br><thead><br><tr><br><th></th><br><th>肿瘤（预测的标签）</th><br><th>非肿瘤（预测的标签）</th><br></tr><br></thead><br><tbody><br><tr><br><td>肿瘤（实际标签）</td><br><td>18</td><br><td>1</td><br></tr><br><tr><br><td>非肿瘤（实际标签）</td><br><td>6</td><br><td>452</td><br></tr><br></tbody><br></table>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>肿瘤（预测的标签）</th>
+<th>非肿瘤（预测的标签）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>肿瘤（实际标签）</td>
+<td>18</td>
+<td>1</td>
+</tr>
+<tr>
+<td>非肿瘤（实际标签）</td>
+<td>6</td>
+<td>452</td>
+</tr>
+</tbody>
+</table>
 
 <p>上面的混淆矩阵显示，在 19 个实际有肿瘤的样本中，该模型正确地将 18 个归类为有肿瘤（18 个真正例），错误地将 1 个归类为没有肿瘤（1 个假负例）。同样，在 458 个实际没有肿瘤的样本中，模型归类正确的有 452 个（452 个真负例），归类错误的有 6 个（6 个假正例）。</p>
 <p>多类别分类问题的混淆矩阵有助于确定出错模式。例如，某个混淆矩阵可以揭示，某个经过训练以识别手写数字的模型往往会将 4 错误地预测为 9，将 7 错误地预测为 1。混淆矩阵包含计算各种效果指标（包括精确率和召回率）所需的充足信息。</p>
@@ -222,10 +242,10 @@
 <h3 id="决策边界｜Decision-Boundary"><a href="#决策边界｜Decision-Boundary" class="headerlink" title="决策边界｜Decision Boundary"></a>决策边界｜Decision Boundary</h3><p>在二元分类或多类别分类问题中，模型学到的类别之间的分界线。例如，在以下表示某个二元分类问题的图片中，决策边界是橙色类别和蓝色类别之间的分界线：</p>
 <p><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/mlg_03.png" alt=""></p>
 <h3 id="精确率｜Precision"><a href="#精确率｜Precision" class="headerlink" title="精确率｜Precision"></a>精确率｜Precision</h3><p>一种分类模型指标。精确率指模型正确预测正类别的频率。</p>
-<p>$$<br>召回率  =   \frac { 真正例数 }  { 真正例数 + 假负例数 }<br>$$</p>
-<h3 id="交叉熵｜Cross-Entropy"><a href="#交叉熵｜Cross-Entropy" class="headerlink" title="交叉熵｜Cross-Entropy"></a>交叉熵｜Cross-Entropy</h3><p><strong>对数损失函数</strong>向<strong>多类别分类问题</strong>进行的一种泛化。交叉熵可以量化两种概率分布之间的差异。</p>
-<p>$$<br>H(p,q) = \sum_{i=1}^{n} p(x) \cdot log(\frac{1}{q(x)})<br>$$</p>
-<h3 id="激活函数｜Activation-Function"><a href="#激活函数｜Activation-Function" class="headerlink" title="激活函数｜Activation Function"></a>激活函数｜Activation Function</h3><p>一种函数（例如 ReLU 或 S 型函数），用于对上一层的所有输入求加权和，然后生成一个输出值（通常为非线性值），并将其传递给下一层。</p>
+<script type="math/tex; mode=display">
+召回率  =   \frac { 真正例数 }  { 真正例数 + 假负例数 }</script><h3 id="交叉熵｜Cross-Entropy"><a href="#交叉熵｜Cross-Entropy" class="headerlink" title="交叉熵｜Cross-Entropy"></a>交叉熵｜Cross-Entropy</h3><p><strong>对数损失函数</strong>向<strong>多类别分类问题</strong>进行的一种泛化。交叉熵可以量化两种概率分布之间的差异。</p>
+<script type="math/tex; mode=display">
+H(p,q) = \sum_{i=1}^{n} p(x) \cdot log(\frac{1}{q(x)})</script><h3 id="激活函数｜Activation-Function"><a href="#激活函数｜Activation-Function" class="headerlink" title="激活函数｜Activation Function"></a>激活函数｜Activation Function</h3><p>一种函数（例如 ReLU 或 S 型函数），用于对上一层的所有输入求加权和，然后生成一个输出值（通常为非线性值），并将其传递给下一层。</p>
 <h3 id="结构风险最小化｜Structural-Risk-Minimization"><a href="#结构风险最小化｜Structural-Risk-Minimization" class="headerlink" title="结构风险最小化｜Structural Risk Minimization"></a>结构风险最小化｜Structural Risk Minimization</h3><p>一种算法，用于平衡以下两个目标：</p>
 <ul>
 <li>期望构建最具预测性的模型（例如损失最低）。</li>
@@ -246,9 +266,8 @@
 <h3 id="密集层｜Dense-Layer"><a href="#密集层｜Dense-Layer" class="headerlink" title="密集层｜Dense Layer"></a>密集层｜Dense Layer</h3><p>是全连接层的同义词。</p>
 <h2 id="P"><a href="#P" class="headerlink" title="P"></a>P</h2><hr>
 <h3 id="批次｜Batch"><a href="#批次｜Batch" class="headerlink" title="批次｜Batch"></a>批次｜Batch</h3><p>模型训练的一次迭代（即一次梯度更新）中使用样本簇。</p>
-<h3 id="偏差｜Bias"><a href="#偏差｜Bias" class="headerlink" title="偏差｜Bias"></a>偏差｜Bias</h3><p>距离原点的截距或偏移。偏差（也称为偏差项）在机器学习模型中以 $$b$$ 或 $$w_0$$ 表示。例如，在下面的公式中，偏差为 $$b$$：</p>
-<p>$$y’ = b + w_1x_1 + w_2x_2 + … w_nx_n$$</p>
-<p>请勿与「预测偏差」混淆。</p>
+<h3 id="偏差｜Bias"><a href="#偏差｜Bias" class="headerlink" title="偏差｜Bias"></a>偏差｜Bias</h3><p>距离原点的截距或偏移。偏差（也称为偏差项）在机器学习模型中以 <script type="math/tex">b</script> 或 <script type="math/tex">w_0</script> 表示。例如，在下面的公式中，偏差为 <script type="math/tex">b</script>：</p>
+<script type="math/tex; mode=display">y' = b + w_1x_1 + w_2x_2 + … w_nx_n</script><p>请勿与「预测偏差」混淆。</p>
 <h3 id="批次规模｜Batch-Size"><a href="#批次规模｜Batch-Size" class="headerlink" title="批次规模｜Batch Size"></a>批次规模｜Batch Size</h3><p>模型迭代一次，使用的样本集的大小。</p>
 <p>例如训练集有 <code>6400</code> 个样本，<code>batch_size=128</code>，那么训练完整个样本集需要 <code>50</code> 次迭代。Batch Size 的大小一般设置为 <code>16</code> 及 <code>16</code> 的倍数。</p>
 <h2 id="R"><a href="#R" class="headerlink" title="R"></a>R</h2><hr>
@@ -293,14 +312,11 @@
 <h3 id="预训练模型"><a href="#预训练模型" class="headerlink" title="预训练模型"></a>预训练模型</h3><p>已经过训练的模型或模型组件（例如嵌套）。有时，您需要将预训练的嵌套馈送到神经网络。在其他时候，您的模型将自行训练嵌套，而不依赖于预训练的嵌套。</p>
 <h2 id="Z"><a href="#Z" class="headerlink" title="Z"></a>Z</h2><hr>
 <h3 id="准确率｜Accuracy"><a href="#准确率｜Accuracy" class="headerlink" title="准确率｜Accuracy"></a>准确率｜Accuracy</h3><p>分类模型的正确预测所占的比例。在多类别分类中，准确率的定义如下：</p>
-<p>$$ 准确率  =   \frac { 正确预测数 }  { 样本总数 } $$</p>
-<p>在二元分类中，准确率的定义如下：</p>
-<p>$$ 准确率  =   \frac { 真正例数 + 真负例数 }  { 样本总数 } $$</p>
-<h3 id="真负例"><a href="#真负例" class="headerlink" title="真负例"></a>真负例</h3><p>被模型正确地预测为负类别的样本。例如，模型推断出某封电子邮件不是垃圾邮件，而该电子邮件确实不是垃圾邮件。</p>
+<script type="math/tex; mode=display">准确率  =   \frac { 正确预测数 }  { 样本总数 }</script><p>在二元分类中，准确率的定义如下：</p>
+<script type="math/tex; mode=display">准确率  =   \frac { 真正例数 + 真负例数 }  { 样本总数 }</script><h3 id="真负例"><a href="#真负例" class="headerlink" title="真负例"></a>真负例</h3><p>被模型正确地预测为负类别的样本。例如，模型推断出某封电子邮件不是垃圾邮件，而该电子邮件确实不是垃圾邮件。</p>
 <h3 id="真正例"><a href="#真正例" class="headerlink" title="真正例"></a>真正例</h3><p>被模型正确地预测为正类别的样本。例如，模型推断出某封电子邮件是垃圾邮件，而该电子邮件确实是垃圾邮件。</p>
 <h3 id="召回率"><a href="#召回率" class="headerlink" title="召回率"></a>召回率</h3><p>一种分类模型指标，用于回答以下问题：在所有可能的正类别标签中，模型正确地识别出了多少个？即：</p>
-<p>$$ 召回率  =   \frac { 真正例数 }  { 真正例数  + 假正例数} $$</p>
-<h3 id="张量｜Tensor"><a href="#张量｜Tensor" class="headerlink" title="张量｜Tensor"></a>张量｜Tensor</h3><p>TensorFlow 程序中的主要数据结构。张量是 N 维（其中 N 可能非常大）数据结构，最常见的是标量、向量或矩阵。张量的元素可以包含整数值、浮点值或字符串值。</p>
+<script type="math/tex; mode=display">召回率  =   \frac { 真正例数 }  { 真正例数  + 假正例数}</script><h3 id="张量｜Tensor"><a href="#张量｜Tensor" class="headerlink" title="张量｜Tensor"></a>张量｜Tensor</h3><p>TensorFlow 程序中的主要数据结构。张量是 N 维（其中 N 可能非常大）数据结构，最常见的是标量、向量或矩阵。张量的元素可以包含整数值、浮点值或字符串值。</p>
 <p><img width="600px" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/mlg_05.png"></p>
 <h3 id="迁移学习｜Transfer-Learning"><a href="#迁移学习｜Transfer-Learning" class="headerlink" title="迁移学习｜Transfer Learning"></a>迁移学习｜Transfer Learning</h3><p>将信息从一个机器学习任务转移到另一个机器学习任务。例如，在多任务学习中，一个模型可以完成多项任务，例如针对不同任务具有不同输出节点的深度模型。迁移学习可能涉及将知识从较简单任务的解决方案转移到较复杂的任务，或者将知识从数据较多的任务转移到数据较少的任务。</p>
 <p>大多数机器学习系统都只能完成一项任务。迁移学习是迈向人工智能的一小步；在人工智能中，单个程序可以完成多项任务。</p>
@@ -308,7 +324,7 @@
 <h3 id="L2-正则化｜L2-Regularization"><a href="#L2-正则化｜L2-Regularization" class="headerlink" title="L2 正则化｜L2 Regularization"></a>L2 正则化｜L2 Regularization</h3><p>一种正则化，根据权重的平方和来惩罚权重。L2 正则化有助于使离群值（具有较大正值或较小负值）权重接近于 0，但又不正好为 0。（与 L1 正则化相对。）在线性模型中，L2 正则化始终可以改进泛化。</p>
 <h3 id="周期｜Epoch"><a href="#周期｜Epoch" class="headerlink" title="周期｜Epoch"></a>周期｜Epoch</h3><p>在训练时，整个数据集的一次完整遍历，以便不漏掉任何一个样本。因此，一个周期表示（N/批次规模）次训练迭代，其中 N 是样本总数。</p>
 <hr>
-<div style="color: #999;font-size: 12px;font-style: italic;">©️ 部分内容参考自 <a href="https://developers.google.com/machine-learning/glossary/" target="_blank" rel="noopener">Machine Learning Glossary</a></div>
+<div style="color: #999;font-size: 12px;font-style: italic;">©️ 部分内容参考自 [Machine Learning Glossary](https://developers.google.com/machine-learning/glossary/)</div>
         </div>
         
         <div class="level is-size-7 is-uppercase">
