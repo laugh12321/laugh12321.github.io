@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh">
 <head><meta name="generator" content="Hexo 3.8.0">
-    <meta charset="utf-8">
+    <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="utf-8">
 <title>机器学习|线性回归算法详解 (Python 语言描述) - Laugh&#39;s blog</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -102,10 +102,10 @@ var _hmt = _hmt || [];
     
 
 
-<link rel="stylesheet" href="/css/style.css">
+<link rel="stylesheet" href="/css/style.css"><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 </head>
 <body class="is-3-column">
-    <nav class="navbar navbar-main">
+    <!-- hexo-inject:begin --><!-- hexo-inject:end --><nav class="navbar navbar-main">
     <div class="container">
         <div class="navbar-brand is-flex-center">
             <a class="navbar-item navbar-logo" href="/">
@@ -233,7 +233,7 @@ var _hmt = _hmt || [];
 <p>简单来讲，最小二乘法也就是求解平方损失函数最小值的方法。那么，到底该怎样求解呢？这就需要使用到高等数学中的知识。推导如下：</p>
 <p>首先，平方损失函数为：</p>
 <p>$$<br>f = \sum\limits_{i = 1}^n (y_{i}-(w_0 + w_1x_{i}))^2 \tag5<br>$$<br>我们的目标是求取平方损失函数 `min(f)` 最小时，对应的 `w`。首先求 `f` 的 <code>1</code> 阶偏导数：</p>
-<p>$$<br>\frac{\partial f}{\partial w_{0}}=-2(\sum_{i=1}^{n}{y_i}-nw_{0}-w_{1}\sum_{i=1}^{n}{x_i})\<br>\frac{\partial f}{\partial w_{1}}=-2(\sum_{i=1}^{n}{x_iy_i}-w_{0}\sum_{i=1}^{n}{x_i}-w_{1}\sum_{i=1}^{n}{x_i}^2) \tag6<br>$$<br>然后，我们令 \(\frac{\partial f}{\partial w_{0}}=0\) 以及 \(\frac{\partial f}{\partial w_{1}}=0\)，解得：<br>$$<br>w_{1}=\frac {n\sum_{}^{}{x_iy_i}-\sum_{}^{}{x_i}\sum_{}^{}{y_i}}  {n\sum_{}^{}{x_i}^2-(\sum_{}^{}{x_i})^2}\<br>w_{0}=\frac {\sum_{}^{}{x_i}^2\sum_{}^{}{y_i}-\sum_{}^{}{x_i}\sum_{}^{}{x_iy_i}}  {n\sum_{}^{}{x_i}^2-(\sum_{}^{}{x_i})^2}\tag7<br>$$<br>到目前为止，已经求出了平方损失函数最小时对应的 `w` 参数值，这也就是最佳拟合直线。</p>
+<p>$$<br>\frac{\partial f}{\partial w_{0}}=-2(\sum_{i=1}^{n}{y_i}-nw_{0}-w_{1}\sum_{i=1}^{n}{x_i})\\<br>\frac{\partial f}{\partial w_{1}}=-2(\sum_{i=1}^{n}{x_iy_i}-w_{0}\sum_{i=1}^{n}{x_i}-w_{1}\sum_{i=1}^{n}{x_i}^2) \tag6<br>$$<br>然后，我们令 \(\frac{\partial f}{\partial w_{0}}=0\) 以及 \(\frac{\partial f}{\partial w_{1}}=0\)，解得：<br>$$<br>w_{1}=\frac {n\sum_{}^{}{x_iy_i}-\sum_{}^{}{x_i}\sum_{}^{}{y_i}}  {n\sum_{}^{}{x_i}^2-(\sum_{}^{}{x_i})^2}\\<br>w_{0}=\frac {\sum_{}^{}{x_i}^2\sum_{}^{}{y_i}-\sum_{}^{}{x_i}\sum_{}^{}{x_iy_i}}  {n\sum_{}^{}{x_i}^2-(\sum_{}^{}{x_i})^2}\tag7<br>$$<br>到目前为止，已经求出了平方损失函数最小时对应的 `w` 参数值，这也就是最佳拟合直线。</p>
 <h3 id="线性回归-Python-实现"><a href="#线性回归-Python-实现" class="headerlink" title="线性回归 Python 实现"></a>线性回归 Python 实现</h3><p>我们将公式（7）求解得到 `w` 的过程进行代码实现：</p>
 <figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">w_calculator</span><span class="hljs-params">(x, y)</span>:</span></span><br><span class="line">    n = len(x)</span><br><span class="line">    w1 = (n*sum(x*y) - sum(x)*sum(y))/(n*sum(x*x) - sum(x)*sum(x))</span><br><span class="line">    w0 = (sum(x*x)*sum(y) - sum(x)*sum(x*y))/(n*sum(x*x)-sum(x)*sum(x))</span><br><span class="line">    <span class="hljs-keyword">return</span> w0, w1</span><br></pre></td></tr></table></figure>
 <p>于是，可以向函数 <code>w_calculator(x, y)</code> 中传入 <code>x</code> 和 <code>y</code> 得到 `w_0` 和 `w_1` 的值。</p>
@@ -445,7 +445,7 @@ var _hmt = _hmt || [];
         </nav>
         <div class="level">
             <a class="level-item button is-link is-rounded" href="http://github.com/laugh12321">
-                关注我</a>
+                follow</a>
         </div>
         
         
@@ -1513,7 +1513,7 @@ document.addEventListener('DOMContentLoaded', function () {
 </script>
 <script src="/js/insight.js" defer></script>
 <link rel="stylesheet" href="/css/search.css">
-<link rel="stylesheet" href="/css/insight.css">
+<link rel="stylesheet" href="/css/insight.css"><!-- hexo-inject:begin --><!-- hexo-inject:end -->
     
 </body>
 </html>

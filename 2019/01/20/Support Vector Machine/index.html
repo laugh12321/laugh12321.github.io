@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh">
 <head><meta name="generator" content="Hexo 3.8.0">
-    <meta charset="utf-8">
+    <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="utf-8">
 <title>机器学习| 支持向量机详解 (Python 语言描述) - Laugh&#39;s blog</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -31,7 +31,7 @@
 <meta property="og:image" content="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/Support%20vector%20machine/output_08.png">
 <meta property="og:image" content="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/Support%20vector%20machine/output_09.png">
 <meta property="og:image" content="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/Support%20vector%20machine/output_10.png">
-<meta property="og:updated_time" content="2019-01-25T14:05:02.481Z">
+<meta property="og:updated_time" content="2019-01-25T16:25:42.499Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="机器学习| 支持向量机详解 (Python 语言描述)">
 <meta name="twitter:description" content="在前面的文章中，我们对线性分布和非线性分布的数据处理方法进行了简单的介绍和实际的实验操作，当前还有一种机器学习方法，它在解决小样本、非线性及高维模式识别中都表现出了许多独特的优势，在样本量较小的情况，其实际运用效果甚至超过了神经网络，并且其不仅可以应用于线性分布数据，还可以用于非线性分布数据，相比于其他基本机器学习分类算法如逻辑回归、KNN、朴素贝叶斯等，其最终效果的表现一般都会优于这些方法。">
@@ -107,10 +107,10 @@ var _hmt = _hmt || [];
     
 
 
-<link rel="stylesheet" href="/css/style.css">
+<link rel="stylesheet" href="/css/style.css"><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 </head>
 <body class="is-3-column">
-    <nav class="navbar navbar-main">
+    <!-- hexo-inject:begin --><!-- hexo-inject:end --><nav class="navbar navbar-main">
     <div class="container">
         <div class="navbar-brand is-flex-center">
             <a class="navbar-item navbar-logo" href="/">
@@ -182,7 +182,7 @@ var _hmt = _hmt || [];
                 <span class="level-item has-text-grey">
                     
                     
-                    39 分钟 读完 (大约 5851 个字)
+                    39 分钟 读完 (大约 5881 个字)
                 </span>
                 
             </div>
@@ -200,7 +200,9 @@ var _hmt = _hmt || [];
 <p><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/Support%20vector%20machine/1.png" alt=""></p>
 <p>逻辑回归是一种简单高效的线性分类方法。而在这里中，我们将接触到另一种针对线性可分数据进行分类的思路，并把这种方法称之为支持向量机（英语：Support vector machine，简称：SVM）。</p>
 <p>如果你第一次接触支持向量机这个名字，可能会感觉读起来比较拗口。至少我当时初次接触支持向量机时，完全不知道为什么会有这样一个怪异的名字。假如你和当时的我一样，那么当你看完下面这段介绍内容后，就应该会对支持向量机这个名词有更深刻的认识了。</p>
-<h3 id="支持向量机分类特点"><a href="#支持向量机分类特点" class="headerlink" title="支持向量机分类特点"></a>支持向量机分类特点</h3><p>假设给定一个训练数据集 \(T=\lbrace(x_1,y_1),(x_2,y_2),\cdots ,(x_n,y_n)\rbrace\) 。同时，假定已经找到样本空间中的分割平面，其划分公式可以通过以下线性方程来描述：<br>$$<br>wx+b=0\tag{1}<br>$$<br>使用一条直线对线性可分数据集进行分类的过程中，我们已经知道这样的直线可能有很多条：</p>
+<h3 id="支持向量机分类特点"><a href="#支持向量机分类特点" class="headerlink" title="支持向量机分类特点"></a>支持向量机分类特点</h3><p>假设给定一个训练数据集 $T=\lbrace(x_1,y_1),(x_2,y_2),\cdots ,(x_n,y_n)\rbrace$ 。同时，假定已经找到样本空间中的分割平面，其划分公式可以通过以下线性方程来描述：</p>
+<p>$$<br>wx+b=0\tag{1}<br>$$</p>
+<p>使用一条直线对线性可分数据集进行分类的过程中，我们已经知道这样的直线可能有很多条：</p>
 <p><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/Support%20vector%20machine/4.png" alt=""></p>
 <p>问题来了！<strong>哪一条直线是最优的划分方法呢？</strong></p>
 <p>在逻辑回归中，我们引入了 S 形曲线和对数损失函数进行优化求解。如今，支持向量机给了一种从几何学上更加直观的方法进行求解，如下图所示：</p>
@@ -231,7 +233,7 @@ var _hmt = _hmt || [];
 <p>我们通常使用拉格朗日乘子法来求解最优化问题，将原始问题转化为对偶问题，通过解对偶问题得到原始问题的解。对公式（3）使用拉格朗日乘子法可得到其「对偶问题」。具体来说，对每条约束添加拉格朗日乘子 \(\alpha_i \geq 0\)，则该问题的拉格朗日函数可写为：<br>$$<br>L(w,b,\alpha)=\frac{1}{2}\left | w\right |^2+\sum\limits_{i=1}^{m}\alpha_i(1-y_i(wx_i+b)) \tag{4}<br>$$<br>我们通过将公式（4）分别对 \(w\) 和 `b` 求偏导为 <code>0</code> 并代入原式中，可以将 `w` 和 `b` 消去，得到公式（3）的对偶问题：<br>$$<br>\max\limits_{\alpha} \sum\limits_{i=1}^{N}\alpha_i-\frac{1}{2}\sum\limits_{i=1}^{N}\sum\limits_{j=1}^{N}\alpha_i \alpha_j y_i y_j x_i x_j \tag{5a}<br>$$</p>
 <p>$$<br>s.t. \sum\limits_{i=1}^{N}\alpha_i y_i=0,\tag{5b}<br>$$</p>
 <p>$$<br>\alpha_i \geq 0,i=1,2,\cdots,N  \tag{5c}<br>$$</p>
-<p>解出最优解 \(\alpha^<em>=(\alpha_1^</em>,\alpha_2^<em>,…,\alpha_N^</em>)\) 后，基于此我们可以求得最优解 \(w^<em>\), \(b^</em>\)，由此得到分离超平面：</p>
+<p>解出最优解 $\alpha^<em>=(\alpha_1^</em>,\alpha_2^<em>,…,\alpha_N^</em>)$ 后，基于此我们可以求得最优解 \(w^<em>\), \(b^</em>\)，由此得到分离超平面：</p>
 <p>$$<br>w^<em>x+b^</em>=0  \tag{6}<br>$$</p>
 <p>使用符号函数求得正负类之间的分类决策函数为：</p>
 <p>$$<br>f(x)=sign(w^<em>x+b^</em>) \tag{7}<br>$$</p>
@@ -245,7 +247,14 @@ var _hmt = _hmt || [];
 <p>$$<br>\max\limits_{\alpha}  \frac{1}{2}\sum\limits_{i=1}^{N}\sum\limits_{j=1}^{N}\alpha_i\alpha_jy_iy_j(x_i*x_j)-\sum\limits_{i=1}^{N}\alpha_i \tag{11a}<br>$$</p>
 <p>$$<br>s.t. \sum\limits_{i=1}^{N}\alpha_iy_i=0 \tag{11b}<br>$$</p>
 <p>$$<br>0 \leq \alpha_i \leq C ,i=1,2,…,N\tag{11c}<br>$$</p>
-<p>解出最优解 $$\alpha^<em>=(\alpha_1^</em>,\alpha_2^<em>,…,\alpha_N^</em>)$$ 后，基于此我们可以求得最优解 $$w^<em>$$, `b^</em>`，由此得到分离超平面：<br>$$<br>w^<em>x+b^</em>=0  \tag{12}<br>$$<br>使用符号函数求得正负类之间的分类决策函数为：<br>$$<br>f(x)=sign(w^<em>x+b^</em>) \tag{13}<br>$$</p>
+<p>解出最优解 `{\alpha^<em>=(\alpha_1^</em>,\alpha_2^<em>,…,\alpha_N^</em>)}` 后，基于此我们可以求得最优解 \(w^{<em>}\), `b^</em>`，由此得到分离超平面：</p>
+<p>$$<br>w^{<em>}x+b^{</em>}=0  \tag{12}<br>$$</p>
+<math xmlns="http://www.w3.org/1998/Math/MathML"><mi>w</mi><mn><em></em></mn><mo>+</mo><mi>b&lt;\mi&gt;<mn>&lt;\mn&gt;<mo>=&lt;\mo&gt;  \tag{12}</mo></mn></mi></math>
+
+<p>When<math xmlns="http://www.w3.org/1998/Math/MathML"><mi>a</mi><mo>&#x2260;</mo><mn>0</mn></math>, there are two solutions to <math xmlns="http://www.w3.org/1998/Math/MathML"><msup><mi>w</mi><mn><em></em></mn></msup><mi>x</mi><mo>+</mo><msup><mi>b</mi><mn></mn></msup><mo>=</mo><mn>0</mn><mn>\tag{12}&lt;\mn&gt; </mn></math> and they are</p>
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mi>x</mi> <mo>=</mo><mrow><mfrac><mrow><mo>&#x2212;</mo><mi>b</mi><mo>&#x00B1;</mo><msqrt><msup><mi>b</mi><mn>*</mn></msup><mo>&#x2212;</mo><mn>4</mn><mi>a</mi><mi>c</mi></msqrt></mrow><mrow> <mn>2</mn><mi>a</mi> </mrow></mfrac></mrow><mtext>.</mtext></math>
+
+<p>使用符号函数求得正负类之间的分类决策函数为：<br>$$<br>f(x)=sign(w^<em>x+b^</em>) \tag{13}<br>$$</p>
 <h3 id="线性支持向量机分类实现"><a href="#线性支持向量机分类实现" class="headerlink" title="线性支持向量机分类实现"></a>线性支持向量机分类实现</h3><p>上面，我们对硬间隔和软间隔支持向量机的求解过程进行了推演，推导过程比较复杂不需要完全掌握，但至少要知道硬间隔和软间隔区别。接下来，我们就使用 Python 对支持向量机找寻最大间隔的过程进行实战。由于支持向量机纯 Python 实现太过复杂，所以本次直接使用 scikit-learn 完成。</p>
 <p>scikit-learn 中的支持向量机分类器对应的类及参数为：</p>
 <figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sklearn.svm.SVC(C=<span class="hljs-number">1.0</span>, kernel=<span class="hljs-string">'rbf'</span>, degree=<span class="hljs-number">3</span>, gamma=<span class="hljs-string">'auto'</span>, coef0=<span class="hljs-number">0.0</span>, shrinking=<span class="hljs-keyword">True</span>, probability=<span class="hljs-keyword">False</span>, tol=<span class="hljs-number">0.001</span>, cache_size=<span class="hljs-number">200</span>, class_weight=<span class="hljs-keyword">None</span>, verbose=<span class="hljs-keyword">False</span>, max_iter=<span class="hljs-number">-1</span>, decision_function_shape=<span class="hljs-string">'ovr'</span>, random_state=<span class="hljs-keyword">None</span>)</span><br></pre></td></tr></table></figure>
@@ -503,7 +512,7 @@ var _hmt = _hmt || [];
         </nav>
         <div class="level">
             <a class="level-item button is-link is-rounded" href="http://github.com/laugh12321">
-                关注我</a>
+                follow</a>
         </div>
         
         
@@ -1571,7 +1580,7 @@ document.addEventListener('DOMContentLoaded', function () {
 </script>
 <script src="/js/insight.js" defer></script>
 <link rel="stylesheet" href="/css/search.css">
-<link rel="stylesheet" href="/css/insight.css">
+<link rel="stylesheet" href="/css/insight.css"><!-- hexo-inject:begin --><!-- hexo-inject:end -->
     
 </body>
 </html>
