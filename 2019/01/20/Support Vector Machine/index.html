@@ -5,23 +5,6 @@
 <title>机器学习| 支持向量机详解 (Python 语言描述) - Laugh&#39;s blog</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-<script>(function(i,s,o,g,r,a,m){i["DaoVoiceObject"]=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;a.charset="utf-8";m.parentNode.insertBefore(a,m)})(window,document,"script",('https:' == document.location.protocol ? 'https:' : 'http:') + "//widget.daovoice.io/widget/f2535dba.js","daovoice")</script>
-
-daovoice('init', {
-  app_id: "f2535dba",
-  user_id: "NO_89757", // 必填: 该用户在您系统上的唯一ID
-  email: "daovoice@example.com", // 选填:  该用户在您系统上的主邮箱
-  name: "道客船长", // 选填: 用户名
-  signed_up: 1449821660 // 选填: 用户的注册时间，用Unix时间戳表示
-});
-daovoice('update');
-
-daovoice('init', {
-  app_id: "f2535dba"
-});
-daovoice('update');
-
-
 
 
     <meta name="description" content="在前面的文章中，我们对线性分布和非线性分布的数据处理方法进行了简单的介绍和实际的实验操作，当前还有一种机器学习方法，它在解决小样本、非线性及高维模式识别中都表现出了许多独特的优势，在样本量较小的情况，其实际运用效果甚至超过了神经网络，并且其不仅可以应用于线性分布数据，还可以用于非线性分布数据，相比于其他基本机器学习分类算法如逻辑回归、KNN、朴素贝叶斯等，其最终效果的表现一般都会优于这些方法。">
@@ -124,8 +107,6 @@ var _hmt = _hmt || [];
     
 
 
-
-
 <link rel="stylesheet" href="/css/style.css"><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 </head>
 <body class="is-3-column">
@@ -221,8 +202,8 @@ var _hmt = _hmt || [];
 <p>逻辑回归是一种简单高效的线性分类方法。而在这里中，我们将接触到另一种针对线性可分数据进行分类的思路，并把这种方法称之为支持向量机（英语：Support vector machine，简称：SVM）。</p>
 <p>如果你第一次接触支持向量机这个名字，可能会感觉读起来比较拗口。至少我当时初次接触支持向量机时，完全不知道为什么会有这样一个怪异的名字。假如你和当时的我一样，那么当你看完下面这段介绍内容后，就应该会对支持向量机这个名词有更深刻的认识了。</p>
 <h3 id="支持向量机分类特点"><a href="#支持向量机分类特点" class="headerlink" title="支持向量机分类特点"></a>支持向量机分类特点</h3><p>假设给定一个训练数据集 \(T=\lbrace(x_1,y_1),(x_2,y_2),\cdots ,(x_n,y_n)\rbrace\) 。同时，假定已经找到样本空间中的分割平面，其划分公式可以通过以下线性方程来描述：</p>
-<script type="math/tex; mode=display">
-wx+b=0\tag{1}</script><p>使用一条直线对线性可分数据集进行分类的过程中，我们已经知道这样的直线可能有很多条：</p>
+<p>$$<br>wx+b=0\tag{1}<br>$$</p>
+<p>使用一条直线对线性可分数据集进行分类的过程中，我们已经知道这样的直线可能有很多条：</p>
 <p><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/Support%20vector%20machine/4.png" alt=""></p>
 <p>问题来了！<strong>哪一条直线是最优的划分方法呢？</strong></p>
 <p>在逻辑回归中，我们引入了 S 形曲线和对数损失函数进行优化求解。如今，支持向量机给了一种从几何学上更加直观的方法进行求解，如下图所示：</p>
@@ -246,41 +227,28 @@ wx+b=0\tag{1}</script><p>使用一条直线对线性可分数据集进行分类�
 <h3 id="硬间隔表示及求解"><a href="#硬间隔表示及求解" class="headerlink" title="硬间隔表示及求解"></a>硬间隔表示及求解</h3><p>我们已经知道支持向量机是根据最大间隔来划分，下面考虑如何求得一个几何间隔最大的分割线。</p>
 <p>对于线性可分数据而言，几何间隔最大的分离超平面是唯一的，这里的间隔也被我们称之为「硬间隔」，而间隔最大化也就称为硬间隔最大化。上图实际上就是硬间隔的典型例子。</p>
 <p>最大间隔分离超平面，我们希望最大化超平面 \((w,b)\) 关于训练数据集的几何间隔 \(\gamma\)，满足以下约束条件：每个训练样本点到超平面 \((w,b)\) 的几何间隔至少都是 \(\gamma\) ，因此可以转化为以下的约束最优化问题： </p>
-<script type="math/tex; mode=display">
-\max\limits_{w,b}\gamma =\frac{2}{\left \|w\right \|} \tag{2a}</script><script type="math/tex; mode=display">
-\begin{equation}
-\textrm s.t. y_i(\frac{w}{\left \|w\right \|}x_i+\frac{b}{\left \|w\right \|})\geq \frac{\gamma}{2} \tag{2b}
-\end{equation}</script><p>实际上，\(\gamma\) 的取值并不会影响最优化问题的解，同时，我们根据数学对偶性原则，可以得到面向硬间隔的线性可分数据的支持向量机的最优化问题：</p>
-<script type="math/tex; mode=display">
-\min\limits_{w,b}\frac{1}{2}\left \|w\right \|^2 \tag{3a}</script><script type="math/tex; mode=display">
-\begin{equation}
-\textrm s.t. y_i(wx_i+b)-1\geq 0\tag{3b}
-\end{equation}</script><p>我们通常使用拉格朗日乘子法来求解最优化问题，将原始问题转化为对偶问题，通过解对偶问题得到原始问题的解。对公式（3）使用拉格朗日乘子法可得到其「对偶问题」。具体来说，对每条约束添加拉格朗日乘子 \(\alpha_i \geq 0\)，则该问题的拉格朗日函数可写为：</p>
-<script type="math/tex; mode=display">
-L(w,b,\alpha)=\frac{1}{2}\left \| w\right \|^2+\sum\limits_{i=1}^{m}\alpha_i(1-y_i(wx_i+b)) \tag{4}</script><p>我们通过将公式（4）分别对 \(w\) 和 `b` 求偏导为 <code>0</code> 并代入原式中，可以将 `w` 和 `b` 消去，得到公式（3）的对偶问题：</p>
-<script type="math/tex; mode=display">
-\max\limits_{\alpha} \sum\limits_{i=1}^{N}\alpha_i-\frac{1}{2}\sum\limits_{i=1}^{N}\sum\limits_{j=1}^{N}\alpha_i \alpha_j y_i y_j x_i x_j \tag{5a}</script><script type="math/tex; mode=display">
-s.t. \sum\limits_{i=1}^{N}\alpha_i y_i=0,\tag{5b}</script><script type="math/tex; mode=display">
-\alpha_i \geq 0,i=1,2,\cdots,N  \tag{5c}</script><p>解出最优解 \(\alpha^*=(\alpha_1^*,\alpha_2^*,…,\alpha_N^*)\) 后，基于此我们可以求得最优解 \(w^*\), \(b^*\)，由此得到分离超平面：</p>
+<p>$$<br>\max\limits_{w,b}\gamma =\frac{2}{\left |w\right |} \tag{2a}<br>$$</p>
+<p>$$<br>\begin{equation}<br>\textrm s.t. y_i(\frac{w}{\left |w\right |}x_i+\frac{b}{\left |w\right |})\geq \frac{\gamma}{2} \tag{2b}<br>\end{equation}<br>$$</p>
+<p>实际上，\(\gamma\) 的取值并不会影响最优化问题的解，同时，我们根据数学对偶性原则，可以得到面向硬间隔的线性可分数据的支持向量机的最优化问题：<br>$$<br>\min\limits_{w,b}\frac{1}{2}\left |w\right |^2 \tag{3a}<br>$$</p>
+<p>$$<br>\begin{equation}<br>\textrm s.t. y_i(wx_i+b)-1\geq 0\tag{3b}<br>\end{equation}<br>$$</p>
+<p>我们通常使用拉格朗日乘子法来求解最优化问题，将原始问题转化为对偶问题，通过解对偶问题得到原始问题的解。对公式（3）使用拉格朗日乘子法可得到其「对偶问题」。具体来说，对每条约束添加拉格朗日乘子 \(\alpha_i \geq 0\)，则该问题的拉格朗日函数可写为：<br>$$<br>L(w,b,\alpha)=\frac{1}{2}\left | w\right |^2+\sum\limits_{i=1}^{m}\alpha_i(1-y_i(wx_i+b)) \tag{4}<br>$$<br>我们通过将公式（4）分别对 \(w\) 和 `b` 求偏导为 <code>0</code> 并代入原式中，可以将 `w` 和 `b` 消去，得到公式（3）的对偶问题：<br>$$<br>\max\limits_{\alpha} \sum\limits_{i=1}^{N}\alpha_i-\frac{1}{2}\sum\limits_{i=1}^{N}\sum\limits_{j=1}^{N}\alpha_i \alpha_j y_i y_j x_i x_j \tag{5a}<br>$$</p>
+<p>$$<br>s.t. \sum\limits_{i=1}^{N}\alpha_i y_i=0,\tag{5b}<br>$$</p>
+<p>$$<br>\alpha_i \geq 0,i=1,2,\cdots,N  \tag{5c}<br>$$</p>
+<p>解出最优解 \(\alpha^*=(\alpha_1^*,\alpha_2^*,…,\alpha_N^*)\) 后，基于此我们可以求得最优解 \(w^*\), \(b^*\)，由此得到分离超平面：</p>
 <p>\(<br>w^*x+b^*=0  \tag{6}<br>\)</p>
 <p>使用符号函数求得正负类之间的分类决策函数为：</p>
 <p>\(<br>f(x)=sign(w^*x+b^*) \tag{7}<br>\)</p>
 <h3 id="软间隔表示及求解"><a href="#软间隔表示及求解" class="headerlink" title="软间隔表示及求解"></a>软间隔表示及求解</h3><p>上面，我们介绍了线性可分条件下的最大硬间隔的推导求解方法。在很多时候，我们还会遇到下面这种情况。你可以发现，在实心点和空心点中各混入了零星的不同类别的数据点。对于这种情况，数据集就变成了严格意义上的线性不可分。但是，造成这种线性不可分的原因往往是因为包含「噪声」数据，它同样可以被看作是不严格条件下的线性可分。</p>
 <p>当我们使用支持向量机求解这类问题时，就会把最大间隔称之为最大「软间隔」，而软间隔就意味着可以容许零星噪声数据被误分类。</p>
 <p><img width="300px" style="border:2px dashed #000000;" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/Support%20vector%20machine/3.png"></p>
-<p>当出现上图所示的样本点不是严格线性可分的情况时，某些样本点 \((x_i,y_i)\) 就不能满足函数间隔 \(\geqslant 1\) 的约束条件，即公式（3b）中的约束条件。为了解决这个问题，可以对每个样本点 \((x_i,y_i)\) 引入一个松弛变量 \(\xi_i \geq 0\)，使得函数间隔加上松弛变量 \(\geqslant 1\)，即约束条件转化为：</p>
-<script type="math/tex; mode=display">
-y_i(wx_i+b) \geq 1-\xi_i \tag{8}</script><p>同时，对每个松弛变量 \(\xi_i\) 支付一个代价 \(\xi_i\)，目标函数由原来的 \(\frac{1}{2}||w||^2\) 变成：</p>
-<script type="math/tex; mode=display">
-\frac{1}{2}\left \| w \right \|^2+C\sum\limits_{j=1}^{N}\xi_i \tag{9}</script><p>这里，`C&gt;0` 称为惩罚参数，一般根据实际情况确定。`C` 值越大对误分类的惩罚增大，最优化问题即为：</p>
-<script type="math/tex; mode=display">
-\min\limits_{w,b,\xi} \frac{1}{2}\left \| w \right \|^2+C\sum\limits_{i=1}^{N}\xi_i \tag{10a}</script><script type="math/tex; mode=display">
-s.t. y_i(wx_i+b) \geq 1-\xi_i,i=1,2,...,N \tag{10b}</script><script type="math/tex; mode=display">
-\xi_i\geq 0,i=1,2,...,N \tag{10c}</script><p>这就是软间隔支持向量机的表示过程。同理，我们可以使用拉格朗日乘子法将其转换为对偶问题求解：</p>
-<script type="math/tex; mode=display">
-\max\limits_{\alpha}  \frac{1}{2}\sum\limits_{i=1}^{N}\sum\limits_{j=1}^{N}\alpha_i\alpha_jy_iy_j(x_i*x_j)-\sum\limits_{i=1}^{N}\alpha_i \tag{11a}</script><script type="math/tex; mode=display">
-s.t. \sum\limits_{i=1}^{N}\alpha_iy_i=0 \tag{11b}</script><script type="math/tex; mode=display">
-0 \leq \alpha_i \leq C ,i=1,2,...,N\tag{11c}</script><p>解出最优解 \(\alpha^*=(\alpha_1^*,\alpha_2^*,…,\alpha_N^*)\) 后，基于此我们可以求得最优解 \(w^*\), \(b^*\)，由此得到分离超平面：</p>
+<p>当出现上图所示的样本点不是严格线性可分的情况时，某些样本点 \((x_i,y_i)\) 就不能满足函数间隔 \(\geqslant 1\) 的约束条件，即公式（3b）中的约束条件。为了解决这个问题，可以对每个样本点 \((x_i,y_i)\) 引入一个松弛变量 \(\xi_i \geq 0\)，使得函数间隔加上松弛变量 \(\geqslant 1\)，即约束条件转化为：<br>$$<br>y_i(wx_i+b) \geq 1-\xi_i \tag{8}<br>$$<br>同时，对每个松弛变量 \(\xi_i\) 支付一个代价 \(\xi_i\)，目标函数由原来的 \(\frac{1}{2}||w||^2\) 变成：<br>$$<br>\frac{1}{2}\left | w \right |^2+C\sum\limits_{j=1}^{N}\xi_i \tag{9}<br>$$<br>这里，`C&gt;0` 称为惩罚参数，一般根据实际情况确定。`C` 值越大对误分类的惩罚增大，最优化问题即为：<br>$$<br>\min\limits_{w,b,\xi} \frac{1}{2}\left | w \right |^2+C\sum\limits_{i=1}^{N}\xi_i \tag{10a}<br>$$</p>
+<p>$$<br>s.t. y_i(wx_i+b) \geq 1-\xi_i,i=1,2,…,N \tag{10b}<br>$$</p>
+<p>$$<br>\xi_i\geq 0,i=1,2,…,N \tag{10c}<br>$$</p>
+<p>这就是软间隔支持向量机的表示过程。同理，我们可以使用拉格朗日乘子法将其转换为对偶问题求解：</p>
+<p>$$<br>\max\limits_{\alpha}  \frac{1}{2}\sum\limits_{i=1}^{N}\sum\limits_{j=1}^{N}\alpha_i\alpha_jy_iy_j(x_i*x_j)-\sum\limits_{i=1}^{N}\alpha_i \tag{11a}<br>$$</p>
+<p>$$<br>s.t. \sum\limits_{i=1}^{N}\alpha_iy_i=0 \tag{11b}<br>$$</p>
+<p>$$<br>0 \leq \alpha_i \leq C ,i=1,2,…,N\tag{11c}<br>$$</p>
+<p>解出最优解 \(\alpha^*=(\alpha_1^*,\alpha_2^*,…,\alpha_N^*)\) 后，基于此我们可以求得最优解 \(w^*\), \(b^*\)，由此得到分离超平面：</p>
 <p>\(<br>w^*x+b^*=0  \tag{12}<br>\)</p>
 <p>使用符号函数求得正负类之间的分类决策函数为：<br>\(<br>f(x)=sign(w^*x+b^*) \tag{13}<br>\)</p>
 <h3 id="线性支持向量机分类实现"><a href="#线性支持向量机分类实现" class="headerlink" title="线性支持向量机分类实现"></a>线性支持向量机分类实现</h3><p>上面，我们对硬间隔和软间隔支持向量机的求解过程进行了推演，推导过程比较复杂不需要完全掌握，但至少要知道硬间隔和软间隔区别。接下来，我们就使用 Python 对支持向量机找寻最大间隔的过程进行实战。由于支持向量机纯 Python 实现太过复杂，所以本次直接使用 scikit-learn 完成。</p>
@@ -331,29 +299,23 @@ s.t. \sum\limits_{i=1}^{N}\alpha_iy_i=0 \tag{11b}</script><script type="math/tex
 <p>对于「映射」过程，我们还可以这样理解：分布在二维桌面上的红蓝小球无法被线性分开，此时将手掌拍向桌面（好疼），小球在力的作用下跳跃到三维空间中，这也就是一个直观的映射过程。</p>
 <p>同时，「映射」的过程也就是通过核函数转换的过程。这里需要补充说明一点，那就是将数据点从低维度空间转换到高维度空间的方法有很多，但往往涉及到庞大的计算量，而数学家们从中发现了几种特殊的函数，这类函数能大大降低计算的复杂度，于是被命名为「核函数」。也就是说，核技巧是一种特殊的「映射」技巧，而核函数是核技巧的实现方法。</p>
 <p>下面，我们就认识几种常见的核函数：</p>
-<h4 id="线性核函数"><a href="#线性核函数" class="headerlink" title="线性核函数"></a>线性核函数</h4><script type="math/tex; mode=display">
-k\left ( x_i, x_j \right )=x_i*x_j \tag{14}</script><h4 id="多项式核函数"><a href="#多项式核函数" class="headerlink" title="多项式核函数"></a>多项式核函数</h4><script type="math/tex; mode=display">
-k\left ( x_i, x_j \right )=\left ( x_i*x_j \right )^d, d \geq 1 \tag{15}</script><h4 id="高斯径向基核函数"><a href="#高斯径向基核函数" class="headerlink" title="高斯径向基核函数"></a>高斯径向基核函数</h4><script type="math/tex; mode=display">
-k\left ( x_i, x_j \right ) = \exp \left(-{\frac  {\left \|{\mathbf  {x_i}}-{\mathbf  {x_j}}\right \|_{2}^{2}}{2\sigma ^{2}}}\right)=exp\left ( -\gamma * \left \| x_i-x_j \right \|_{2} ^2 \right ), \gamma>0 \tag{16}</script><h4 id="Sigmoid-核函数"><a href="#Sigmoid-核函数" class="headerlink" title="Sigmoid 核函数"></a>Sigmoid 核函数</h4><script type="math/tex; mode=display">
-k\left ( x_i, x_j \right )=tanh\left ( \beta * x_ix_j+\theta \right ), \beta > 0 , \theta < 0 \tag{17}</script><p>这 <code>4</code> 个核函数也就分别对应着上文介绍 <code>sklearn</code> 中 <code>SVC</code> 方法中 <code>kernel</code> 参数的 <code>linear, poly, rbf, sigmoid</code> 等 <code>4</code> 种不同取值。</p>
+<h4 id="线性核函数"><a href="#线性核函数" class="headerlink" title="线性核函数"></a>线性核函数</h4><p>$$<br>k\left ( x_i, x_j \right )=x_i*x_j \tag{14}<br>$$</p>
+<h4 id="多项式核函数"><a href="#多项式核函数" class="headerlink" title="多项式核函数"></a>多项式核函数</h4><p>$$<br>k\left ( x_i, x_j \right )=\left ( x_i*x_j \right )^d, d \geq 1 \tag{15}<br>$$</p>
+<h4 id="高斯径向基核函数"><a href="#高斯径向基核函数" class="headerlink" title="高斯径向基核函数"></a>高斯径向基核函数</h4><p>$$<br>k\left ( x_i, x_j \right ) = \exp \left(-{\frac  {\left |{\mathbf  {x_i}}-{\mathbf  {x_j}}\right |_{2}^{2}}{2\sigma ^{2}}}\right)=exp\left ( -\gamma * \left | x_i-x_j \right |_{2} ^2 \right ), \gamma&gt;0 \tag{16}<br>$$</p>
+<h4 id="Sigmoid-核函数"><a href="#Sigmoid-核函数" class="headerlink" title="Sigmoid 核函数"></a>Sigmoid 核函数</h4><p>$$<br>k\left ( x_i, x_j \right )=tanh\left ( \beta * x_ix_j+\theta \right ), \beta &gt; 0 , \theta &lt; 0 \tag{17}<br>$$</p>
+<p>这 <code>4</code> 个核函数也就分别对应着上文介绍 <code>sklearn</code> 中 <code>SVC</code> 方法中 <code>kernel</code> 参数的 <code>linear, poly, rbf, sigmoid</code> 等 <code>4</code> 种不同取值。</p>
 <p>此外，核函数还可以通过函数组合得到，例如：</p>
-<p>若 `k_1` 和 `k_2` 是核函数，那么对于任意正数 `\lambda_1,\lambda_2`，其线性组合：</p>
-<script type="math/tex; mode=display">
-\lambda_1 k_1+\lambda_2 k_2 \tag{18}</script><h3 id="引入核函数的间隔表示及求解"><a href="#引入核函数的间隔表示及求解" class="headerlink" title="引入核函数的间隔表示及求解"></a>引入核函数的间隔表示及求解</h3><p>我们通过直接引入核函数 `k(x_i,x_j)`，而不需要显式的定义高维特征空间和映射函数，就可以利用解线性分类问题的方法来求解非线性分类问题的支持向量机。引入核函数以后，对偶问题就变为：</p>
-<script type="math/tex; mode=display">
-\max\limits_{\alpha}  \frac{1}{2}\sum\limits_{i=1}^{N}\sum\limits_{j=1}^{N}\alpha_i\alpha_jy_iy_jk(x_i*x_j)-\sum\limits_{i=1}^{N}\alpha_i \tag{19a}</script><script type="math/tex; mode=display">
-s.t. \sum\limits_{i=1}^{N}\alpha_iy_i=0 \tag{19b}</script><script type="math/tex; mode=display">
-0 \leq \alpha_i \leq C ,i=1,2,...,N \tag{19c}</script><p>同样，解出最优解 \(\alpha^*=(\alpha_1^*,\alpha_2^*,…,\alpha_N^*)\) 后，基于此我们可以求得最优解 \(w^*\), \(b^*\)，由此得到分离超平面：</p>
-<script type="math/tex; mode=display">
-w^\*x+b^\*=0  \tag{20}</script><p>使用符号函数求得正负类之间的分类决策函数为：</p>
-<script type="math/tex; mode=display">
-f(x)=sign(w^\*x+b^\*) \tag{21}</script><h3 id="非线性支持向量机分类实现"><a href="#非线性支持向量机分类实现" class="headerlink" title="非线性支持向量机分类实现"></a>非线性支持向量机分类实现</h3><p>同样，我们使用 scikit-learn 中提供的 SVC 类来构建非线性支持向量机模型，并绘制决策边界。</p>
+<p>若 `k_1` 和 `k_2` 是核函数，那么对于任意正数 `\lambda_1,\lambda_2`，其线性组合：<br>$$<br>\lambda_1 k_1+\lambda_2 k_2 \tag{18}<br>$$</p>
+<h3 id="引入核函数的间隔表示及求解"><a href="#引入核函数的间隔表示及求解" class="headerlink" title="引入核函数的间隔表示及求解"></a>引入核函数的间隔表示及求解</h3><p>我们通过直接引入核函数 `k(x_i,x_j)`，而不需要显式的定义高维特征空间和映射函数，就可以利用解线性分类问题的方法来求解非线性分类问题的支持向量机。引入核函数以后，对偶问题就变为：<br>$$<br>\max\limits_{\alpha}  \frac{1}{2}\sum\limits_{i=1}^{N}\sum\limits_{j=1}^{N}\alpha_i\alpha_jy_iy_jk(x_i*x_j)-\sum\limits_{i=1}^{N}\alpha_i \tag{19a}<br>$$</p>
+<p>$$<br>s.t. \sum\limits_{i=1}^{N}\alpha_iy_i=0 \tag{19b}<br>$$</p>
+<p>$$<br>0 \leq \alpha_i \leq C ,i=1,2,…,N \tag{19c}<br>$$</p>
+<p>同样，解出最优解 \(\alpha^*=(\alpha_1^*,\alpha_2^*,…,\alpha_N^*)\) 后，基于此我们可以求得最优解 \(w^*\), \(b^*\)，由此得到分离超平面：<br>$$<br>w^*x+b^*=0  \tag{20}<br>$$<br>使用符号函数求得正负类之间的分类决策函数为：<br>$$<br>f(x)=sign(w^*x+b^*) \tag{21}<br>$$</p>
+<h3 id="非线性支持向量机分类实现"><a href="#非线性支持向量机分类实现" class="headerlink" title="非线性支持向量机分类实现"></a>非线性支持向量机分类实现</h3><p>同样，我们使用 scikit-learn 中提供的 SVC 类来构建非线性支持向量机模型，并绘制决策边界。</p>
 <p>首先，实验需要生成一组示例数据。上面我们使用了 <code>make_blobs</code> 生成一组线性可分数据，这里使用 <code>make_circles</code> 生成一组线性不可分数据。</p>
 <figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">x2, y2 = samples_generator.make_circles(<span class="hljs-number">150</span>, factor=<span class="hljs-number">.5</span>, noise=<span class="hljs-number">.1</span>, random_state=<span class="hljs-number">30</span>) <span class="hljs-comment"># 生成示例数据</span></span><br><span class="line"></span><br><span class="line">plt.figure(figsize=(<span class="hljs-number">8</span>, <span class="hljs-number">8</span>)) <span class="hljs-comment"># 绘图</span></span><br><span class="line">plt.scatter(x2[:, <span class="hljs-number">0</span>], x2[:, <span class="hljs-number">1</span>], c=y2, s=<span class="hljs-number">40</span>, cmap=<span class="hljs-string">'bwr'</span>)</span><br></pre></td></tr></table></figure>
 <p><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/Support%20vector%20machine/output_07.png" alt=""></p>
-<p>上图明显是一组线性不可分数据，当我们训练支持向量机模型时就需要引入核技巧。例如，我们这里使用下式做一个简单的非线性映射：</p>
-<script type="math/tex; mode=display">
-k\left ( x_i, x_j \right )=x_i^2 + x_j^2 \tag{22}</script><figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">kernel_function</span><span class="hljs-params">(xi, xj)</span>:</span></span><br><span class="line">    poly = xi**<span class="hljs-number">2</span> + xj**<span class="hljs-number">2</span></span><br><span class="line">    <span class="hljs-keyword">return</span> poly</span><br></pre></td></tr></table></figure>
+<p>上图明显是一组线性不可分数据，当我们训练支持向量机模型时就需要引入核技巧。例如，我们这里使用下式做一个简单的非线性映射：<br>$$<br>k\left ( x_i, x_j \right )=x_i^2 + x_j^2 \tag{22}<br>$$</p>
+<figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">kernel_function</span><span class="hljs-params">(xi, xj)</span>:</span></span><br><span class="line">    poly = xi**<span class="hljs-number">2</span> + xj**<span class="hljs-number">2</span></span><br><span class="line">    <span class="hljs-keyword">return</span> poly</span><br></pre></td></tr></table></figure>
 <figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">from</span> mpl_toolkits <span class="hljs-keyword">import</span> mplot3d</span><br><span class="line"><span class="hljs-keyword">from</span> ipywidgets <span class="hljs-keyword">import</span> interact, fixed</span><br><span class="line"></span><br><span class="line">r = kernel_function(x2[:,<span class="hljs-number">0</span>], x2[:,<span class="hljs-number">1</span>])</span><br><span class="line">plt.figure(figsize=(<span class="hljs-number">10</span>, <span class="hljs-number">8</span>))</span><br><span class="line">ax = plt.subplot(projection=<span class="hljs-string">'3d'</span>)</span><br><span class="line">ax.scatter3D(x2[:, <span class="hljs-number">0</span>], x2[:, <span class="hljs-number">1</span>], r, c=y2, s=<span class="hljs-number">40</span>, cmap=<span class="hljs-string">'bwr'</span>)</span><br><span class="line">ax.set_xlabel(<span class="hljs-string">'x'</span>)</span><br><span class="line">ax.set_ylabel(<span class="hljs-string">'y'</span>)</span><br><span class="line">ax.set_zlabel(<span class="hljs-string">'r'</span>)</span><br></pre></td></tr></table></figure>
 <p><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/Support%20vector%20machine/output_08.png" alt=""></p>
 <p>上面展示了二维空间点映射到效果维空间的效果。接下来，我们使用 sklearn 中 SVC 方法提供的 RBF 高斯径向基核函数完成实验。</p>

@@ -5,23 +5,6 @@
 <title>机器学习| K-近邻算法详解 (Python 语言描述) - Laugh&#39;s blog</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-<script>(function(i,s,o,g,r,a,m){i["DaoVoiceObject"]=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;a.charset="utf-8";m.parentNode.insertBefore(a,m)})(window,document,"script",('https:' == document.location.protocol ? 'https:' : 'http:') + "//widget.daovoice.io/widget/f2535dba.js","daovoice")</script>
-
-daovoice('init', {
-  app_id: "f2535dba",
-  user_id: "NO_89757", // 必填: 该用户在您系统上的唯一ID
-  email: "daovoice@example.com", // 选填:  该用户在您系统上的主邮箱
-  name: "道客船长", // 选填: 用户名
-  signed_up: 1449821660 // 选填: 用户的注册时间，用Unix时间戳表示
-});
-daovoice('update');
-
-daovoice('init', {
-  app_id: "f2535dba"
-});
-daovoice('update');
-
-
 
 
     <meta name="description" content="最近邻算法介绍 K-近邻算法之前，首先说一说最近邻算法。最近邻算法（Nearest Neighbor，简称：NN），其针对未知类别数据 `x`，在训练集中找到与 `x` 最相似的训练样本 `y`，用 `y` 的样本对应的类别作为未知类别数据 `x` 的类别，从而达到分类的效果。">
@@ -112,8 +95,6 @@ var _hmt = _hmt || [];
     
 
     
-
-
 
 
 <link rel="stylesheet" href="/css/style.css"><!-- hexo-inject:begin --><!-- hexo-inject:end -->
@@ -232,8 +213,7 @@ var _hmt = _hmt || [];
 <p>计算距离的方法有很多，本实验介绍两个最为常用的距离公式：<strong>曼哈顿距离</strong>和<strong>欧式距离</strong>。这两个距离的计算图示如下：</p>
 <p><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/K-Nearest%20Neighbors/4.png" alt=""></p>
 <h4 id="曼哈顿距离"><a href="#曼哈顿距离" class="headerlink" title="曼哈顿距离"></a>曼哈顿距离</h4><p>曼哈顿距离又称马氏距离，出租车距离，是计算距离最简单的方式之一。公式如下：</p>
-<script type="math/tex; mode=display">
-d_{man}=\sum_{i=1}^{N}\left | X_{i}-Y_{i} \right |</script><p>其中： </p>
+<p>$$<br>d_{man}=\sum_{i=1}^{N}\left | X_{i}-Y_{i} \right |<br>$$<br>其中： </p>
 <ul>
 <li>`X`,`Y`：两个数据点</li>
 <li>`N`：每个数据中有 `N` 个特征值</li>
@@ -243,8 +223,7 @@ d_{man}=\sum_{i=1}^{N}\left | X_{i}-Y_{i} \right |</script><p>其中： </p>
 <figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-string">"""曼哈顿距离计算</span></span><br><span class="line"><span class="hljs-string">"""</span></span><br><span class="line"><span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">d_man</span><span class="hljs-params">(x, y)</span>:</span></span><br><span class="line">    d = np.sum(np.abs(x - y))</span><br><span class="line">    <span class="hljs-keyword">return</span> d</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">x = np.array([<span class="hljs-number">3.1</span>, <span class="hljs-number">3.2</span>])</span><br><span class="line">print(<span class="hljs-string">"x:"</span>, x)</span><br><span class="line">y = np.array([<span class="hljs-number">2.5</span>, <span class="hljs-number">2.8</span>])</span><br><span class="line">print(<span class="hljs-string">"y:"</span>, y)</span><br><span class="line">d_man = d_man(x, y)</span><br><span class="line">print(d_man)</span><br></pre></td></tr></table></figure>
 <figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">x: [<span class="hljs-number">3.1</span> <span class="hljs-number">3.2</span>]</span><br><span class="line">y: [<span class="hljs-number">2.5</span> <span class="hljs-number">2.8</span>]</span><br><span class="line"><span class="hljs-number">1.0000000000000004</span></span><br></pre></td></tr></table></figure>
 <h4 id="欧式距离"><a href="#欧式距离" class="headerlink" title="欧式距离"></a>欧式距离</h4><p>欧式距离源自 `N` 维欧氏空间中两点之间的距离公式。表达式如下:</p>
-<script type="math/tex; mode=display">
-d_{euc}= \sqrt{\sum_{i=1}^{N}(X_{i}-Y_{i})^{2}}</script><p>其中：</p>
+<p>$$<br>d_{euc}= \sqrt{\sum_{i=1}^{N}(X_{i}-Y_{i})^{2}}<br>$$<br>其中：</p>
 <ul>
 <li>`X`, `Y` ：两个数据点</li>
 <li>`N`：每个数据中有 `N` 个特征值</li>
