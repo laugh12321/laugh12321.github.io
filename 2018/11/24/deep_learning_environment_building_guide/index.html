@@ -5,6 +5,23 @@
 <title>深度学习环境搭建指南 - Laugh&#39;s blog</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
+<script>(function(i,s,o,g,r,a,m){i["DaoVoiceObject"]=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;a.charset="utf-8";m.parentNode.insertBefore(a,m)})(window,document,"script",('https:' == document.location.protocol ? 'https:' : 'http:') + "//widget.daovoice.io/widget/f2535dba.js","daovoice")</script>
+
+daovoice('init', {
+  app_id: "f2535dba",
+  user_id: "NO_89757", // 必填: 该用户在您系统上的唯一ID
+  email: "daovoice@example.com", // 选填:  该用户在您系统上的主邮箱
+  name: "道客船长", // 选填: 用户名
+  signed_up: 1449821660 // 选填: 用户的注册时间，用Unix时间戳表示
+});
+daovoice('update');
+
+daovoice('init', {
+  app_id: "f2535dba"
+});
+daovoice('update');
+
+
 
 
     <meta name="description" content="检查 GPU 是否支持如果你想搭建深度学习环境，那么首先得有一块 NVIDIA GPU。很遗憾，目前 AMD 系列 GPU 对深度学习并不友好。 有了 NVIDIA GPU 之后，首先需要检查其型号是否符合深度学习的最低配置，目前热门的深度学习框架对老旧型号的 NVIDIA GPU 并不支持。其中，判断的原则是 NVIDIA GPU 的计算性能指数（Compute Capability）大于或等于">
@@ -101,6 +118,8 @@ var _hmt = _hmt || [];
     
 
 
+
+
 <link rel="stylesheet" href="/css/style.css"><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 </head>
 <body class="is-3-column">
@@ -151,6 +170,7 @@ var _hmt = _hmt || [];
     </div>
 </nav>
     
+
     <section class="section">
         <div class="container">
             <div class="columns">
