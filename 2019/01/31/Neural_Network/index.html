@@ -53,7 +53,7 @@
 <meta property="og:image" content="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/Neural%20Network/31.png">
 <meta property="og:image" content="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/Neural%20Network/32.png">
 <meta property="og:image" content="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/Neural%20Network/output_239_2.png">
-<meta property="og:updated_time" content="2019-01-31T14:27:03.359Z">
+<meta property="og:updated_time" content="2019-01-31T15:01:11.243Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="机器学习|感知机和人工神经网络详解 (Python 语言描述)">
 <meta name="twitter:description" content="人工神经网络是一种发展时间较早且十分常用的机器学习算法。因其模仿人类神经元工作的特点，在监督学习和非监督学习领域都给予了人工神经网络较高的期望。目前，由传统人工神经网络发展而来的卷积神经网络、循环神经网络已经成为了深度学习的基石。本篇文章中，我们将从人工神经网络的原型感知机出发，介绍机器学习中人工神经网络的特点及应用。">
@@ -266,7 +266,7 @@ var _hmt = _hmt || [];
 <p>$$<br>W \leftarrow   W + \lambda y_ix_i \\<br>b \leftarrow  b + \lambda y_i \tag{11}<br>$$</p>
 <p>同前面的梯度下降一致，\(\lambda\) 为学习率，也就是每次梯度下降的步长。</p>
 <p>下面，我们使用 Python 将上面的随机梯度下降算法进行实现。</p>
-<figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-string">"""感知机随机梯度下降算法实现</span></span><br><span class="line"><span class="hljs-string">"""</span></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">perceptron_sgd</span><span class="hljs-params">(X, Y, alpha, epochs)</span>:</span></span><br><span class="line">    <span class="hljs-string">"""</span></span><br><span class="line"><span class="hljs-string">    参数:</span></span><br><span class="line"><span class="hljs-string">    X -- 自变量数据矩阵</span></span><br><span class="line"><span class="hljs-string">    Y -- 因变量数据矩阵</span></span><br><span class="line"><span class="hljs-string">    alpha -- lamda 参数</span></span><br><span class="line"><span class="hljs-string">    epochs -- 迭代次数</span></span><br><span class="line"><span class="hljs-string"></span></span><br><span class="line"><span class="hljs-string">    返回:</span></span><br><span class="line"><span class="hljs-string">    w -- 权重系数</span></span><br><span class="line"><span class="hljs-string">    b -- 截距项</span></span><br><span class="line"><span class="hljs-string">    """</span></span><br><span class="line">    w = np.zeros(len(X[<span class="hljs-number">0</span>])) <span class="hljs-comment"># 初始化参数为 0</span></span><br><span class="line">    b = np.zeros(<span class="hljs-number">1</span>)</span><br><span class="line">    </span><br><span class="line">    <span class="hljs-keyword">for</span> t <span class="hljs-keyword">in</span> range(epochs): <span class="hljs-comment"># 迭代</span></span><br><span class="line">        <span class="hljs-keyword">for</span> i, x <span class="hljs-keyword">in</span> enumerate(X):</span><br><span class="line">            <span class="hljs-keyword">if</span> ((np.dot(X[i], w)+b)*Y[i]) &lt;= <span class="hljs-number">0</span>: <span class="hljs-comment"># 判断条件</span></span><br><span class="line">                w = w + alpha*X[i]*Y[i] <span class="hljs-comment"># 更新参数</span></span><br><span class="line">                b = b + alpha*Y[i]</span><br><span class="line"></span><br><span class="line">    <span class="hljs-keyword">return</span> w, b</span><br></pre></td></tr></table></figure>
+<figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-string">"""</span></span><br><span class="line"><span class="hljs-string">感知机随机梯度下降算法实现</span></span><br><span class="line"><span class="hljs-string">"""</span></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">perceptron_sgd</span><span class="hljs-params">(X, Y, alpha, epochs)</span>:</span></span><br><span class="line">    <span class="hljs-string">"""</span></span><br><span class="line"><span class="hljs-string">    参数:</span></span><br><span class="line"><span class="hljs-string">    X -- 自变量数据矩阵</span></span><br><span class="line"><span class="hljs-string">    Y -- 因变量数据矩阵</span></span><br><span class="line"><span class="hljs-string">    alpha -- lamda 参数</span></span><br><span class="line"><span class="hljs-string">    epochs -- 迭代次数</span></span><br><span class="line"><span class="hljs-string"></span></span><br><span class="line"><span class="hljs-string">    返回:</span></span><br><span class="line"><span class="hljs-string">    w -- 权重系数</span></span><br><span class="line"><span class="hljs-string">    b -- 截距项</span></span><br><span class="line"><span class="hljs-string">    """</span></span><br><span class="line">    w = np.zeros(len(X[<span class="hljs-number">0</span>])) <span class="hljs-comment"># 初始化参数为 0</span></span><br><span class="line">    b = np.zeros(<span class="hljs-number">1</span>)</span><br><span class="line">    </span><br><span class="line">    <span class="hljs-keyword">for</span> t <span class="hljs-keyword">in</span> range(epochs): <span class="hljs-comment"># 迭代</span></span><br><span class="line">        <span class="hljs-keyword">for</span> i, x <span class="hljs-keyword">in</span> enumerate(X):</span><br><span class="line">            <span class="hljs-keyword">if</span> ((np.dot(X[i], w)+b)*Y[i]) &lt;= <span class="hljs-number">0</span>: <span class="hljs-comment"># 判断条件</span></span><br><span class="line">                w = w + alpha*X[i]*Y[i] <span class="hljs-comment"># 更新参数</span></span><br><span class="line">                b = b + alpha*Y[i]</span><br><span class="line"></span><br><span class="line">    <span class="hljs-keyword">return</span> w, b</span><br></pre></td></tr></table></figure>
 <h3 id="感知机分类实例"><a href="#感知机分类实例" class="headerlink" title="感知机分类实例"></a>感知机分类实例</h3><p>前面的内容中，我们讨论了感知机的计算流程，感知机的损失函数，以及如何使用随机梯度下降求解感知机的参数。理论说了这么多，下面就举一个实际的例子看一看。</p>
 <h4 id="示例数据集"><a href="#示例数据集" class="headerlink" title="示例数据集"></a>示例数据集</h4><p>为了方便绘图到二维平面，这里只使用包含两个特征变量的数据，数据集名称为 <code>course-12-data.csv</code>。</p>
 <blockquote>
@@ -521,6 +521,13 @@ var _hmt = _hmt || [];
 <div class="card card-transparent">
     <div class="level post-navigation is-flex-wrap is-mobile">
         
+        <div class="level-start">
+            <a class="level level-item has-link-grey  article-nav-prev" href="/2019/01/31/Decision_Tree/">
+                <i class="level-item fas fa-chevron-left"></i>
+                <span class="level-item">机器学习|决策树详解 (Python 语言描述)</span>
+            </a>
+        </div>
+        
         
         <div class="level-end">
             <a class="level level-item has-link-grey  article-nav-next" href="/2019/01/24/Seafile_Pro_settings/">
@@ -595,7 +602,7 @@ var _hmt = _hmt || [];
                         文章
                     </p>
                     <p class="title has-text-weight-normal">
-                        15
+                        16
                     </p>
                 </div>
             </div>
@@ -605,7 +612,7 @@ var _hmt = _hmt || [];
                         分类
                     </p>
                     <p class="title has-text-weight-normal">
-                        17
+                        18
                     </p>
                 </div>
             </div>
@@ -615,7 +622,7 @@ var _hmt = _hmt || [];
                         标签
                     </p>
                     <p class="title has-text-weight-normal">
-                        23
+                        24
                     </p>
                 </div>
             </div>
@@ -817,12 +824,20 @@ var _hmt = _hmt || [];
                 <span class="level-item">机器学习</span>
             </span>
             <span class="level-end">
-                <span class="level-item tag">8</span>
+                <span class="level-item tag">9</span>
             </span>
         </a><ul><li>
         <a class="level is-marginless" href="/categories/机器学习/K-近邻算法/">
             <span class="level-start">
                 <span class="level-item">K-近邻算法</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">1</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/机器学习/决策树/">
+            <span class="level-start">
+                <span class="level-item">决策树</span>
             </span>
             <span class="level-end">
                 <span class="level-item tag">1</span>
@@ -887,7 +902,7 @@ var _hmt = _hmt || [];
         <h3 class="menu-label">
             标签云
         </h3>
-        <a href="/tags/Artificial-Neural-Network/" style="font-size: 10px;">Artificial Neural Network</a> <a href="/tags/Blog/" style="font-size: 13.33px;">Blog</a> <a href="/tags/Deep-Learning/" style="font-size: 10px;">Deep Learning</a> <a href="/tags/ECS/" style="font-size: 13.33px;">ECS</a> <a href="/tags/GitHub-Pages/" style="font-size: 13.33px;">GitHub Pages</a> <a href="/tags/Jekyll/" style="font-size: 10px;">Jekyll</a> <a href="/tags/K-Nearest-Neighbors/" style="font-size: 10px;">K-Nearest Neighbors</a> <a href="/tags/Linear-Regression/" style="font-size: 13.33px;">Linear Regression</a> <a href="/tags/MAE/" style="font-size: 10px;">MAE</a> <a href="/tags/MAPE/" style="font-size: 10px;">MAPE</a> <a href="/tags/MSE/" style="font-size: 10px;">MSE</a> <a href="/tags/Machine-Learning/" style="font-size: 20px;">Machine Learning</a> <a href="/tags/Naive-Bayes/" style="font-size: 10px;">Naive Bayes</a> <a href="/tags/Next/" style="font-size: 10px;">Next</a> <a href="/tags/Perceptron/" style="font-size: 10px;">Perceptron</a> <a href="/tags/Polynomial-Regression/" style="font-size: 10px;">Polynomial Regression</a> <a href="/tags/Python/" style="font-size: 16.67px;">Python</a> <a href="/tags/Seafile/" style="font-size: 10px;">Seafile</a> <a href="/tags/Support-Vector-Machine/" style="font-size: 10px;">Support Vector Machine</a> <a href="/tags/Ubuntu/" style="font-size: 13.33px;">Ubuntu</a> <a href="/tags/python/" style="font-size: 13.33px;">python</a> <a href="/tags/排序算法/" style="font-size: 13.33px;">排序算法</a> <a href="/tags/服务器/" style="font-size: 13.33px;">服务器</a>
+        <a href="/tags/Artificial-Neural-Network/" style="font-size: 10px;">Artificial Neural Network</a> <a href="/tags/Blog/" style="font-size: 13.33px;">Blog</a> <a href="/tags/Decision-Tree/" style="font-size: 10px;">Decision Tree</a> <a href="/tags/Deep-Learning/" style="font-size: 10px;">Deep Learning</a> <a href="/tags/ECS/" style="font-size: 13.33px;">ECS</a> <a href="/tags/GitHub-Pages/" style="font-size: 13.33px;">GitHub Pages</a> <a href="/tags/Jekyll/" style="font-size: 10px;">Jekyll</a> <a href="/tags/K-Nearest-Neighbors/" style="font-size: 10px;">K-Nearest Neighbors</a> <a href="/tags/Linear-Regression/" style="font-size: 13.33px;">Linear Regression</a> <a href="/tags/MAE/" style="font-size: 10px;">MAE</a> <a href="/tags/MAPE/" style="font-size: 10px;">MAPE</a> <a href="/tags/MSE/" style="font-size: 10px;">MSE</a> <a href="/tags/Machine-Learning/" style="font-size: 20px;">Machine Learning</a> <a href="/tags/Naive-Bayes/" style="font-size: 10px;">Naive Bayes</a> <a href="/tags/Next/" style="font-size: 10px;">Next</a> <a href="/tags/Perceptron/" style="font-size: 10px;">Perceptron</a> <a href="/tags/Polynomial-Regression/" style="font-size: 10px;">Polynomial Regression</a> <a href="/tags/Python/" style="font-size: 16.67px;">Python</a> <a href="/tags/Seafile/" style="font-size: 10px;">Seafile</a> <a href="/tags/Support-Vector-Machine/" style="font-size: 10px;">Support Vector Machine</a> <a href="/tags/Ubuntu/" style="font-size: 13.33px;">Ubuntu</a> <a href="/tags/python/" style="font-size: 13.33px;">python</a> <a href="/tags/排序算法/" style="font-size: 13.33px;">排序算法</a> <a href="/tags/服务器/" style="font-size: 13.33px;">服务器</a>
     </div>
 </div>
 
@@ -901,6 +916,25 @@ var _hmt = _hmt || [];
         <h3 class="menu-label">
             最新文章
         </h3>
+        
+        <article class="media">
+            
+            <a href="/2019/01/31/Decision_Tree/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://bing.ioliu.cn/photo/HolocaustMemorial_ZH-CN7460471446?force=download" alt="机器学习|决策树详解 (Python 语言描述)">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-01-30T16:00:00.000Z">2019-01-31</time></div>
+                    <a href="/2019/01/31/Decision_Tree/" class="has-link-black-ter is-size-6">机器学习|决策树详解 (Python 语言描述)</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/机器学习/">机器学习</a> / <a class="has-link-grey -link" href="/categories/机器学习/决策树/">决策树</a>
+                    </p>
+                </div>
+            </div>
+        </article>
         
         <article class="media">
             
@@ -978,25 +1012,6 @@ var _hmt = _hmt || [];
             </div>
         </article>
         
-        <article class="media">
-            
-            <a href="/2019/01/19/naive_bayes_basic/" class="media-left">
-                <p class="image is-64x64">
-                    <img class="thumbnail" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/photo/Aralsk%2C%20Kazakhstan.jpg" alt="机器学习| 朴素贝叶斯详解 (Python 语言描述)">
-                </p>
-            </a>
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-01-18T16:00:00.000Z">2019-01-19</time></div>
-                    <a href="/2019/01/19/naive_bayes_basic/" class="has-link-black-ter is-size-6">机器学习| 朴素贝叶斯详解 (Python 语言描述)</a>
-                    <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/机器学习/">机器学习</a> / <a class="has-link-grey -link" href="/categories/机器学习/朴素贝叶斯/">朴素贝叶斯</a>
-                    </p>
-                </div>
-            </div>
-        </article>
-        
     </div>
 </div>
 
@@ -1015,7 +1030,7 @@ var _hmt = _hmt || [];
                     <span class="level-item">一月 2019</span>
                 </span>
                 <span class="level-end">
-                    <span class="level-item tag">9</span>
+                    <span class="level-item tag">10</span>
                 </span>
             </a>
         </li>
@@ -1066,6 +1081,13 @@ var _hmt = _hmt || [];
                     <a class="tags has-addons" href="/tags/Blog/">
                         <span class="tag">Blog</span>
                         <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Decision-Tree/">
+                        <span class="tag">Decision Tree</span>
+                        <span class="tag is-grey">1</span>
                     </a>
                 </div>
                 
@@ -1135,7 +1157,7 @@ var _hmt = _hmt || [];
                 <div class="control">
                     <a class="tags has-addons" href="/tags/Machine-Learning/">
                         <span class="tag">Machine Learning</span>
-                        <span class="tag is-grey">8</span>
+                        <span class="tag is-grey">9</span>
                     </a>
                 </div>
                 
@@ -1170,7 +1192,7 @@ var _hmt = _hmt || [];
                 <div class="control">
                     <a class="tags has-addons" href="/tags/Python/">
                         <span class="tag">Python</span>
-                        <span class="tag is-grey">7</span>
+                        <span class="tag is-grey">8</span>
                     </a>
                 </div>
                 
@@ -1241,6 +1263,25 @@ var _hmt = _hmt || [];
         
         <article class="media">
             
+            <a href="/2019/01/31/Decision_Tree/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://bing.ioliu.cn/photo/HolocaustMemorial_ZH-CN7460471446?force=download" alt="机器学习|决策树详解 (Python 语言描述)">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-01-30T16:00:00.000Z">2019-01-31</time></div>
+                    <a href="/2019/01/31/Decision_Tree/" class="has-link-black-ter is-size-6">机器学习|决策树详解 (Python 语言描述)</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/机器学习/">机器学习</a> / <a class="has-link-grey -link" href="/categories/机器学习/决策树/">决策树</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
             <a href="/2019/01/31/Neural_Network/" class="media-left">
                 <p class="image is-64x64">
                     <img class="thumbnail" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/photo/07.jpg" alt="机器学习|感知机和人工神经网络详解 (Python 语言描述)">
@@ -1315,25 +1356,6 @@ var _hmt = _hmt || [];
             </div>
         </article>
         
-        <article class="media">
-            
-            <a href="/2019/01/19/naive_bayes_basic/" class="media-left">
-                <p class="image is-64x64">
-                    <img class="thumbnail" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/photo/Aralsk%2C%20Kazakhstan.jpg" alt="机器学习| 朴素贝叶斯详解 (Python 语言描述)">
-                </p>
-            </a>
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-01-18T16:00:00.000Z">2019-01-19</time></div>
-                    <a href="/2019/01/19/naive_bayes_basic/" class="has-link-black-ter is-size-6">机器学习| 朴素贝叶斯详解 (Python 语言描述)</a>
-                    <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/机器学习/">机器学习</a> / <a class="has-link-grey -link" href="/categories/机器学习/朴素贝叶斯/">朴素贝叶斯</a>
-                    </p>
-                </div>
-            </div>
-        </article>
-        
     </div>
 </div>
 
@@ -1352,7 +1374,7 @@ var _hmt = _hmt || [];
                     <span class="level-item">一月 2019</span>
                 </span>
                 <span class="level-end">
-                    <span class="level-item tag">9</span>
+                    <span class="level-item tag">10</span>
                 </span>
             </a>
         </li>
@@ -1403,6 +1425,13 @@ var _hmt = _hmt || [];
                     <a class="tags has-addons" href="/tags/Blog/">
                         <span class="tag">Blog</span>
                         <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Decision-Tree/">
+                        <span class="tag">Decision Tree</span>
+                        <span class="tag is-grey">1</span>
                     </a>
                 </div>
                 
@@ -1472,7 +1501,7 @@ var _hmt = _hmt || [];
                 <div class="control">
                     <a class="tags has-addons" href="/tags/Machine-Learning/">
                         <span class="tag">Machine Learning</span>
-                        <span class="tag is-grey">8</span>
+                        <span class="tag is-grey">9</span>
                     </a>
                 </div>
                 
@@ -1507,7 +1536,7 @@ var _hmt = _hmt || [];
                 <div class="control">
                     <a class="tags has-addons" href="/tags/Python/">
                         <span class="tag">Python</span>
-                        <span class="tag is-grey">7</span>
+                        <span class="tag is-grey">8</span>
                     </a>
                 </div>
                 
