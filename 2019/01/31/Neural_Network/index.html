@@ -53,7 +53,7 @@
 <meta property="og:image" content="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/Neural%20Network/31.png">
 <meta property="og:image" content="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/Neural%20Network/32.png">
 <meta property="og:image" content="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/Neural%20Network/output_239_2.png">
-<meta property="og:updated_time" content="2019-01-31T12:57:03.916Z">
+<meta property="og:updated_time" content="2019-01-31T14:02:38.643Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="机器学习|感知机和人工神经网络详解 (Python 语言描述)">
 <meta name="twitter:description" content="人工神经网络是一种发展时间较早且十分常用的机器学习算法。因其模仿人类神经元工作的特点，在监督学习和非监督学习领域都给予了人工神经网络较高的期望。目前，由传统人工神经网络发展而来的卷积神经网络、循环神经网络已经成为了深度学习的基石。本篇文章中，我们将从人工神经网络的原型感知机出发，介绍机器学习中人工神经网络的特点及应用。">
@@ -205,7 +205,7 @@ var _hmt = _hmt || [];
                 <span class="level-item has-text-grey">
                     
                     
-                    1 小时 读完 (大约 8458 个字)
+                    1 小时 读完 (大约 8060 个字)
                 </span>
                 
             </div>
@@ -320,8 +320,8 @@ var _hmt = _hmt || [];
 <figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">L = perceptron_sgd(X, Y, alpha, epochs)</span><br><span class="line">z = np.dot(X, L[<span class="hljs-number">0</span>].T) + L[<span class="hljs-number">1</span>]</span><br><span class="line">accuracy_score(Y, np.sign(z))</span><br></pre></td></tr></table></figure>
 <pre><code>1.0
 </code></pre><p>和损失函数变化曲线得到的结论一致，分类准确率已经 <code>100%</code>，表示全部数据点被正确分类。</p>
-<h2 id="人工神经网络"><a href="#人工神经网络" class="headerlink" title="人工神经网络"></a>人工神经网络</h2><center><video width="800px" controls src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/video/%E3%80%90%E5%AE%98%E6%96%B9%E5%8F%8C%E8%AF%AD%E3%80%91%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E4%B9%8B%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E7%9A%84%E7%BB%93%E6%9E%84%20Part%201%20ver%202.0.flv"></video></center>
-
+<h2 id="人工神经网络"><a href="#人工神经网络" class="headerlink" title="人工神经网络"></a>人工神经网络</h2><p><center><iframe src="//player.bilibili.com/player.html?aid=15532370&cid=25368631&page=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true" height="300px" width="550px"> </iframe></center></p>
+<div style="color: #999;font-size: 12px;text-align: center;">神经网络的结构 | 视频来源：<a href="https://www.bilibili.com/video/av15532370" target="_blank" rel="noopener">3Blue1Brown</a></div>
 
 <p>上面的内容中，我们已经了解到了什么是感知机，以及如何构建一个感知机分类模型。你会发现，感知机只能处理二分类问题，且必须是线性可分问题。如果是这样的话，该方法的局限性就比较大了。那么，面对线性不可分或者多分类问题时，我们有没有一个更好的方法呢？</p>
 <h3 id="多层感知机与人工神经网络"><a href="#多层感知机与人工神经网络" class="headerlink" title="多层感知机与人工神经网络"></a>多层感知机与人工神经网络</h3><p>这里，就要提到本文的主角，也就是人工神经网络（英语：Artificial neural network，简称：ANN）。如果你第一次接触到人工神经网络，不要将其想的太神秘。其实，上面的感知机模型就是一个人工神经网络，只不过它是一个结构简单的单层神经网络。而如果我们要解决线性不可分或者多分类问题，往往会尝试将多个感知机组合在一起，变成一个更复杂的神经网络结构。</p>
@@ -356,126 +356,117 @@ var _hmt = _hmt || [];
 <p>在神经网络结构中，我们通过线性函数不断的连接输入和输出。你可以设想，在这种结构中，每一层输出都是上层输入的线性变换。于是，无论神经网络有多少层，最终输出都是输入的线性组合。这样的话，单层神经网络和多层神经网络有什么区别呢？（没有区别）</p>
 <p><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/Neural%20Network/11.png" alt=""></p>
 <p>如上图所示，线性变换的多重组合依旧还是线性变换。如果我们在网络结构中加入激活函数，就相当于引入了非线性因素，这样就可以解决线性模型无法完成的分类任务。</p>
-<h3 id="反向传播算法（BP）直观认识"><a href="#反向传播算法（BP）直观认识" class="headerlink" title="反向传播算法（BP）直观认识"></a>反向传播算法（BP）直观认识</h3><p>前面感知机的章节中，我们定义了一个损失函数，并通过一种叫做随机梯度下降的方法去求解最优参数。如果你仔细观察随机梯度下降的过程，其实就是通过求解偏导数并组合成梯度用于更新权重 `W` 和 `b`。感知机只有一层网络结构，求解梯度的过程还比较简单。但是，当我们组合成多层神经网络之后，更新权重的过程就变得复杂起来，而反向传播算法正是为了快速求解梯度而生。</p>
+<h3 id="反向传播算法（BP）直观认识"><a href="#反向传播算法（BP）直观认识" class="headerlink" title="反向传播算法（BP）直观认识"></a>反向传播算法（BP）直观认识</h3><p><center><iframe src="//player.bilibili.com/player.html?aid=16577449&cid=27038097&page=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true" height="300px" width="550px"> </iframe></center></p>
+<div style="color: #999;font-size: 12px;text-align: center;">直观理解反向传播 | 视频来源：<a href="https://www.bilibili.com/video/av16577449/?p=1" target="_blank" rel="noopener">3Blue1Brown</a></div>
+
+<p>前面感知机的章节中，我们定义了一个损失函数，并通过一种叫做随机梯度下降的方法去求解最优参数。如果你仔细观察随机梯度下降的过程，其实就是通过求解偏导数并组合成梯度用于更新权重 `W` 和 `b`。感知机只有一层网络结构，求解梯度的过程还比较简单。但是，当我们组合成多层神经网络之后，更新权重的过程就变得复杂起来，而反向传播算法正是为了快速求解梯度而生。</p>
 <p>反向传播的算法说起来很简单，但要顺利理解还比较复杂。这里，我们引用了波兰 AGH 科技大学的一篇 <a href="http://galaxy.agh.edu.pl/~vlsi/AI/backp_t_en/backprop.html" target="_blank" rel="noopener">科普文章</a> 中的配图来帮助理解反向传播的过程。</p>
 <p>下图呈现了一个经典的 <code>3</code> 层神经网络结构，其包含有 <code>2</code> 个输入 `x_{1}` 和 `x_{2}` 以及 <code>1</code> 个输出 `y`。</p>
 <p><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/Neural%20Network/12.png" alt=""></p>
-<p>网络中的每个紫色单元代表一个独立的神经元，它分别由两个单元组成。一个单元是权重和输入信号，而另一个则是上面提到的激活函数。其中，$e$ 代表激活信号，所以 $y = f(e)$ 就是被激活函数处理之后的非线性输出，也就是整个神经元的输出。</p>
+<p>网络中的每个紫色单元代表一个独立的神经元，它分别由两个单元组成。一个单元是权重和输入信号，而另一个则是上面提到的激活函数。其中，`e` 代表激活信号，所以 `y = f(e)` 就是被激活函数处理之后的非线性输出，也就是整个神经元的输出。</p>
 <div style="color: #999;font-size: 12px;font-style: italic;">* 注：此处与下文使用g()作为激活函数稍有不同</div>
 
 <p><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/Neural%20Network/13.png" alt=""></p>
-<p>下面开始训练神经网络，训练数据由输入信号 $x_{1}$ 和 $x_{2}$ 以及期望输出 $z$ 组成，首先计算第 1 个隐含层中第 1 个神经元 $y_{1} = f_{1}(e)$ 对应的值。</p>
+<p>下面开始训练神经网络，训练数据由输入信号 `x_{1}` 和 `x_{2}` 以及期望输出 `z` 组成，首先计算第 1 个隐含层中第 1 个神经元 `y_{1} = f_{1}(e)` 对应的值。</p>
 <p><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/Neural%20Network/14.png" alt=""></p>
-<p>接下来，计算第 1 个隐含层中第 2 个神经元 $y_{2} = f_{2}(e)$ 对应的值。</p>
-<p><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/Neural%20Network/15.png" alt="此处输入图片的描述"></p>
-<p>然后是计算第 1 个隐含层中第 3 个神经元 $y_{3} = f_{3}(e)$ 对应的值。</p>
-<p><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/Neural%20Network/16.png" alt="此处输入图片的描述"></p>
+<p>接下来，计算第 1 个隐含层中第 2 个神经元 `y_{2} = f_{2}(e)` 对应的值。</p>
+<p><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/Neural%20Network/15.png" alt=""></p>
+<p>然后是计算第 1 个隐含层中第 3 个神经元 `y_{3} = f_{3}(e)` 对应的值。</p>
+<p><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/Neural%20Network/16.png" alt=""></p>
 <p>与计算第 1 个隐含层的过程相似，我们可以计算第 2 个隐含层的数值。</p>
-<p><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/Neural%20Network/17.png" alt="此处输入图片的描述"></p>
-<p><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/Neural%20Network/18.png" alt="此处输入图片的描述"></p>
+<p><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/Neural%20Network/17.png" alt=""></p>
+<p><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/Neural%20Network/18.png" alt=""></p>
 <p>最后，得到输出层的结果：</p>
-<p><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/Neural%20Network/19.png" alt="此处输入图片的描述"></p>
+<p><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/Neural%20Network/19.png" alt=""></p>
 <p>上面这个过程被称为前向传播过程，那什么是反向传播呢？接着来看：</p>
-<p>当我们得到输出结果 $y$ 时，可以与期望输出 $z$ 对比得到误差 $\delta$。</p>
-<p><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/Neural%20Network/20.png" alt="此处输入图片的描述"></p>
-<p>然后，我们将计算得到的误差 $\delta$ 沿着神经元回路反向传递到前 1 个隐含层，而每个神经元对应的误差为传递过来的误差乘以权重。</p>
-<p><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/Neural%20Network/21.png" alt="此处输入图片的描述"></p>
-<p><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/Neural%20Network/22.png" alt="此处输入图片的描述"></p>
+<p>当我们得到输出结果 `y` 时，可以与期望输出 `z` 对比得到误差 \(\delta\)。</p>
+<p><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/Neural%20Network/20.png" alt=""></p>
+<p>然后，我们将计算得到的误差 \(\delta\) 沿着神经元回路反向传递到前 1 个隐含层，而每个神经元对应的误差为传递过来的误差乘以权重。</p>
+<p><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/Neural%20Network/21.png" alt=""></p>
+<p><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/Neural%20Network/22.png" alt=""></p>
 <p>同理，我们将第 2 个隐含层的误差继续向第 1 个隐含层反向传递。</p>
-<p><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/Neural%20Network/23.png" alt="此处输入图片的描述"></p>
-<p><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/Neural%20Network/24.png" alt="此处输入图片的描述"></p>
-<p><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/Neural%20Network/25.png" alt="此处输入图片的描述"></p>
-<p>此时，我们就可以利用反向传递过来的误差对从输入层到第 1 个隐含层之间的权值 $w$ 进行更新，如下图所示：</p>
-<p><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/Neural%20Network/26.png" alt="此处输入图片的描述"></p>
-<p><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/Neural%20Network/27.png" alt="此处输入图片的描述"></p>
-<p><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/Neural%20Network/28.png" alt="此处输入图片的描述"></p>
-<p>同样，对第 1 个隐含层与第 2 个隐含层之间的权值 $w$ 进行更新，如下图所示：</p>
-<p><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/Neural%20Network/29.png" alt="此处输入图片的描述"></p>
-<p><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/Neural%20Network/30.png" alt="此处输入图片的描述"></p>
-<p>最后，更新第 2 个隐含层与输出层之间的权值 $w$ ，如下图所示：</p>
-<p><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/Neural%20Network/31.png" alt="此处输入图片的描述"></p>
-<p>图中的 $\eta$ 表示学习速率。这就完成了一个迭代过程。更新完权重之后，又开始下一轮的前向传播得到输出，再反向传播误差更新权重，依次迭代下去。</p>
+<p><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/Neural%20Network/23.png" alt=""></p>
+<p><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/Neural%20Network/24.png" alt=""></p>
+<p><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/Neural%20Network/25.png" alt=""></p>
+<p>此时，我们就可以利用反向传递过来的误差对从输入层到第 1 个隐含层之间的权值 `w` 进行更新，如下图所示：</p>
+<p><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/Neural%20Network/26.png" alt=""></p>
+<p><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/Neural%20Network/27.png" alt=""></p>
+<p><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/Neural%20Network/28.png" alt=""></p>
+<p>同样，对第 1 个隐含层与第 2 个隐含层之间的权值 `w` 进行更新，如下图所示：</p>
+<p><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/Neural%20Network/29.png" alt=""></p>
+<p><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/Neural%20Network/30.png" alt=""></p>
+<p>最后，更新第 2 个隐含层与输出层之间的权值 `w` ，如下图所示：</p>
+<p><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/Neural%20Network/31.png" alt=""></p>
+<p>图中的 \(\eta\) 表示学习速率。这就完成了一个迭代过程。更新完权重之后，又开始下一轮的前向传播得到输出，再反向传播误差更新权重，依次迭代下去。</p>
 <p>所以，反向传播其实代表的是反向传播误差。</p>
 <h3 id="使用-Python-实现人工神经网络"><a href="#使用-Python-实现人工神经网络" class="headerlink" title="使用 Python 实现人工神经网络"></a>使用 Python 实现人工神经网络</h3><p>上面的内容，我们介绍了人工神经网络的构成和最重要的反向传播算法。接下来，尝试通过 Python 来实现一个神经网络运行的完整流程。</p>
 <h4 id="定义神经网络结构"><a href="#定义神经网络结构" class="headerlink" title="定义神经网络结构"></a>定义神经网络结构</h4><p>为了让推导过程足够清晰，这里我们只构建包含 1 个隐含层的人工神经网络结构。其中，输入层为 2 个神经元，隐含层为 3 个神经元，并通过输出层实现 2 分类问题的求解。该神经网络的结构如下：</p>
-<p><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/Neural%20Network/32.png" alt="此处输入图片的描述"></p>
-<p>本次实验中，我们使用的激活函数为 $sigmoid$ 函数：</p>
+<p><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/Neural%20Network/32.png" alt=""></p>
+<p>在此中，我们使用的激活函数为 \(sigmoid\) 函数：</p>
 <p>$$<br>\mathit{sigmoid}(x) = \frac{1}{1+e^{-x}}       \tag{17a}<br>$$</p>
-<p>由于下面要使用 $sigmoid$ 函数的导数，所以同样将其导数公式写出来：</p>
+<p>由于下面要使用 \(sigmoid\)  函数的导数，所以同样将其导数公式写出来：</p>
 <p>$$<br>\Delta \mathit{sigmoid}(x)  = \mathit{sigmoid}(x)(1 - \mathit{sigmoid}(x))    \tag{17b}<br>$$</p>
 <p>然后，我们通过 Python 实现公式（17）：</p>
 <figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment"># sigmoid 函数</span></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">sigmoid</span><span class="hljs-params">(x)</span>:</span></span><br><span class="line">    <span class="hljs-keyword">return</span> <span class="hljs-number">1</span> / (<span class="hljs-number">1</span> + np.exp(-x))</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># sigmoid 函数求导</span></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">sigmoid_derivative</span><span class="hljs-params">(x)</span>:</span></span><br><span class="line">    <span class="hljs-keyword">return</span> sigmoid(x) * (<span class="hljs-number">1</span> - sigmoid(x))</span><br></pre></td></tr></table></figure>
-<figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">sigmoid</span><span class="hljs-params">(x)</span>:</span></span><br><span class="line">    <span class="hljs-keyword">return</span> <span class="hljs-number">1</span> / (<span class="hljs-number">1</span> + np.exp(-x))</span><br><span class="line"></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">sigmoid_derivative</span><span class="hljs-params">(x)</span>:</span></span><br><span class="line">    <span class="hljs-keyword">return</span> sigmoid(x) * (<span class="hljs-number">1</span> - sigmoid(x))</span><br></pre></td></tr></table></figure>
 <h4 id="前向传播"><a href="#前向传播" class="headerlink" title="前向传播"></a>前向传播</h4><p>前向（正向）传播中，每一个神经元的计算流程为：<strong>线性变换 → 激活函数→输出值</strong>。</p>
 <p>同时，我们约定：</p>
 <ul>
-<li>$Z$ 表示隐含层输出，$Y$ 则为输出层最终输出。</li>
-<li>$w_{ij}$ 表示从第 $i$ 层的第 $j$ 个权重。</li>
+<li>`Z` 表示隐含层输出，`Y` 则为输出层最终输出。</li>
+<li>`w_{ij}` 表示从第 `i` 层的第 `j` 个权重。</li>
 </ul>
 <p>于是，上图中的前向传播的代数计算过程如下。</p>
-<p>神经网络的输入 $X$，第一层权重 $W_1$，第二层权重 $W_2$。为了演示方便，$X$ 为单样本，因为是矩阵运算，我们很容易就能扩充为多样本输入。</p>
+<p>神经网络的输入 `X`，第一层权重 `W_1`，第二层权重 `W_2`。为了演示方便，`X` 为单样本，因为是矩阵运算，我们很容易就能扩充为多样本输入。</p>
 <p>$$<br>X = \begin{bmatrix}<br>x_{1} &amp; x_{2}<br>\end{bmatrix} \tag{18}<br>$$</p>
 <p>$$<br>W_1 = \begin{bmatrix}<br>w_{11} &amp; w_{12} &amp; w_{13}\ <br>w_{14} &amp; w_{15} &amp; w_{16}\ <br>\end{bmatrix} \tag{19}<br>$$</p>
 <p>$$<br>W_2 = \begin{bmatrix}<br>w_{21} \\<br>w_{22} \\<br>w_{23}<br>\end{bmatrix} \tag{20}<br>$$</p>
-<p>接下来，计算隐含层神经元输出 $Z$（线性变换 → 激活函数）。同样，为了使计算过程足够清晰，我们这里将截距项表示为 0。</p>
+<p>接下来，计算隐含层神经元输出 `Z`（线性变换 → 激活函数）。同样，为了使计算过程足够清晰，我们这里将截距项表示为 0。</p>
 <p>$$<br>Z = \mathit{sigmoid}(X \cdot W_{1}) \tag{21}<br>$$</p>
-<p>最后，计算输出层 $Y$（线性变换 → 激活函数）：</p>
+<p>最后，计算输出层 `Y`（线性变换 → 激活函数）：</p>
 <p>$$<br>Y = \mathit{sigmoid}(Z \cdot W_{2}) \tag{22}<br>$$</p>
 <p>下面实现前向传播计算过程，将上面的公式转化为代码如下：</p>
 <figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment"># 示例样本</span></span><br><span class="line">X = np.array([[<span class="hljs-number">1</span>, <span class="hljs-number">1</span>]])</span><br><span class="line">y = np.array([[<span class="hljs-number">1</span>]])</span><br><span class="line"></span><br><span class="line">X, y</span><br></pre></td></tr></table></figure>
 <pre><code>(array([[1, 1]]), array([[1]]))
-</code></pre><figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">X = np.array([[<span class="hljs-number">1</span>, <span class="hljs-number">1</span>]])</span><br><span class="line">y = np.array([[<span class="hljs-number">1</span>]])</span><br><span class="line"></span><br><span class="line">X, y</span><br></pre></td></tr></table></figure>
-<p>然后，随机初始化隐含层权重。</p>
+</code></pre><p>然后，随机初始化隐含层权重。</p>
 <figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">W1 = np.random.rand(<span class="hljs-number">2</span>, <span class="hljs-number">3</span>)</span><br><span class="line">W2 = np.random.rand(<span class="hljs-number">3</span>, <span class="hljs-number">1</span>)</span><br><span class="line"></span><br><span class="line">W1, W2</span><br></pre></td></tr></table></figure>
 <pre><code>(array([[0.4985742 , 0.16703231, 0.51487393],
         [0.63075313, 0.46386686, 0.44365266]]), array([[0.69320812],
         [0.74352002],
         [0.2403471 ]]))
-</code></pre><figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">W1 = np.random.rand(<span class="hljs-number">2</span>, <span class="hljs-number">3</span>)</span><br><span class="line">W2 = np.random.rand(<span class="hljs-number">3</span>, <span class="hljs-number">1</span>)</span><br><span class="line"></span><br><span class="line">W1, W2</span><br></pre></td></tr></table></figure>
-<p>前向传播的过程实现基于公式（21）和公式（22）完成。</p>
+</code></pre><p>前向传播的过程实现基于公式（21）和公式（22）完成。</p>
 <figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">input_layer = X <span class="hljs-comment"># 输入层</span></span><br><span class="line">hidden_layer = sigmoid(np.dot(input_layer, W1)) <span class="hljs-comment"># 隐含层，公式 20</span></span><br><span class="line">output_layer = sigmoid(np.dot(hidden_layer, W2)) <span class="hljs-comment"># 输出层，公式 22</span></span><br><span class="line"></span><br><span class="line">output_layer</span><br></pre></td></tr></table></figure>
 <pre><code>array([[0.76546658]])
-</code></pre><figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">input_layer = X</span><br><span class="line">hidden_layer = sigmoid(np.dot(input_layer, W1))</span><br><span class="line">output_layer = sigmoid(np.dot(hidden_layer, W2))</span><br><span class="line"></span><br><span class="line">output_layer</span><br></pre></td></tr></table></figure>
-<h4 id="反向传播"><a href="#反向传播" class="headerlink" title="反向传播"></a>反向传播</h4><p>接下来，我们使用梯度下降法的方式来优化神经网络的参数。那么首先需要定义损失函数，然后计算损失函数关于神经网络中各层的权重的偏导数（梯度）。</p>
+</code></pre><h4 id="反向传播"><a href="#反向传播" class="headerlink" title="反向传播"></a>反向传播</h4><p><center><iframe src="//player.bilibili.com/player.html?aid=16577449&cid=27038098&page=2" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true" height="300px" width="550px"> </iframe></center></p>
+<div style="color: #999;font-size: 12px;text-align: center;">反向传播的微积分原理 | 视频来源：<a href="https://www.bilibili.com/video/av16577449/?p=2" target="_blank" rel="noopener">3Blue1Brown</a></div>
+
+<p>接下来，我们使用梯度下降法的方式来优化神经网络的参数。那么首先需要定义损失函数，然后计算损失函数关于神经网络中各层的权重的偏导数（梯度）。</p>
 <p>此时，设神经网络的输出值为 <code>Y</code>，真实值为 <code>y</code>。然后，定义平方损失函数如下：</p>
 <p>$$<br>Loss(y, Y) = \sum (y - Y)^2 \tag{23}<br>$$</p>
-<p>接下来，求解梯度 $\frac{\partial Loss(y, Y)}{\partial{W_2}}$，需要使用链式求导法则：</p>
+<p>接下来，求解梯度 \(\frac{\partial Loss(y, Y)}{\partial{W_2}}\)，需要使用链式求导法则：</p>
 <p>$$<br>\frac{\partial Loss(y, Y)}{\partial{W_2}} = \frac{\partial Loss(y, Y)}{\partial{Y}} \frac{\partial Y}{\partial{W_2}}\tag{24a}<br>$$</p>
 <p>$$<br>\frac{\partial Loss(y, Y)}{\partial{W_2}} = 2(Y-y) * \Delta \mathit{sigmoid}(Z \cdot W_2) \cdot Z\tag{24b}<br>$$</p>
-<p>同理，梯度 $\frac{\partial Loss(y, Y)}{\partial{W_1}}$ 得：</p>
+<p>同理，梯度 \(\frac{\partial Loss(y, Y)}{\partial{W_1}}\) 得：</p>
 <p>$$<br>\frac{\partial Loss(y, Y)}{\partial{W_1}} = \frac{\partial Loss(y, Y)}{\partial{Y}} \frac{\partial Y }{\partial{Z}} \frac{\partial Z}{\partial{W_1}} \tag{25a}<br>$$</p>
-<p>$$<br>\frac{\partial Loss(y, Y)}{\partial{W_1}} = 2(Y-y) <em> \Delta \mathit{sigmoid}(Z \cdot W_2) \cdot W_2 </em> \Delta \mathit{sigmoid}(X \cdot W_1) \cdot X \tag{25b}<br>$$</p>
-<p>其中，$\frac{\partial Y}{\partial{W_2}}$，$\frac{\partial Y}{\partial{W_1}}$ 分别通过公式（22）和（21）求得。接下来，我们基于公式对反向传播过程进行代码实现。</p>
+<p>$$<br>\frac{\partial Loss(y, Y)}{\partial{W_1}} = 2(Y-y) * \Delta \mathit{sigmoid}(Z \cdot W_2) \cdot W_2 * \Delta \mathit{sigmoid}(X \cdot W_1) \cdot X \tag{25b}<br>$$</p>
+<p>其中，\(\frac{\partial Y}{\partial{W_2}}\)，\(\frac{\partial Y}{\partial{W_1}}\) 分别通过公式（22）和（21）求得。接下来，我们基于公式对反向传播过程进行代码实现。</p>
 <figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment"># 公式 24</span></span><br><span class="line">d_W2 = np.dot(hidden_layer.T, (<span class="hljs-number">2</span> * (output_layer - y) * </span><br><span class="line">              sigmoid_derivative(np.dot(hidden_layer, W2))))</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># 公式 25</span></span><br><span class="line">d_W1 = np.dot(input_layer.T,  (</span><br><span class="line">       np.dot(<span class="hljs-number">2</span> * (output_layer - y) * sigmoid_derivative(</span><br><span class="line">       np.dot(hidden_layer, W2)), W2.T) * sigmoid_derivative(np.dot(input_layer, W1))))</span><br><span class="line"></span><br><span class="line">d_W2, d_W1</span><br></pre></td></tr></table></figure>
 <pre><code>(array([[-0.06363904],
         [-0.05496356],
         [-0.06086952]]), array([[-0.01077667, -0.01419321, -0.00405499],
         [-0.01077667, -0.01419321, -0.00405499]]))
-</code></pre><figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">d_W2 = np.dot(hidden_layer.T, (<span class="hljs-number">2</span> * (output_layer - y) * (sigmoid_derivative(np.dot(hidden_layer, W2)))))</span><br><span class="line"></span><br><span class="line">d_w1 = np.dot(input_layer.T, (np.dot(<span class="hljs-number">2</span> * (output_layer - y) * sigmoid_derivative(np.dot(hidden_layer, W2)), W2.T) * sigmoid_derivative(np.dot(input_layer, W1))))</span><br><span class="line"></span><br><span class="line">d_W2, d_W1</span><br></pre></td></tr></table></figure>
-<p>现在，就可以设置学习率，并对 $W_1$, $W_2$ 进行一次更新了。</p>
+</code></pre><p>现在，就可以设置学习率，并对 $W_1$, $W_2$ 进行一次更新了。</p>
 <figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment"># 梯度下降更新权重, 学习率为 0.05</span></span><br><span class="line"></span><br><span class="line">W1 -= <span class="hljs-number">0.05</span> * d_W1 <span class="hljs-comment"># 如果上面是 y - output_layer，则改成 +=</span></span><br><span class="line">W2 -= <span class="hljs-number">0.05</span> * d_W2</span><br><span class="line"></span><br><span class="line">d_W2, d_W1</span><br></pre></td></tr></table></figure>
 <pre><code>(array([[-0.06363904],
         [-0.05496356],
         [-0.06086952]]), array([[-0.01077667, -0.01419321, -0.00405499],
         [-0.01077667, -0.01419321, -0.00405499]]))
-</code></pre><figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">W1 -= <span class="hljs-number">0.05</span> * d_W1</span><br><span class="line">W2 -= <span class="hljs-number">0.05</span> * d_W2</span><br><span class="line"></span><br><span class="line">d_W2, d_W1</span><br></pre></td></tr></table></figure>
-<p>以上，我们就实现了单个样本在神经网络中的 1 次前向 → 反向传递，并使用梯度下降完成 1 次权重更新。那么，下面我们完整实现该网络，并对多样本数据集进行学习。</p>
+</code></pre><p>以上，我们就实现了单个样本在神经网络中的 1 次前向 → 反向传递，并使用梯度下降完成 1 次权重更新。那么，下面我们完整实现该网络，并对多样本数据集进行学习。</p>
 <figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment"># 示例神经网络完整实现</span></span><br><span class="line"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">NeuralNetwork</span>:</span></span><br><span class="line">    </span><br><span class="line">    <span class="hljs-comment"># 初始化参数</span></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">__init__</span><span class="hljs-params">(self, X, y, lr)</span>:</span></span><br><span class="line">        self.input_layer = X</span><br><span class="line">        self.W1 = np.random.rand(self.input_layer.shape[<span class="hljs-number">1</span>], <span class="hljs-number">3</span>)</span><br><span class="line">        self.W2 = np.random.rand(<span class="hljs-number">3</span>, <span class="hljs-number">1</span>)</span><br><span class="line">        self.y = y</span><br><span class="line">        self.lr = lr</span><br><span class="line">        self.output_layer = np.zeros(self.y.shape)</span><br><span class="line">    </span><br><span class="line">    <span class="hljs-comment"># 前向传播</span></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">forward</span><span class="hljs-params">(self)</span>:</span></span><br><span class="line">        self.hidden_layer = sigmoid(np.dot(self.input_layer, self.W1))</span><br><span class="line">        self.output_layer = sigmoid(np.dot(self.hidden_layer, self.W2))</span><br><span class="line">    </span><br><span class="line">    <span class="hljs-comment"># 反向传播</span></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">backward</span><span class="hljs-params">(self)</span>:</span></span><br><span class="line">        d_W2 = np.dot(self.hidden_layer.T, (<span class="hljs-number">2</span> * (self.output_layer - self.y) *</span><br><span class="line">                      sigmoid_derivative(np.dot(self.hidden_layer, self.W2))))</span><br><span class="line">        </span><br><span class="line">        d_W1 = np.dot(self.input_layer.T, (</span><br><span class="line">               np.dot(<span class="hljs-number">2</span> * (self.output_layer - self.y) * sigmoid_derivative(</span><br><span class="line">               np.dot(self.hidden_layer, self.W2)), self.W2.T) * sigmoid_derivative(</span><br><span class="line">               np.dot(self.input_layer, self.W1))))</span><br><span class="line">        </span><br><span class="line">        <span class="hljs-comment"># 参数更新</span></span><br><span class="line">        self.W1 -= self.lr * d_W1</span><br><span class="line">        self.W2 -= self.lr * d_W2</span><br></pre></td></tr></table></figure>
-<figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">NeuralNetwork</span>:</span></span><br><span class="line">    </span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">__init__</span><span class="hljs-params">(self, X, y, lr)</span>:</span></span><br><span class="line">        self.input_layer = X</span><br><span class="line">        self.W1 = np.random.rand(self.input_layer.shape[<span class="hljs-number">1</span>], <span class="hljs-number">3</span>)</span><br><span class="line">        self.W2 = np.random.rand(<span class="hljs-number">3</span>, <span class="hljs-number">1</span>)</span><br><span class="line">        self.y = y</span><br><span class="line">        self.lr = lr</span><br><span class="line">        self.output_layer = np.zeros(self.y.shape)</span><br><span class="line">        </span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">forward</span><span class="hljs-params">(self)</span>:</span></span><br><span class="line">        self.hidden_layer = sigmoid(np.dot(self.input_layer, self.W1))</span><br><span class="line">        self.output_layer = sigmoid(np.dot(self.hidden_layer, self.W2))</span><br><span class="line">        </span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">backward</span><span class="hljs-params">(self)</span>:</span></span><br><span class="line">        d_W2 = np.dot(self.hidden_layer.T, (<span class="hljs-number">2</span> * (self.output_layer - self.y) *</span><br><span class="line">                      sigmoid_derivative(np.dot(self.hidden_layer, self.W2))))</span><br><span class="line">        </span><br><span class="line">        d_W1 = np.dot(self.input_layer.T, (</span><br><span class="line">               np.dot(<span class="hljs-number">2</span> * (self.output_layer - self.y) * sigmoid_derivative(</span><br><span class="line">               np.dot(self.hidden_layer, self.W2)), self.W2.T) * sigmoid_derivative(</span><br><span class="line">               np.dot(self.input_layer, self.W1))))</span><br><span class="line">        </span><br><span class="line">    self.W1 -= self.lr * d_W1</span><br><span class="line">    self.W2 -= self.lr * d_W2</span><br></pre></td></tr></table></figure>
 <p>接下来，我们使用实验一开始的示例数据集测试，首先我们要对数据形状进行调整，以满足需要。</p>
 <figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">X = df[[<span class="hljs-string">'X0'</span>,<span class="hljs-string">'X1'</span>]].values <span class="hljs-comment"># 输入值</span></span><br><span class="line">y = df[<span class="hljs-string">'Y'</span>].values.reshape(len(X), <span class="hljs-number">-1</span>) <span class="hljs-comment"># 真实 y，处理成 [[],...,[]] 形状</span></span><br></pre></td></tr></table></figure>
-<figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">X = df[[<span class="hljs-string">'X0'</span>, <span class="hljs-string">'X1'</span>]].values</span><br><span class="line">y = df[<span class="hljs-string">'Y'</span>].values.reshape(len(X), <span class="hljs-number">-1</span>)</span><br></pre></td></tr></table></figure>
 <p>接下来，我们将其输入到网络中，并迭代 100 次：</p>
 <figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">nn = NeuralNetwork(X, y, lr=<span class="hljs-number">0.001</span>) <span class="hljs-comment"># 定义模型</span></span><br><span class="line">loss_list = [] <span class="hljs-comment"># 存放损失数值变化</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> range(<span class="hljs-number">100</span>):</span><br><span class="line">    nn.forward() <span class="hljs-comment"># 前向传播</span></span><br><span class="line">    nn.backward() <span class="hljs-comment"># 反向传播</span></span><br><span class="line">    loss = np.sum((y - nn.output_layer) ** <span class="hljs-number">2</span>) <span class="hljs-comment"># 计算平方损失</span></span><br><span class="line">    loss_list.append(loss)</span><br><span class="line"></span><br><span class="line">print(<span class="hljs-string">"final loss:"</span>, loss)</span><br><span class="line">plt.plot(loss_list) <span class="hljs-comment"># 绘制 loss 曲线变化图</span></span><br></pre></td></tr></table></figure>
 <pre><code>final loss: 133.4221126605534
-
-
-
-
-
-[&lt;matplotlib.lines.Line2D at 0x1528e7289e8&gt;]
-</code></pre><p><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/Neural%20Network/output_239_2.png" alt="png"></p>
-<figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">nn = NeuralNetwork(X, y, lr=<span class="hljs-number">0.001</span>)</span><br><span class="line">loss_list = []</span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> range(<span class="hljs-number">100</span>):</span><br><span class="line">    nn.forward()</span><br><span class="line">    nn.backward()</span><br><span class="line">    loss = np.sum((y - nn.output_layer) ** <span class="hljs-number">2</span>)</span><br><span class="line">    loss_list.append(loss)</span><br><span class="line">    </span><br><span class="line">print(<span class="hljs-string">"final loss: "</span>, loss)</span><br><span class="line">plt.plot(loss_list)</span><br></pre></td></tr></table></figure>
+</code></pre><p><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/Neural%20Network/output_239_2.png" alt="matplotlib.lines.Line2D at 0x1528e7289e8"></p>
 <p>可以看到，损失函数逐渐减小并接近收敛，变化曲线比感知机计算会平滑很多。不过，由于我们去掉了截距项，且网络结构太过简单，导致收敛情况并不理想。本实验重点再于搞清楚 BP 的中间过程，准确度和学习难度不可两全。另外，需要注意的是由于权重是随机初始化，多次运行的结果会不同。</p>
 
         </div>
