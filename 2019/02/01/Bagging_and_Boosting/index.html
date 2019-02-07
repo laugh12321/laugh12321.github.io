@@ -1,0 +1,1745 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head><meta name="generator" content="Hexo 3.8.0">
+    <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="utf-8">
+<title>机器学习|装袋和提升方法详解 (Python 语言描述) - Laugh&#39;s blog</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+    <meta name="description" content="前面的文章都是独立的讲解每一个分类器的分类过程，每一个分类器都有其独有的特点并非常适合某些数据。但在实际中，可能没有那样合适的数据，在应用前面的分类器时，可能会出现分类准确率低的问题。为解决这样的问题，集成学习便被提出，利用多个弱分类器结合的方式使得分类准确率提高。本次详细讲解了集成学习中十分经典的几个算法：装袋（Bagging）中的 Bagging tree 和随机森林（Ramdom Fores">
+<meta name="keywords" content="Machine Learning,Python,Bagging,Boosting">
+<meta property="og:type" content="article">
+<meta property="og:title" content="机器学习|装袋和提升方法详解 (Python 语言描述)">
+<meta property="og:url" content="https://www.laugh12321.cn/2019/02/01/Bagging_and_Boosting/index.html">
+<meta property="og:site_name" content="Laugh&#39;s blog">
+<meta property="og:description" content="前面的文章都是独立的讲解每一个分类器的分类过程，每一个分类器都有其独有的特点并非常适合某些数据。但在实际中，可能没有那样合适的数据，在应用前面的分类器时，可能会出现分类准确率低的问题。为解决这样的问题，集成学习便被提出，利用多个弱分类器结合的方式使得分类准确率提高。本次详细讲解了集成学习中十分经典的几个算法：装袋（Bagging）中的 Bagging tree 和随机森林（Ramdom Fores">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/Bagging-and-Boosting/1.png">
+<meta property="og:image" content="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/Bagging-and-Boosting/output_00.png">
+<meta property="og:image" content="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/Bagging-and-Boosting/output_01.png">
+<meta property="og:image" content="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/Bagging-and-Boosting/2.png">
+<meta property="og:image" content="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/Bagging-and-Boosting/3.png">
+<meta property="og:updated_time" content="2019-02-07T04:33:10.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="机器学习|装袋和提升方法详解 (Python 语言描述)">
+<meta name="twitter:description" content="前面的文章都是独立的讲解每一个分类器的分类过程，每一个分类器都有其独有的特点并非常适合某些数据。但在实际中，可能没有那样合适的数据，在应用前面的分类器时，可能会出现分类准确率低的问题。为解决这样的问题，集成学习便被提出，利用多个弱分类器结合的方式使得分类准确率提高。本次详细讲解了集成学习中十分经典的几个算法：装袋（Bagging）中的 Bagging tree 和随机森林（Ramdom Fores">
+<meta name="twitter:image" content="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/Bagging-and-Boosting/1.png">
+
+
+
+
+
+<link rel="icon" href="https://avatars0.githubusercontent.com/u/38065710?s=400&u=80ee4d360562451484188e6f1677fa442720891b&v=4">
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.7.2/css/bulma.css">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Ubuntu:400,600|Source+Code+Pro">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/atelier-sulphurpool-dark.css">
+
+
+    
+    
+    
+    <style>body>.footer,body>.navbar,body>.section{opacity:0}</style>
+    
+
+    
+    
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/css/lightgallery.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/css/justifiedGallery.min.css">
+    
+
+    
+    
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/outdatedbrowser@1.1.5/outdatedbrowser/outdatedbrowser.min.css">
+
+
+    
+    
+    
+    
+
+<link rel="stylesheet" href="/css/back-to-top.css">
+
+
+    
+    
+
+    
+    
+<script>
+var _hmt = _hmt || [];
+(function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?b159f3ddbb6d9197633e49de94480102";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+    
+    
+
+    
+    
+<link rel="stylesheet" href="/css/progressbar.css">
+<script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script>
+
+    
+    
+    
+
+    
+
+
+<link rel="stylesheet" href="/css/style.css"><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</head>
+<body class="is-3-column">
+    <!-- hexo-inject:begin --><!-- hexo-inject:end --><nav class="navbar navbar-main">
+    <div class="container">
+        <div class="navbar-brand is-flex-center">
+            <a class="navbar-item navbar-logo" href="/">
+            
+                <img src="/images/logo.svg" alt="机器学习|装袋和提升方法详解 (Python 语言描述)" height="28">
+            
+            </a>
+        </div>
+        <div class="navbar-menu">
+            
+            <div class="navbar-start">
+                
+                <a class="navbar-item" href="/">Home</a>
+                
+                <a class="navbar-item" href="/archives">Archives</a>
+                
+                <a class="navbar-item" href="/categories">Categories</a>
+                
+                <a class="navbar-item" href="/tags">Tags</a>
+                
+                <a class="navbar-item" href="/about">About</a>
+                
+            </div>
+            
+            <div class="navbar-end">
+                
+                    
+                    
+                    <a class="navbar-item" target="_blank" title="Download on GitHub" href="http://github.com/laugh12321">
+                        
+                        <i class="fab fa-github"></i>
+                        
+                    </a>
+                    
+                
+                
+                
+                <a class="navbar-item search" title="搜索" href="javascript:;">
+                    <i class="fas fa-search"></i>
+                </a>
+                
+            </div>
+        </div>
+    </div>
+</nav>
+    
+
+    <section class="section">
+        <div class="container">
+            <div class="columns">
+                <div class="column is-8-tablet is-8-desktop is-6-widescreen has-order-2 column-main"><div class="card">
+    
+    <div class="card-image">
+        <span class="image is-7by1">
+            <img class="thumbnail" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/photo/09.jpg" alt="机器学习|装袋和提升方法详解 (Python 语言描述)">
+        </span>
+    </div>
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2019-01-31T16:00:00.000Z">2019-02-01</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/机器学习/">机器学习</a>&nbsp;/&nbsp;<a class="has-link-grey -link" href="/categories/机器学习/装袋/">装袋</a>&nbsp;/&nbsp;<a class="has-link-grey -link" href="/categories/机器学习/装袋/提升/">提升</a>
+                </div>
+                
+                
+                <span class="level-item has-text-grey">
+                    
+                    
+                    35 分钟 读完 (大约 5238 个字)
+                </span>
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                机器学习|装袋和提升方法详解 (Python 语言描述)
+            
+        </h1>
+        <div class="content">
+            <p>前面的文章都是独立的讲解每一个分类器的分类过程，每一个分类器都有其独有的特点并非常适合某些数据。但在实际中，可能没有那样合适的数据，在应用前面的分类器时，可能会出现分类准确率低的问题。为解决这样的问题，集成学习便被提出，利用多个弱分类器结合的方式使得分类准确率提高。本次详细讲解了集成学习中十分经典的几个算法：装袋（Bagging）中的 Bagging tree 和随机森林（Ramdom Forest）以及 提升（Boosting）中的 Adaboost 和梯度提升树（GBDT）。</p>
+<a id="more"></a>
+<h2 id="集成学习"><a href="#集成学习" class="headerlink" title="集成学习"></a>集成学习</h2><h3 id="集成学习概念"><a href="#集成学习概念" class="headerlink" title="集成学习概念"></a>集成学习概念</h3><p>在学习装袋和提升算法之前，先引入一个概念：集成学习。集成学习，顾名思义就是通过构建多个分类器并结合使用来完成学习任务，同时也被称为多分类器系统。其最大的特点就是结合各个弱分类器的长处，从而达到“三个臭皮匠顶个诸葛亮”的效果。</p>
+<p>每一个弱分类器我们将其称作「个体学习器」，集成学习的基本结构就是生成一组个体学习器，再用某种策略将他们结合起来。</p>
+<p>从个体学习器类别来看，集成学习通常分为两种类型： </p>
+<ul>
+<li>「同质」集成，在一个集成学习中，「个体学习器」是同一类型，如 「决策树集成」 所有个体学习器都为决策树，「神经网络集成」所有的个体学习器都为神经网络。</li>
+<li>「异质」集成，在一个集成学习中，「个体学习器」为不同类型，如一个集成学习中可以包含决策树模型也可以包含神经网络模型。</li>
+</ul>
+<p>同样从集成方式来看，集成学习也可以分为两类：</p>
+<ul>
+<li>并行式，当个体学习器之间不存在强依赖关系时，可同时生成并行化方法，其中代表算法为装袋（Bagging）算法。</li>
+<li>串行式，当个体学习器之间存在强依赖关系时，必须串行生成序列化方法，其中代表算法为提升（Boosting）算法。</li>
+</ul>
+<p><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/Bagging-and-Boosting/1.png" alt=""></p>
+<h3 id="结合策略"><a href="#结合策略" class="headerlink" title="结合策略"></a>结合策略</h3><p>集成学习中，当数据被多个个体学习器学习后，如何最终决定学习结果呢？假定集成包含 `T` 个个体学习器 \(\{ h_{1},h_{2},…,h_{T}\}\) 。常用的有三种方法：平均法，投票法，学习法。</p>
+<h4 id="平均法"><a href="#平均法" class="headerlink" title="平均法"></a>平均法</h4><p>在数值型输出中，最常用的结合策略为平均法（Averaging），在平均法中有两种方式：  </p>
+<p><strong>简单平均法：</strong></p>
+<p>$$<br>H(x)=\frac{1}{T}\sum_{i=1}^{T}h_{i}(x) \tag{1}<br>$$</p>
+<p>取每一个「个体学习器」学习后的平均值。</p>
+<p><strong>加权平均法：</strong></p>
+<p>$$<br>H(x)=\sum_{i=1}^{T}w_{i}h_{i}(x) \tag{2}<br>$$</p>
+<p>其中 `w_{i}` 是每一个「个体学习器」 `h_{i}` 的权重，通常为 \(w_{i}\geq 0, \sum^{T}_{i=1}w_{i}=1\)。</p>
+<h4 id="投票法"><a href="#投票法" class="headerlink" title="投票法"></a>投票法</h4><p>对于分类输出而言，平均法显然效果不太好，最常用的结合策略为投票法(Voting)，在投票法中主要有三种方式：</p>
+<p><strong>绝对多数投票法：</strong></p>
+<p>$$<br>H(X)=\left\{\begin{matrix}c_{j}, if  \sum_{i=1}^{T}h_{i}^{j}&gt; 0.5\sum_{k=1}^{N}\sum_{i=1}^{T}h_{i}^{k}(x);<br>\ <br>None, if  \sum_{i=1}^{T}h_{i}^{j} &lt; =  0.5\sum_{k=1}^{N}\sum_{i=1}^{T}h_{i}^{k}(x);<br>\end{matrix}\right. \tag{3}<br>$$</p>
+<p>简单而言，当某一个输出的分类超过了半数则输出该分类，若未超过半数则不输出分类。</p>
+<p><strong>相对多数投票法：</strong></p>
+<p>$$<br>H(X)=c_{\underset{j}{argmax}\sum_{i=1}^{T}h_{i}^{j}(x)} \tag{4}<br>$$</p>
+<p>即在「个体学习器」分类完成后，通过投票选出分类最多的标签作为此次分类的结果。</p>
+<p><strong>加权投票法：</strong></p>
+<p>$$<br>H(X)=c_{\underset{j}{argmax}\sum_{i=1}^{T}w_{i}h_{i}^{j}(x)} \tag{5}<br>$$</p>
+<p>同加权平均法类似，`w_{i}` 是每一个「个体学习器」 `h_{i}` 的权重，通常为 \(w_{i}\geq 0, \sum^{T}_{i=1}w_{i}=1\)。</p>
+<h4 id="学习法"><a href="#学习法" class="headerlink" title="学习法"></a>学习法</h4><p>以上两种方法（平均法和投票法）相对比较简单，但是可能学习误差较大，为了解决这种情况，还有一种方法为学习法，其代表方法是 <code>stacking</code> ，当使用<code>stacking</code> 的结合策略时， 不是对弱学习器的结果做简单的逻辑处理，而是再加上一层学习器，即把训练集弱学习器的学习结果作为输入，把训练集的输出作为输出，重新训练一个学习器来得到最终结果。</p>
+<p>在这种情况下，我们将弱学习器称为初级学习器，将用于结合的学习器称为次级学习器。对于测试集，首先用初级学习器预测一次，得到次级学习器的输入样本，再用次级学习器预测一次，得到最终的预测结果。</p>
+<h2 id="装袋算法-Bagging"><a href="#装袋算法-Bagging" class="headerlink" title="装袋算法 Bagging"></a>装袋算法 Bagging</h2><p>在大致了解集成学习相关概念之后，接下来就是对集成学习中常用算法思想之一的装袋算法进行详细的讲解。</p>
+<h3 id="装袋算法原理"><a href="#装袋算法原理" class="headerlink" title="装袋算法原理"></a>装袋算法原理</h3><p>装袋算法是并行式集成学习的代表，其原理也比较简单。算法步骤如下：</p>
+<ol>
+<li>数据处理：将数据根据实际情况进行清洗整理。  </li>
+<li>随机采样：重复 T 次，每一次从样本中随机选出 T 个子样本。  </li>
+<li>个体训练：将每一个子样本放入个体学习器训练。  </li>
+<li>分类决策：用投票法集成进行分类决策。</li>
+</ol>
+<h3 id="Bagging-tree"><a href="#Bagging-tree" class="headerlink" title="Bagging tree"></a>Bagging tree</h3><p>在前一节的决策树讲解中提到，决策树是一个十分「完美」的训练器，但特别容易出现过拟合的情况，最终导致预测准确率低的问题。事实上在装袋算法中，决策树常常被用作弱分类器。下面我们通过具体实验来看看决策树和以决策树作为装袋算法的预测效果。</p>
+<h4 id="数据加载"><a href="#数据加载" class="headerlink" title="数据加载"></a>数据加载</h4><p>本实验我们使用在上一章讲决策树时所用的学生成绩预测数据集。其中数据处理已在上一章详细说明，本次实验我们使用处理过后的数据集。数据集名称为 <code>course-14-student.csv</code>.</p>
+<p>数据集下载 👉 <a href="http://labfile.oss.aliyuncs.com/courses/1081/course-14-student.csv" target="_blank" rel="noopener">传送门</a></p>
+<figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">import</span> pandas <span class="hljs-keyword">as</span> pd</span><br><span class="line"></span><br><span class="line">stu_data = pd.read_csv(<span class="hljs-string">"course-14-student.csv"</span>)</span><br><span class="line">stu_data.head(<span class="hljs-number">10</span>)</span><br></pre></td></tr></table></figure>
+<p><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/Bagging-and-Boosting/output_00.png" alt=""></p>
+<h4 id="数据划分"><a href="#数据划分" class="headerlink" title="数据划分"></a>数据划分</h4><p>加载好预处理的数据集之后，为了应用装袋算法，我们需要将数据集分为 <strong>训练集</strong>和<strong>测试集</strong>，依照经验：<strong>训练集</strong>占比为 70%，<strong>测试集</strong>占 30%。</p>
+<figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">from</span> sklearn.model_selection <span class="hljs-keyword">import</span> train_test_split</span><br><span class="line"></span><br><span class="line">x_train, x_test, y_train, y_test = train_test_split(stu_data.iloc[:,:<span class="hljs-number">-1</span>], stu_data[<span class="hljs-string">"G3"</span>],</span><br><span class="line">                                                    test_size=<span class="hljs-number">0.3</span>, random_state=<span class="hljs-number">35</span>)</span><br><span class="line">x_test.head(<span class="hljs-number">10</span>)</span><br></pre></td></tr></table></figure>
+<p><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/Bagging-and-Boosting/output_01.png" alt=""></p>
+<h4 id="决策树预测"><a href="#决策树预测" class="headerlink" title="决策树预测"></a>决策树预测</h4><p>作为比较，首先我们将该数据集用决策树的方式进行预测,使用 <code>scikit-learn</code> 实现决策树预测的用法在前一章节已详细介绍，本实验直接使用。</p>
+<figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">from</span> sklearn.tree <span class="hljs-keyword">import</span> DecisionTreeClassifier</span><br><span class="line"></span><br><span class="line">dt_model = DecisionTreeClassifier(criterion=<span class="hljs-string">'entropy'</span>, random_state=<span class="hljs-number">34</span>)</span><br><span class="line">dt_model.fit(x_train, y_train)  <span class="hljs-comment"># 使用训练集训练模型</span></span><br><span class="line">dt_y_predict = dt_model.predict(x_test)</span><br><span class="line">dt_y_predict</span><br></pre></td></tr></table></figure>
+<pre><code>array([2, 0, 3, 2, 1, 2, 2, 2, 3, 3, 0, 2, 1, 3, 3, 2, 3, 0, 1, 2, 1, 2,
+       1, 2, 3, 3, 3, 0, 3, 3, 3, 3, 2, 2, 3, 3, 0, 1, 2, 2, 2, 1, 3, 2,
+       1, 3, 2, 3, 3, 3, 3, 1, 1, 3, 2, 0, 1, 3, 2, 3, 3, 0, 0, 2, 2, 3,
+       3, 3, 2, 1, 0, 3, 2, 2, 3, 2, 1, 3, 0, 2, 3, 1, 3, 3, 0, 3, 3, 1,
+       3, 3, 1, 3, 3, 3, 2, 0, 2, 3, 0, 3, 1, 3, 1, 1, 3, 3, 3, 3, 3, 3,
+       2, 1, 1, 1, 3, 0, 3, 3, 3], dtype=int64)
+</code></pre><p>计算使用决策树预测的准确率。</p>
+<figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">get_accuracy</span><span class="hljs-params">(test_labels, pred_labels)</span>:</span></span><br><span class="line">    <span class="hljs-string">"""</span></span><br><span class="line"><span class="hljs-string">    参数:</span></span><br><span class="line"><span class="hljs-string">    test_labels -- 测试集的真实值</span></span><br><span class="line"><span class="hljs-string">    pred_labels -- 测试集的预测值</span></span><br><span class="line"><span class="hljs-string"></span></span><br><span class="line"><span class="hljs-string">    返回:</span></span><br><span class="line"><span class="hljs-string">    accur -- 准确率</span></span><br><span class="line"><span class="hljs-string">    """</span></span><br><span class="line">    correct = np.sum(test_labels == pred_labels)  <span class="hljs-comment"># 计算预测正确的数据个数</span></span><br><span class="line">    n = len(test_labels)  <span class="hljs-comment"># 总测试集数据个数</span></span><br><span class="line">    accur = correct/n</span><br><span class="line">    <span class="hljs-keyword">return</span> accur</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">get_accuracy(y_test, dt_y_predict)</span><br></pre></td></tr></table></figure>
+<pre><code>0.7899159663865546
+</code></pre><p>由于本次实验所采用的数据集特征值比前一章节多，所以决策树泛化能力更差。</p>
+<h4 id="Bagging-Tree-数据模型构建"><a href="#Bagging-Tree-数据模型构建" class="headerlink" title="Bagging Tree 数据模型构建"></a>Bagging Tree 数据模型构建</h4><p>单棵决策树的预测结果并不能使我们满意，下面我们使用 <strong>装袋（Bagging）</strong> 的思想来提高预测准确率。我们通过 <code>scikit-learn</code> 来对 Bagging Tree 算法进行实现。</p>
+<p>在 <code>scikit-learn</code> 中 Bagging tree 常用参数如下：</p>
+<figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">BaggingClassifier(base_estimator=<span class="hljs-keyword">None</span>, n_estimators=<span class="hljs-number">10</span>, max_samples=<span class="hljs-number">1.0</span>, max_features=<span class="hljs-number">1.0</span>)</span><br></pre></td></tr></table></figure>
+<p>其中：</p>
+<ul>
+<li><code>base_estimator</code>：表示基础分类器（弱分类器）种类，默认为决策树 。</li>
+<li><code>n_estimators</code>：表示建立树的个数，默认值为 10 。</li>
+<li><code>max_samples</code>：表示从抽取数据中选取训练样本的数量，int（整型）表示数量，float（浮点型）表示比例，默认为所有样本。</li>
+<li><code>max_features</code>：表示抽取特征的数量，int（整型）表示数量，float（浮点型）表示比例，默认为所有特征。  </li>
+</ul>
+<p>常用方法:  </p>
+<ul>
+<li><code>fit(x,y)</code>：训练。</li>
+<li><code>predict(X)</code>：对数据集进行预测返回预测结果。</li>
+</ul>
+<figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">from</span> sklearn.ensemble <span class="hljs-keyword">import</span> BaggingClassifier</span><br><span class="line"></span><br><span class="line">tree = DecisionTreeClassifier(criterion=<span class="hljs-string">'entropy'</span>, random_state=<span class="hljs-number">28</span>)</span><br><span class="line">bag = BaggingClassifier(tree, n_estimators=<span class="hljs-number">100</span>,</span><br><span class="line">                        max_samples=<span class="hljs-number">1.0</span>, random_state=<span class="hljs-number">3</span>)  <span class="hljs-comment"># 使用决策树</span></span><br><span class="line"></span><br><span class="line">bag.fit(x_train, y_train)</span><br><span class="line">bt_y_predict = bag.predict(x_test)</span><br><span class="line">bt_y_predict</span><br></pre></td></tr></table></figure>
+<pre><code>array([3, 0, 3, 2, 1, 2, 3, 2, 3, 3, 3, 2, 1, 3, 3, 2, 2, 0, 1, 2, 1, 2,
+       1, 3, 3, 2, 3, 0, 2, 3, 3, 3, 2, 2, 3, 3, 0, 1, 2, 0, 2, 1, 3, 3,
+       1, 3, 2, 3, 3, 3, 3, 3, 1, 2, 2, 0, 1, 3, 2, 3, 3, 2, 0, 2, 2, 3,
+       2, 3, 2, 3, 0, 3, 2, 2, 3, 2, 1, 2, 0, 2, 3, 1, 3, 3, 0, 3, 3, 1,
+       3, 3, 1, 3, 3, 3, 2, 0, 2, 3, 0, 3, 1, 3, 1, 1, 3, 3, 3, 3, 3, 3,
+       3, 1, 1, 1, 3, 0, 3, 3, 3], dtype=int64)
+</code></pre><h4 id="准确率计算"><a href="#准确率计算" class="headerlink" title="准确率计算"></a>准确率计算</h4><figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">get_accuracy(y_test,bt_y_predict)</span><br></pre></td></tr></table></figure>
+<pre><code>0.8991596638655462
+</code></pre><p>根据准确率可以看到在决策树通过装袋（Bagging）算法后预测准确率有明显提升。</p>
+<h3 id="随机森林-Random-Forest"><a href="#随机森林-Random-Forest" class="headerlink" title="随机森林 Random Forest"></a>随机森林 Random Forest</h3><p>其实，Bagging tree 算法，是应用子数据集中的所有特征构建一棵完整的树，最终通过投票的方式进行预测。而随机森林就是在 Bagging tree 算法的基础上进行进一步的改进。</p>
+<p><img width="800px" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/Bagging-and-Boosting/2.png"></p>
+<p>随机森林的思想就是将一个大的数据集使用<strong>自助采样法</strong>进行处理，即从原样本数据集中随机抽取多个子样本集，并基于每一个子样本集生成相应的决策树。这样，就可以构建出由许多小决策树组形成的决策树「森林」。最后，实验通过<strong>投票法</strong>选择决策树最多的预测结果作为最终的输出。</p>
+<p>所以，随机森林的名称来源就是「随机抽样 + 决策树森林」。</p>
+<h4 id="随机森林算法原理"><a href="#随机森林算法原理" class="headerlink" title="随机森林算法原理"></a>随机森林算法原理</h4><p>随机森林作为装袋（Bagging）的代表算法，算法原理和装袋十分相似，但在此基础上做了一些改进：  </p>
+<ol>
+<li><p>对于普通的决策树，会在 N 个样本的所有特征中选择一个最优划分特征，但是随机森林首先会从所有特征中随机选择部分特征，再从该部分特征中选择一个最优划分特征。这样进一步增强了模型的泛化能力。 </p>
+</li>
+<li><p>在决定部分特征个数时，通过交叉验证的方式来获取一个合适的值。</p>
+</li>
+</ol>
+<p>随机森林算法流程：  </p>
+<ol>
+<li>从样本集中有放回随机采样选出 <code>n</code> 个样本；  </li>
+<li>从所有特征中随机选择 <code>k</code> 个特征，对选出的样本利用这些特征建立决策树；  </li>
+<li>重复以上两步 <code>m</code> 次，即生成 <code>m</code> 棵决策树，形成随机森林；  </li>
+<li>对于新数据，经过每棵树决策，最后投票确认分到哪一类。 </li>
+</ol>
+<h4 id="模型构建和数据预测"><a href="#模型构建和数据预测" class="headerlink" title="模型构建和数据预测"></a>模型构建和数据预测</h4><p>在划分好数据集之后，接下来就是进行模型的构建以及预测。下面我们通过 <code>scikit-learn</code> 来对其进行实现。 </p>
+<p>在 <code>scikit-learn</code> 随机森林常用参数如下：</p>
+<figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">RandomForestClassifier(n_estimators,criterion,max_features,random_state=<span class="hljs-keyword">None</span>)</span><br></pre></td></tr></table></figure>
+<p>其中：</p>
+<ul>
+<li><code>n_estimators</code>：表示建立树的个数，默认值为 10 。</li>
+<li><code>criterion</code>：表示特征划分方法选择，默认为 <code>gini</code>，可选择为 <code>entropy</code> (信息增益)。</li>
+<li><code>max_features</code>：表示随机选择特征个数，默认为特征数的根号。  </li>
+</ul>
+<p>常用方法:  </p>
+<ul>
+<li><code>fit(x,y)</code>：训练随机森林。</li>
+<li><code>predict(X)</code>：对数据集进行预测返回预测结果。</li>
+</ul>
+<figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">from</span> sklearn.ensemble <span class="hljs-keyword">import</span> RandomForestClassifier</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># 这里构建 100 棵决策树，采用信息熵来寻找最优划分特征。</span></span><br><span class="line">rf = RandomForestClassifier(</span><br><span class="line">    n_estimators=<span class="hljs-number">100</span>, max_features=<span class="hljs-keyword">None</span>, criterion=<span class="hljs-string">'entropy'</span>)</span><br><span class="line">rf.fit(x_train, y_train)  <span class="hljs-comment"># 进行模型的训练</span></span><br><span class="line">rf_y_predict = rf.predict(x_test)</span><br><span class="line">rf_y_predict</span><br></pre></td></tr></table></figure>
+<pre><code>array([3, 0, 3, 2, 1, 2, 3, 2, 3, 3, 3, 2, 1, 3, 3, 2, 2, 0, 1, 2, 1, 2,
+       1, 3, 3, 2, 3, 0, 2, 3, 3, 3, 2, 2, 3, 3, 0, 1, 2, 2, 2, 1, 3, 3,
+       1, 3, 2, 3, 3, 3, 3, 3, 1, 2, 2, 2, 1, 3, 2, 3, 3, 2, 0, 2, 2, 3,
+       2, 3, 2, 3, 0, 3, 2, 2, 3, 2, 1, 2, 0, 2, 2, 1, 3, 3, 0, 3, 3, 1,
+       3, 3, 1, 3, 3, 3, 2, 0, 2, 3, 0, 3, 1, 3, 1, 1, 3, 3, 3, 3, 3, 3,
+       3, 1, 1, 1, 3, 0, 3, 3, 3], dtype=int64)
+</code></pre><h4 id="准确率计算-1"><a href="#准确率计算-1" class="headerlink" title="准确率计算"></a>准确率计算</h4><p>当我们训练好模型并进行分类预测之后，可以通过比对预测结果和真实结果得到预测的准确率。</p>
+<figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">get_accuracy(y_test, rf_y_predict)</span><br></pre></td></tr></table></figure>
+<pre><code>0.8907563025210085
+</code></pre><p>可以通过结果看到，本次实验的数据集用随机森林预测的准确率和用 Bagging tree 预测的准确率差别不大，但随着数据集的增大和特征数的增多，随机森林的优势就会慢慢显现出来。</p>
+<h2 id="提升算法-Boosting"><a href="#提升算法-Boosting" class="headerlink" title="提升算法 Boosting"></a>提升算法 Boosting</h2><p>当「个体学习器」之间存在较强的依赖时，采用装袋的算法便有些不合适，此时最好的方法就是使用串行集成方式：提升（Boosting）。</p>
+<h3 id="提升算法原理"><a href="#提升算法原理" class="headerlink" title="提升算法原理"></a>提升算法原理</h3><p>提升算法是可以将弱学习器提升为强学习器的算法，其具体思想是从初始训练集训练出一个「个体学习器」，再根据个体学习器的表现对训练样本分布进行调整，使得在个体学习器中判断错的训练样本在后续受到更多的关注，然后基于调整后的样本分布来训练下一个「个体学习器」。如此重复进行，直至个体学习器数目达到事先指定的值 <code>T</code>，最终将这 <code>T</code> 个「个体学习器」输出的值进行加权结合得到最终的输出值。</p>
+<h3 id="Adaboost"><a href="#Adaboost" class="headerlink" title="Adaboost"></a>Adaboost</h3><p>提升（Boosting）算法中最具代表性的算法为 Adaboost。  </p>
+<p>AdaBoost（Adaptive Boosting）名为自适应增强，其主要自适应增强表现在：上一个「个体学习器」中被错误分类的样本的权值会增大，正确分类的样本的权值会减小，并再次用来训练下一个基本分类器。在每一轮迭代中，加入一个新的弱分类器，直到达到某个预定的足够小的错误率或达到预先指定的最大迭代次数才确定最终的强分类器。</p>
+<p><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/Bagging-and-Boosting/3.png" alt=""></p>
+<h4 id="AdaBoost-原理"><a href="#AdaBoost-原理" class="headerlink" title="AdaBoost 原理"></a>AdaBoost 原理</h4><p>AdaBoost 算法与 Boosting 算法不同的是，其不需要预先知道弱分类器的误差，并且最后得到的强分类器的分类精度依赖于所有弱分类器的分类精度。</p>
+<p>Adaboost 算法流程：</p>
+<ol>
+<li>数据准备：通过数据清理和数据整理的方式得到符合规范的数据。</li>
+<li>初始化权重：如果有 <code>N</code> 个训练样本数据，在最开始时每一个数据被赋予相同的权值：<code>1/N</code>。  </li>
+<li>弱分类器预测：将有权重的训练样本放入弱分类器进行分类预测。  </li>
+<li>更改权重：如果某个样本点被准确地分类，降低其权值；若被分类错误，那么提高其权值。然后，权值更新过的样本集被用于训练下一个分类器。    </li>
+<li>强分类器组合：重复 <code>3，4</code> 步骤，直至训练结束，加大分类误差率小的弱分类器的权重（这里的权重和样本权重不一样），使其在最终的分类函数中起着较大的决定作用，降低分类误差率大的弱分类器的权重，使其在最终的分类函数中起着较小的决定作用，最终输出结果。</li>
+</ol>
+<h4 id="模型构建和数据预测-1"><a href="#模型构建和数据预测-1" class="headerlink" title="模型构建和数据预测"></a>模型构建和数据预测</h4><p>在划分好数据集之后，接下来就是进行模型的构建以及预测。下面我们通过 <code>scikit-learn</code> 来对其进行实现。 </p>
+<p>在 <code>scikit-learn</code> Adaboost 常用参数如下：</p>
+<figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">AdaBoostClassifier(base_estimators,n_estimators)</span><br></pre></td></tr></table></figure>
+<p>其中：</p>
+<ul>
+<li><code>base_estimators</code>：表示弱分类器种类，默认为 CART 分类树。</li>
+<li><code>n_estimators</code>：表示弱学习器的最大个数，默认值为 <code>50</code>。</li>
+</ul>
+<p>常用方法:</p>
+<ul>
+<li><code>fit(x,y)</code>：训练弱分类器。</li>
+<li><code>predict(X)</code>：对数据集进行预测返回预测结果。</li>
+</ul>
+<figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">from</span> sklearn.ensemble <span class="hljs-keyword">import</span> AdaBoostClassifier</span><br><span class="line"></span><br><span class="line">ad = AdaBoostClassifier(n_estimators=<span class="hljs-number">100</span>)</span><br><span class="line">ad.fit(x_train, y_train)</span><br><span class="line">ad_y_predict = ad.predict(x_test)</span><br><span class="line">ad_y_predict</span><br></pre></td></tr></table></figure>
+<pre><code>array([3, 3, 3, 2, 0, 3, 3, 2, 3, 3, 3, 2, 1, 3, 3, 2, 2, 0, 1, 2, 1, 3,
+       1, 3, 3, 3, 3, 0, 2, 3, 3, 3, 2, 2, 3, 3, 0, 1, 2, 2, 3, 1, 3, 3,
+       1, 3, 2, 3, 2, 3, 3, 3, 1, 2, 3, 3, 1, 3, 2, 2, 3, 2, 0, 2, 2, 3,
+       2, 3, 3, 3, 0, 3, 2, 2, 3, 2, 1, 2, 0, 2, 2, 1, 3, 3, 3, 3, 3, 1,
+       3, 3, 1, 3, 3, 1, 2, 0, 2, 3, 0, 3, 1, 3, 1, 0, 3, 3, 3, 3, 2, 3,
+       3, 1, 3, 1, 3, 3, 3, 1, 3], dtype=int64)
+</code></pre><h4 id="准确率计算-2"><a href="#准确率计算-2" class="headerlink" title="准确率计算"></a>准确率计算</h4><p>当我们训练好模型并进行分类预测之后，可以通过比对预测结果和真实结果得到预测的准确率。</p>
+<figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">get_accuracy(y_test, ad_y_predict)</span><br></pre></td></tr></table></figure>
+<pre><code>0.7983193277310925
+</code></pre><p>通过结果可以看到，应用 Adaboost 算法得到的准确率和决策树相差不大，说明在使用 Adaboost 算法时预测效果不好。</p>
+<h3 id="梯度提升树-GBDT"><a href="#梯度提升树-GBDT" class="headerlink" title="梯度提升树 GBDT"></a>梯度提升树 GBDT</h3><p>梯度提升树（Gradient Boosting Decison Tree，GBDT）同样是 Boosting 算法家族中的一员， Adaboost 是利用前一轮迭代弱学习器的误差率来更新训练集的权重，而梯度提升树所采用的是前向分布算法，且弱学习器限定了只能使用CART树模型。  </p>
+<h4 id="梯度提升树算法原理"><a href="#梯度提升树算法原理" class="headerlink" title="梯度提升树算法原理"></a>梯度提升树算法原理</h4><p>在 GBDT 的迭代中，假设我们前一轮迭代得到的强学习器是 $f_{t-1}(x)$, 损失函数是 $L(y,f_{t-1}(x))$, 我们本轮迭代的目标是找到一个 CART 回归树模型的弱学习器 $h_{t}(x)$，让本轮的损失 $L(y,f_{t}(x) = L(y , f_{t−1}(x)+h_{t}(x))$ 最小。也就是说，本轮迭代找到决策树，要让样本的损失尽量变得更小。</p>
+<p>算法流程：</p>
+<ol>
+<li>数据准备：通过数据清理和数据整理的方式得到符合规范的数据。</li>
+<li>初始化权重：如果有 <code>N</code> 个训练样本数据，在最开始时每一个数据被赋予相同的权值：<code>1/N</code>。  </li>
+<li>弱分类器预测：将有权重的训练样本放入弱分类器进行分类预测。  </li>
+<li>CART 树拟合：计算每一个子样本的梯度值，通过梯度值和子样本拟合一棵 CART 树 </li>
+<li>更新强学习器：在拟合好的 CART树中通过损失函数计算出最佳的拟合值，更新先前组成的强学习器。  </li>
+<li>强分类器组合：重复 <code>3，4，5</code> 步骤，直至训练结束，得到一个强分类器，最终输出结果。</li>
+</ol>
+<h4 id="梯度提升树模型构建及预测"><a href="#梯度提升树模型构建及预测" class="headerlink" title="梯度提升树模型构建及预测"></a>梯度提升树模型构建及预测</h4><p>在划分好数据集之后，接下来就是进行模型的构建以及预测。下面我们通过 <code>scikit-learn</code> 来对其进行实现。 </p>
+<p>在 <code>scikit-learn</code> GBDT 常用参数如下：</p>
+<figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">GradientBoostingClassifier(max_depth = <span class="hljs-number">3</span>，learning_rate = <span class="hljs-number">0.1</span>, n_estimators = <span class="hljs-number">100</span>，random_state = <span class="hljs-keyword">None</span>)</span><br></pre></td></tr></table></figure>
+<p>其中：</p>
+<ul>
+<li><code>max_depth</code>:表示生成 CART 树的最大深度，默认为 3</li>
+<li><code>learning_rate</code>:表示学习效率，默认为 0.1。</li>
+<li><code>n_estimators</code>：表示弱学习器的最大个数，默认值为 100。</li>
+<li><code>random_state</code>:表示随机数种子。</li>
+</ul>
+<p>常用方法:</p>
+<ul>
+<li><code>fit(x,y)</code>：训练弱分类器。</li>
+<li><code>predict(X)</code>：对数据集进行预测返回预测结果。</li>
+</ul>
+<figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">from</span> sklearn.ensemble <span class="hljs-keyword">import</span> GradientBoostingClassifier</span><br><span class="line"></span><br><span class="line">clf = GradientBoostingClassifier(</span><br><span class="line">    n_estimators=<span class="hljs-number">100</span>, learning_rate=<span class="hljs-number">1.0</span>, random_state=<span class="hljs-number">33</span>)</span><br><span class="line">clf.fit(x_train, y_train)</span><br><span class="line">gt_y_predict = clf.predict(x_test)</span><br><span class="line">gt_y_predict</span><br></pre></td></tr></table></figure>
+<pre><code>array([3, 0, 3, 2, 1, 3, 3, 2, 3, 3, 3, 2, 1, 3, 3, 2, 2, 0, 1, 2, 1, 2,
+       1, 3, 3, 2, 3, 0, 2, 3, 3, 3, 2, 2, 3, 3, 0, 1, 2, 2, 2, 1, 3, 3,
+       1, 3, 2, 3, 3, 3, 3, 3, 1, 2, 3, 2, 1, 3, 2, 3, 3, 2, 0, 2, 2, 3,
+       2, 3, 2, 3, 0, 3, 2, 2, 3, 2, 1, 2, 0, 2, 2, 1, 3, 3, 0, 3, 3, 1,
+       3, 3, 1, 3, 3, 3, 2, 0, 0, 3, 0, 3, 1, 3, 1, 1, 3, 3, 3, 3, 3, 3,
+       3, 1, 1, 1, 3, 2, 3, 3, 3], dtype=int64)
+</code></pre><h4 id="准确率计算-3"><a href="#准确率计算-3" class="headerlink" title="准确率计算"></a>准确率计算</h4><figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">get_accuracy(y_test, gt_y_predict)</span><br></pre></td></tr></table></figure>
+<pre><code>0.8739495798319328
+</code></pre><p>可以看到，在使用装袋和提升算法时，在大部分情况下，会产生更好的预测结果，但有时也可能出现没有优化的情况。事实上，机器学习分类器的选择就是如此，没有最好的分类器只有最适合的分类器，不同的数据集，由于其数据特点的不同，在不同的分类器中表现也不同。</p>
+<p><strong>拓展阅读：</strong></p>
+<ul>
+<li><a href="https://zh.wikipedia.org/zh-hans/随机森林" target="_blank" rel="noopener">随机森林 - 维基百科</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Bootstrap_aggregating" target="_blank" rel="noopener">Bootstrap aggregating - 维基百科</a></li>
+</ul>
+
+        </div>
+        
+        <div class="level is-size-7 is-uppercase">
+            <div class="level-start">
+                <div class="level-item">
+                    <span class="is-size-6 has-text-grey has-mr-7">#</span>
+                    <a class="has-link-grey -link" href="/tags/Bagging/">Bagging</a>, <a class="has-link-grey -link" href="/tags/Boosting/">Boosting</a>, <a class="has-link-grey -link" href="/tags/Machine-Learning/">Machine Learning</a>, <a class="has-link-grey -link" href="/tags/Python/">Python</a>
+                </div>
+            </div>
+        </div>
+        
+        
+        
+    </div>
+</div>
+
+
+
+<div class="card">
+    <div class="card-content">
+        <h3 class="menu-label has-text-centered">喜欢这篇文章？打赏一下作者吧</h3>
+        <div class="buttons is-centered">
+            
+                
+<a class="button is-info donate">
+    <span class="icon is-small">
+        <i class="fab fa-alipay"></i>
+    </span>
+    <span>支付宝</span>
+    <div class="qrcode"><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/reward/alipay-reward-image.jpg" alt="支付宝"></div>
+</a>
+
+                
+                
+<a class="button is-success donate">
+    <span class="icon is-small">
+        <i class="fab fa-weixin"></i>
+    </span>
+    <span>微信</span>
+    <div class="qrcode"><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/reward/wechat-reward-image.jpg" alt="微信"></div>
+</a>
+
+                
+        </div>
+    </div>
+</div>
+
+
+
+<div class="card card-transparent">
+    <div class="level post-navigation is-flex-wrap is-mobile">
+        
+        <div class="level-start">
+            <a class="level level-item has-link-grey  article-nav-prev" href="/2019/02/01/Decision_Tree/">
+                <i class="level-item fas fa-chevron-left"></i>
+                <span class="level-item">机器学习|决策树详解 (Python 语言描述)</span>
+            </a>
+        </div>
+        
+        
+        <div class="level-end">
+            <a class="level level-item has-link-grey  article-nav-next" href="/2019/01/31/Neural_Network/">
+                <span class="level-item">机器学习|感知机和人工神经网络详解 (Python 语言描述)</span>
+                <i class="level-item fas fa-chevron-right"></i>
+            </a>
+        </div>
+        
+    </div>
+</div>
+
+
+
+<div class="card">
+    <div class="card-content">
+        <h3 class="title is-5 has-text-weight-normal">评论</h3>
+        
+<div id="valine-thread"></div>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+<script>
+    new Valine({
+        el: '#valine-thread' ,
+        notify: true,
+        verify: false,
+        app_id: 'zzN9t0v9tihDucYhBujOYJUJ-gzGzoHsz',
+        app_key: 'gngT5gD2rOh2hc7C62097Ql6',
+        placeholder: 'Say something...'
+    });
+</script>
+
+    </div>
+</div>
+</div>
+                
+
+
+
+
+<div class="column is-4-tablet is-4-desktop is-3-widescreen  has-order-1 column-left ">
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <nav class="level">
+            <div class="level-item has-text-centered">
+                <div>
+                    <img class="image is-128x128 has-mb-6" src="https://avatars0.githubusercontent.com/u/38065710?s=400&amp;u=80ee4d360562451484188e6f1677fa442720891b&amp;v=4" alt="Laugh">
+                    
+                    <p class="is-size-4 is-block">
+                        Laugh
+                    </p>
+                    
+                    
+                    <p class="is-size-6 is-block">
+                        The life I want, there is no shortcut.
+                    </p>
+                    
+                    
+                    <p class="is-size-6 is-flex is-flex-center has-text-grey">
+                        <i class="fas fa-map-marker-alt has-mr-7"></i>
+                        <span>Northern Hemisphere</span>
+                    </p>
+                    
+                </div>
+            </div>
+        </nav>
+        <nav class="level is-mobile">
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        文章
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        17
+                    </p>
+                </div>
+            </div>
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        分类
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        20
+                    </p>
+                </div>
+            </div>
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        标签
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        26
+                    </p>
+                </div>
+            </div>
+        </nav>
+        <div class="level">
+            <a class="level-item button is-link is-rounded" href="http://github.com/laugh12321">
+                follow</a>
+        </div>
+        
+        
+        <div class="level is-mobile">
+            
+            <a class="level-item button is-white is-marginless" target="_blank" title="Github" href="http://github.com/laugh12321">
+                
+                <i class="fab fa-github"></i>
+                
+            </a>
+            
+            <a class="level-item button is-white is-marginless" target="_blank" title="Steam" href="https://steamcommunity.com/profiles/76561198445204275/">
+                
+                <i class="fab fa-steam-square"></i>
+                
+            </a>
+            
+            <a class="level-item button is-white is-marginless" target="_blank" title="RSS" href="/">
+                
+                <i class="fas fa-rss"></i>
+                
+            </a>
+            
+        </div>
+        
+    </div>
+</div>
+    
+        
+    
+        
+
+<div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+        <h3 class="menu-label">
+            链接
+        </h3>
+        <ul class="menu-list">
+        
+            <li>
+                <a class="level is-mobile" href="https://styx11.github.io/" target="_blank">
+                    <span class="level-left">
+                        <span class="level-item">Styx</span>
+                    </span>
+                    <span class="level-right">
+                        <span class="level-item tag">styx11.github.io</span>
+                    </span>
+                </a>
+            </li>
+        
+            <li>
+                <a class="level is-mobile" href="http://luuuuyang.com/" target="_blank">
+                    <span class="level-left">
+                        <span class="level-item">Luuuuyang</span>
+                    </span>
+                    <span class="level-right">
+                        <span class="level-item tag">luuuuyang.com</span>
+                    </span>
+                </a>
+            </li>
+        
+            <li>
+                <a class="level is-mobile" href="https://www.vseu.com/" target="_blank">
+                    <span class="level-left">
+                        <span class="level-item">幸运草</span>
+                    </span>
+                    <span class="level-right">
+                        <span class="level-item tag">www.vseu.com</span>
+                    </span>
+                </a>
+            </li>
+        
+            <li>
+                <a class="level is-mobile" href="https://tea9.xyz/" target="_blank">
+                    <span class="level-left">
+                        <span class="level-item">tea9</span>
+                    </span>
+                    <span class="level-right">
+                        <span class="level-item tag">tea9.xyz</span>
+                    </span>
+                </a>
+            </li>
+        
+            <li>
+                <a class="level is-mobile" href="https://hongjay233.github.io/" target="_blank">
+                    <span class="level-left">
+                        <span class="level-item">HongJay</span>
+                    </span>
+                    <span class="level-right">
+                        <span class="level-item tag">hongjay233.github.io</span>
+                    </span>
+                </a>
+            </li>
+        
+            <li>
+                <a class="level is-mobile" href="https://www.itfire.cn/" target="_blank">
+                    <span class="level-left">
+                        <span class="level-item">仓鼠‘s blog</span>
+                    </span>
+                    <span class="level-right">
+                        <span class="level-item tag">www.itfire.cn</span>
+                    </span>
+                </a>
+            </li>
+        
+            <li>
+                <a class="level is-mobile" href="https://blog.wzy1999.wang/" target="_blank">
+                    <span class="level-left">
+                        <span class="level-item">执念</span>
+                    </span>
+                    <span class="level-right">
+                        <span class="level-item tag">blog.wzy1999.wang</span>
+                    </span>
+                </a>
+            </li>
+        
+        </ul>
+        </div>
+    </div>
+</div>
+
+
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                分类
+            </h3>
+            <ul class="menu-list">
+            <li>
+        <a class="level is-marginless" href="/categories/Python/">
+            <span class="level-start">
+                <span class="level-item">Python</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">2</span>
+            </span>
+        </a><ul><li>
+        <a class="level is-marginless" href="/categories/Python/排序算法/">
+            <span class="level-start">
+                <span class="level-item">排序算法</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">2</span>
+            </span>
+        </a></li></ul></li><li>
+        <a class="level is-marginless" href="/categories/Ubuntu/">
+            <span class="level-start">
+                <span class="level-item">Ubuntu</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">2</span>
+            </span>
+        </a><ul><li>
+        <a class="level is-marginless" href="/categories/Ubuntu/ECS/">
+            <span class="level-start">
+                <span class="level-item">ECS</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">2</span>
+            </span>
+        </a></li></ul></li><li>
+        <a class="level is-marginless" href="/categories/博客/">
+            <span class="level-start">
+                <span class="level-item">博客</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">2</span>
+            </span>
+        </a><ul><li>
+        <a class="level is-marginless" href="/categories/博客/GitHub-Pages/">
+            <span class="level-start">
+                <span class="level-item">GitHub Pages</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">1</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/博客/主题优化/">
+            <span class="level-start">
+                <span class="level-item">主题优化</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">1</span>
+            </span>
+        </a></li></ul></li><li>
+        <a class="level is-marginless" href="/categories/机器学习/">
+            <span class="level-start">
+                <span class="level-item">机器学习</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">10</span>
+            </span>
+        </a><ul><li>
+        <a class="level is-marginless" href="/categories/机器学习/K-近邻算法/">
+            <span class="level-start">
+                <span class="level-item">K-近邻算法</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">1</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/机器学习/决策树/">
+            <span class="level-start">
+                <span class="level-item">决策树</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">1</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/机器学习/多项式回归/">
+            <span class="level-start">
+                <span class="level-item">多项式回归</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">1</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/机器学习/感知机/">
+            <span class="level-start">
+                <span class="level-item">感知机</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">1</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/机器学习/支持向量机/">
+            <span class="level-start">
+                <span class="level-item">支持向量机</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">1</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/机器学习/朴素贝叶斯/">
+            <span class="level-start">
+                <span class="level-item">朴素贝叶斯</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">1</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/机器学习/线性回归/">
+            <span class="level-start">
+                <span class="level-item">线性回归</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">2</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/机器学习/装袋/">
+            <span class="level-start">
+                <span class="level-item">装袋</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">1</span>
+            </span>
+        </a></li></ul></li><li>
+        <a class="level is-marginless" href="/categories/深度学习/">
+            <span class="level-start">
+                <span class="level-item">深度学习</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">1</span>
+            </span>
+        </a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <h3 class="menu-label">
+            标签云
+        </h3>
+        <a href="/tags/Artificial-Neural-Network/" style="font-size: 10px;">Artificial Neural Network</a> <a href="/tags/Bagging/" style="font-size: 10px;">Bagging</a> <a href="/tags/Blog/" style="font-size: 13.33px;">Blog</a> <a href="/tags/Boosting/" style="font-size: 10px;">Boosting</a> <a href="/tags/Decision-Tree/" style="font-size: 10px;">Decision Tree</a> <a href="/tags/Deep-Learning/" style="font-size: 10px;">Deep Learning</a> <a href="/tags/ECS/" style="font-size: 13.33px;">ECS</a> <a href="/tags/GitHub-Pages/" style="font-size: 13.33px;">GitHub Pages</a> <a href="/tags/Jekyll/" style="font-size: 10px;">Jekyll</a> <a href="/tags/K-Nearest-Neighbors/" style="font-size: 10px;">K-Nearest Neighbors</a> <a href="/tags/Linear-Regression/" style="font-size: 13.33px;">Linear Regression</a> <a href="/tags/MAE/" style="font-size: 10px;">MAE</a> <a href="/tags/MAPE/" style="font-size: 10px;">MAPE</a> <a href="/tags/MSE/" style="font-size: 10px;">MSE</a> <a href="/tags/Machine-Learning/" style="font-size: 20px;">Machine Learning</a> <a href="/tags/Naive-Bayes/" style="font-size: 10px;">Naive Bayes</a> <a href="/tags/Next/" style="font-size: 10px;">Next</a> <a href="/tags/Perceptron/" style="font-size: 10px;">Perceptron</a> <a href="/tags/Polynomial-Regression/" style="font-size: 10px;">Polynomial Regression</a> <a href="/tags/Python/" style="font-size: 16.67px;">Python</a> <a href="/tags/Seafile/" style="font-size: 10px;">Seafile</a> <a href="/tags/Support-Vector-Machine/" style="font-size: 10px;">Support Vector Machine</a> <a href="/tags/Ubuntu/" style="font-size: 13.33px;">Ubuntu</a> <a href="/tags/python/" style="font-size: 13.33px;">python</a> <a href="/tags/排序算法/" style="font-size: 13.33px;">排序算法</a> <a href="/tags/服务器/" style="font-size: 13.33px;">服务器</a>
+    </div>
+</div>
+
+    
+    
+        <div class="column-right-shadow is-hidden-widescreen ">
+        
+            
+<div class="card widget">
+    <div class="card-content">
+        <h3 class="menu-label">
+            最新文章
+        </h3>
+        
+        <article class="media">
+            
+            <a href="/2019/02/01/Decision_Tree/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/photo/08.jpg" alt="机器学习|决策树详解 (Python 语言描述)">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-01-31T16:00:00.000Z">2019-02-01</time></div>
+                    <a href="/2019/02/01/Decision_Tree/" class="has-link-black-ter is-size-6">机器学习|决策树详解 (Python 语言描述)</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/机器学习/">机器学习</a> / <a class="has-link-grey -link" href="/categories/机器学习/决策树/">决策树</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2019/02/01/Bagging_and_Boosting/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/photo/09.jpg" alt="机器学习|装袋和提升方法详解 (Python 语言描述)">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-01-31T16:00:00.000Z">2019-02-01</time></div>
+                    <a href="/2019/02/01/Bagging_and_Boosting/" class="has-link-black-ter is-size-6">机器学习|装袋和提升方法详解 (Python 语言描述)</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/机器学习/">机器学习</a> / <a class="has-link-grey -link" href="/categories/机器学习/装袋/">装袋</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2019/01/31/Neural_Network/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/photo/07.jpg" alt="机器学习|感知机和人工神经网络详解 (Python 语言描述)">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-01-30T16:00:00.000Z">2019-01-31</time></div>
+                    <a href="/2019/01/31/Neural_Network/" class="has-link-black-ter is-size-6">机器学习|感知机和人工神经网络详解 (Python 语言描述)</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/机器学习/">机器学习</a> / <a class="has-link-grey -link" href="/categories/机器学习/感知机/">感知机</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2019/01/24/Seafile_Pro_settings/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/photo/Iskushuban%2C%20Somalia.jpg" alt="阿里云服务器ECS Ubuntu16.04 + Seafile 搭建私人网盘 （Seafile Pro）">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-01-23T16:00:00.000Z">2019-01-24</time></div>
+                    <a href="/2019/01/24/Seafile_Pro_settings/" class="has-link-black-ter is-size-6">阿里云服务器ECS Ubuntu16.04 + Seafile 搭建私人网盘 （Seafile Pro）</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/Ubuntu/">Ubuntu</a> / <a class="has-link-grey -link" href="/categories/Ubuntu/ECS/">ECS</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2019/01/23/Ubuntu_16.04_setting/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/photo/Hardap%2C%20Namibia.jpg" alt="阿里云服务器ECS Ubuntu16.04 初次使用配置教程(图形界面安装)">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-01-22T16:00:00.000Z">2019-01-23</time></div>
+                    <a href="/2019/01/23/Ubuntu_16.04_setting/" class="has-link-black-ter is-size-6">阿里云服务器ECS Ubuntu16.04 初次使用配置教程(图形界面安装)</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/Ubuntu/">Ubuntu</a> / <a class="has-link-grey -link" href="/categories/Ubuntu/ECS/">ECS</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+    </div>
+</div>
+
+        
+            <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+        <h3 class="menu-label">
+            归档
+        </h3>
+        <ul class="menu-list">
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/02/">
+                <span class="level-start">
+                    <span class="level-item">二月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">9</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        </ul>
+        </div>
+    </div>
+</div>
+        
+            <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                标签
+            </h3>
+            <div class="field is-grouped is-grouped-multiline">
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Artificial-Neural-Network/">
+                        <span class="tag">Artificial Neural Network</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Bagging/">
+                        <span class="tag">Bagging</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Blog/">
+                        <span class="tag">Blog</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Boosting/">
+                        <span class="tag">Boosting</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Decision-Tree/">
+                        <span class="tag">Decision Tree</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Deep-Learning/">
+                        <span class="tag">Deep Learning</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/ECS/">
+                        <span class="tag">ECS</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/GitHub-Pages/">
+                        <span class="tag">GitHub Pages</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Jekyll/">
+                        <span class="tag">Jekyll</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/K-Nearest-Neighbors/">
+                        <span class="tag">K-Nearest Neighbors</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Linear-Regression/">
+                        <span class="tag">Linear Regression</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/MAE/">
+                        <span class="tag">MAE</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/MAPE/">
+                        <span class="tag">MAPE</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/MSE/">
+                        <span class="tag">MSE</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Machine-Learning/">
+                        <span class="tag">Machine Learning</span>
+                        <span class="tag is-grey">10</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Naive-Bayes/">
+                        <span class="tag">Naive Bayes</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Next/">
+                        <span class="tag">Next</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Perceptron/">
+                        <span class="tag">Perceptron</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Polynomial-Regression/">
+                        <span class="tag">Polynomial Regression</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Python/">
+                        <span class="tag">Python</span>
+                        <span class="tag is-grey">9</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Seafile/">
+                        <span class="tag">Seafile</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Support-Vector-Machine/">
+                        <span class="tag">Support Vector Machine</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Ubuntu/">
+                        <span class="tag">Ubuntu</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/python/">
+                        <span class="tag">python</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/排序算法/">
+                        <span class="tag">排序算法</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/服务器/">
+                        <span class="tag">服务器</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+        
+        </div>
+    
+</div>
+
+                
+
+
+
+
+<div class="column is-4-tablet is-4-desktop is-3-widescreen is-hidden-touch is-hidden-desktop-only has-order-3 column-right ">
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <h3 class="menu-label">
+            最新文章
+        </h3>
+        
+        <article class="media">
+            
+            <a href="/2019/02/01/Decision_Tree/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/photo/08.jpg" alt="机器学习|决策树详解 (Python 语言描述)">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-01-31T16:00:00.000Z">2019-02-01</time></div>
+                    <a href="/2019/02/01/Decision_Tree/" class="has-link-black-ter is-size-6">机器学习|决策树详解 (Python 语言描述)</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/机器学习/">机器学习</a> / <a class="has-link-grey -link" href="/categories/机器学习/决策树/">决策树</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2019/02/01/Bagging_and_Boosting/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/photo/09.jpg" alt="机器学习|装袋和提升方法详解 (Python 语言描述)">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-01-31T16:00:00.000Z">2019-02-01</time></div>
+                    <a href="/2019/02/01/Bagging_and_Boosting/" class="has-link-black-ter is-size-6">机器学习|装袋和提升方法详解 (Python 语言描述)</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/机器学习/">机器学习</a> / <a class="has-link-grey -link" href="/categories/机器学习/装袋/">装袋</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2019/01/31/Neural_Network/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/photo/07.jpg" alt="机器学习|感知机和人工神经网络详解 (Python 语言描述)">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-01-30T16:00:00.000Z">2019-01-31</time></div>
+                    <a href="/2019/01/31/Neural_Network/" class="has-link-black-ter is-size-6">机器学习|感知机和人工神经网络详解 (Python 语言描述)</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/机器学习/">机器学习</a> / <a class="has-link-grey -link" href="/categories/机器学习/感知机/">感知机</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2019/01/24/Seafile_Pro_settings/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/photo/Iskushuban%2C%20Somalia.jpg" alt="阿里云服务器ECS Ubuntu16.04 + Seafile 搭建私人网盘 （Seafile Pro）">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-01-23T16:00:00.000Z">2019-01-24</time></div>
+                    <a href="/2019/01/24/Seafile_Pro_settings/" class="has-link-black-ter is-size-6">阿里云服务器ECS Ubuntu16.04 + Seafile 搭建私人网盘 （Seafile Pro）</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/Ubuntu/">Ubuntu</a> / <a class="has-link-grey -link" href="/categories/Ubuntu/ECS/">ECS</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2019/01/23/Ubuntu_16.04_setting/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/photo/Hardap%2C%20Namibia.jpg" alt="阿里云服务器ECS Ubuntu16.04 初次使用配置教程(图形界面安装)">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-01-22T16:00:00.000Z">2019-01-23</time></div>
+                    <a href="/2019/01/23/Ubuntu_16.04_setting/" class="has-link-black-ter is-size-6">阿里云服务器ECS Ubuntu16.04 初次使用配置教程(图形界面安装)</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/Ubuntu/">Ubuntu</a> / <a class="has-link-grey -link" href="/categories/Ubuntu/ECS/">ECS</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+    </div>
+</div>
+
+    
+        <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+        <h3 class="menu-label">
+            归档
+        </h3>
+        <ul class="menu-list">
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/02/">
+                <span class="level-start">
+                    <span class="level-item">二月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">9</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        </ul>
+        </div>
+    </div>
+</div>
+    
+        <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                标签
+            </h3>
+            <div class="field is-grouped is-grouped-multiline">
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Artificial-Neural-Network/">
+                        <span class="tag">Artificial Neural Network</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Bagging/">
+                        <span class="tag">Bagging</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Blog/">
+                        <span class="tag">Blog</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Boosting/">
+                        <span class="tag">Boosting</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Decision-Tree/">
+                        <span class="tag">Decision Tree</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Deep-Learning/">
+                        <span class="tag">Deep Learning</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/ECS/">
+                        <span class="tag">ECS</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/GitHub-Pages/">
+                        <span class="tag">GitHub Pages</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Jekyll/">
+                        <span class="tag">Jekyll</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/K-Nearest-Neighbors/">
+                        <span class="tag">K-Nearest Neighbors</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Linear-Regression/">
+                        <span class="tag">Linear Regression</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/MAE/">
+                        <span class="tag">MAE</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/MAPE/">
+                        <span class="tag">MAPE</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/MSE/">
+                        <span class="tag">MSE</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Machine-Learning/">
+                        <span class="tag">Machine Learning</span>
+                        <span class="tag is-grey">10</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Naive-Bayes/">
+                        <span class="tag">Naive Bayes</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Next/">
+                        <span class="tag">Next</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Perceptron/">
+                        <span class="tag">Perceptron</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Polynomial-Regression/">
+                        <span class="tag">Polynomial Regression</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Python/">
+                        <span class="tag">Python</span>
+                        <span class="tag is-grey">9</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Seafile/">
+                        <span class="tag">Seafile</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Support-Vector-Machine/">
+                        <span class="tag">Support Vector Machine</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Ubuntu/">
+                        <span class="tag">Ubuntu</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/python/">
+                        <span class="tag">python</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/排序算法/">
+                        <span class="tag">排序算法</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/服务器/">
+                        <span class="tag">服务器</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+    
+    
+</div>
+
+            </div>
+        </div>
+    </section>
+    <footer class="footer">
+    <div class="container">
+        <div class="level">
+            <div class="level-start has-text-centered-mobile">
+                <a class="footer-logo is-block has-mb-6" href="/">
+                
+                    <img src="/images/logo.svg" alt="机器学习|装袋和提升方法详解 (Python 语言描述)" height="28">
+                
+                </a>
+                <p class="is-size-7">
+                &copy; 2019 Laugh&nbsp;
+                Powered by <a href="http://hexo.io/" target="_blank">Hexo</a> & <a href="http://github.com/ppoffice/hexo-theme-icarus">Icarus</a>
+                </p>
+            </div>
+            <div class="level-end">
+            
+                <div class="field has-addons is-flex-center-mobile has-mt-5-mobile is-flex-wrap is-flex-middle">
+                
+                
+                <p class="control">
+                    <a class="button is-white is-large" target="_blank" title="Creative Commons" href="https://creativecommons.org/">
+                        
+                        <i class="fab fa-creative-commons"></i>
+                        
+                    </a>
+                </p>
+                
+                <p class="control">
+                    <a class="button is-white is-large" target="_blank" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/">
+                        
+                        <i class="fab fa-creative-commons-by"></i>
+                        
+                    </a>
+                </p>
+                
+                <p class="control">
+                    <a class="button is-white is-large" target="_blank" title="Download on GitHub" href="http://github.com/ppoffice/hexo-theme-icarus">
+                        
+                        <i class="fab fa-github"></i>
+                        
+                    </a>
+                </p>
+                
+                </div>
+            
+            </div>
+        </div>
+    </div>
+</footer>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script>
+<script>moment.locale("zh-CN");</script>
+
+
+    
+    
+    
+    <script src="/js/animation.js"></script>
+    
+
+    
+    
+    
+    <script src="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/js/lightgallery.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js" defer></script>
+    <script src="/js/gallery.js" defer></script>
+    
+
+    
+    
+
+<div id="outdated">
+    <h6>Your browser is out-of-date!</h6>
+    <p>Update your browser to view this website correctly. <a id="btnUpdateBrowser" href="http://outdatedbrowser.com/">Update
+            my browser now </a></p>
+    <p class="last"><a href="#" id="btnCloseUpdateBrowser" title="Close">&times;</a></p>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/outdatedbrowser@1.1.5/outdatedbrowser/outdatedbrowser.min.js" defer></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        outdatedBrowser({
+            bgColor: '#f25648',
+            color: '#ffffff',
+            lowerThan: 'flex'
+        });
+    });
+</script>
+
+
+    
+    
+<script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    MathJax.Hub.Config({
+        'HTML-CSS': {matchFontHeight: false},
+        SVG: {matchFontHeight: false},
+        CommonHTML: {matchFontHeight: false}
+    });
+});
+</script>
+
+    
+    
+
+<a id="back-to-top" title="回到顶端" href="javascript:;">
+    <i class="fas fa-chevron-up"></i>
+</a>
+<script src="/js/back-to-top.js" defer></script>
+
+
+    
+    
+
+    
+    
+    
+    
+
+    
+    
+    
+    
+    
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script>
+    <script src="/js/clipboard.js" defer></script>
+    
+
+    
+
+
+<script src="/js/main.js" defer></script>
+
+    
+    <div class="searchbox ins-search">
+    <div class="searchbox-container ins-search-container">
+        <div class="searchbox-input-wrapper">
+            <input type="text" class="searchbox-input ins-search-input" placeholder="想要查找什么...">
+            <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="searchbox-result-wrapper ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+    (function (window) {
+        var INSIGHT_CONFIG = {
+            TRANSLATION: {
+                POSTS: '文章',
+                PAGES: '页面',
+                CATEGORIES: '分类',
+                TAGS: '标签',
+                UNTITLED: '(无标题)',
+            },
+            CONTENT_URL: '/content.json',
+        };
+        window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+    })(window);
+</script>
+<script src="/js/insight.js" defer></script>
+<link rel="stylesheet" href="/css/search.css">
+<link rel="stylesheet" href="/css/insight.css"><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+    
+</body>
+</html>
