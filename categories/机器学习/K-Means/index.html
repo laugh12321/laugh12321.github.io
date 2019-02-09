@@ -2,7 +2,7 @@
 <html lang="zh">
 <head><meta name="generator" content="Hexo 3.8.0">
     <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="utf-8">
-<title>标签: Next - Laugh&#39;s blog</title>
+<title>分类: K-Means - Laugh&#39;s blog</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
 
@@ -10,7 +10,7 @@
     <meta name="description" content="Laugh, blog, laugh12321">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Laugh&#39;s blog">
-<meta property="og:url" content="https://www.laugh12321.cn/tags/Next/index.html">
+<meta property="og:url" content="https://www.laugh12321.cn/categories/机器学习/K-Means/index.html">
 <meta property="og:site_name" content="Laugh&#39;s blog">
 <meta property="og:description" content="Laugh, blog, laugh12321">
 <meta property="og:locale" content="zh-CN">
@@ -146,8 +146,11 @@ var _hmt = _hmt || [];
     <div class="card-content">
         <nav class="breadcrumb" aria-label="breadcrumbs">
         <ul>
-            <li><a href="/tags">标签</a></li>
-            <li class="is-active"><a href="#" aria-current="page">Next</a></li>
+            <li><a href="/categories">分类</a></li>
+            
+            <li><a href="/categories/机器学习/">机器学习</a></li>
+            
+            <li class="is-active"><a href="#" aria-current="page">K-Means</a></li>
         </ul>
         </nav>
     </div>
@@ -156,8 +159,8 @@ var _hmt = _hmt || [];
     <div class="card">
     
     <div class="card-image">
-        <a href="/2018/12/24/update_next_for_jekyll/" class="image is-7by1">
-            <img class="thumbnail" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/photo/02.jpg" alt="Jekyll + NexT + GitHub Pages 主题深度优化">
+        <a href="/2019/02/09/Cluster_Of_K-Means/" class="image is-7by1">
+            <img class="thumbnail" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/photo/10.jpg" alt="机器学习|划分聚类之 K-Means 详解 (Python 语言描述)">
         </a>
     </div>
     
@@ -165,17 +168,17 @@ var _hmt = _hmt || [];
         
         <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
             <div class="level-left">
-                <time class="level-item has-text-grey" datetime="2018-12-23T16:00:00.000Z">2018-12-24</time>
+                <time class="level-item has-text-grey" datetime="2019-02-08T16:00:00.000Z">2019-02-09</time>
                 
                 <div class="level-item">
-                <a class="has-link-grey -link" href="/categories/博客/">博客</a>&nbsp;/&nbsp;<a class="has-link-grey -link" href="/categories/博客/主题优化/">主题优化</a>
+                <a class="has-link-grey -link" href="/categories/机器学习/">机器学习</a>&nbsp;/&nbsp;<a class="has-link-grey -link" href="/categories/机器学习/K-Means/">K-Means</a>&nbsp;/&nbsp;<a class="has-link-grey -link" href="/categories/机器学习/K-Means/划分聚类/">划分聚类</a>
                 </div>
                 
                 
                 <span class="level-item has-text-grey">
                     
                     
-                    11 分钟 读完 (大约 1695 个字)
+                    1 小时 读完 (大约 6924 个字)
                 </span>
                 
             </div>
@@ -183,21 +186,20 @@ var _hmt = _hmt || [];
         
         <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
             
-                <a class="has-link-black-ter" href="/2018/12/24/update_next_for_jekyll/">Jekyll + NexT + GitHub Pages 主题深度优化</a>
+                <a class="has-link-black-ter" href="/2019/02/09/Cluster_Of_K-Means/">机器学习|划分聚类之 K-Means 详解 (Python 语言描述)</a>
             
         </h1>
         <div class="content">
-            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>笔者在用 Jekyll 搭建个人博客时踩了很多的坑，最后发现了一款不错的主题 <a href="https://github.com/simpleyyt/jekyll-theme-next" target="_blank" rel="noopener">jekyll-theme-next</a>，但网上关于 Jekyll 版的 Next 主题优化教程少之又少，于是就决定自己写一篇以供参考。</p>
-<blockquote>
-<p>本文仅讲述 Next (Jekyll) 主题的深度优化操作，关于主题的基础配置请移步<a href="http://theme-next.simpleyyt.com/" target="_blank" rel="noopener">官方文档</a>。</p>
-</blockquote>
+            <p>划分聚类，顾名思义，通过划分的方式将数据集划分为多个不重叠的子集（簇），每一个子集作为一个聚类（类别）。</p>
+<p>在划分的过程中，首先由用户确定划分子集的个数 `k`，然后随机选定 `k` 个点作为每一个子集的中心点，接下来通过迭代的方式：计算数据集中每个点与各个中心点之间的距离，更新中心点的位置；最终将数据集划分为 `k` 个子集，即将数据划分为 `k` 类。</p>
+<p>而评估划分的好坏标准就是：保证同一划分的样本之间的差异尽可能的小，且不同划分中的样本差异尽可能的大。</p>
         </div>
         
         
         <div class="level is-mobile">
             <div class="level-start">
                 <div class="level-item">
-                <a class="button is-size-7 is-light" href="/2018/12/24/update_next_for_jekyll/#more">阅读更多</a>
+                <a class="button is-size-7 is-light" href="/2019/02/09/Cluster_Of_K-Means/#more">阅读更多</a>
                 </div>
             </div>
         </div>

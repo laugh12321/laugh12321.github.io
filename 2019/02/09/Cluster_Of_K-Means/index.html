@@ -1,0 +1,1764 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head><meta name="generator" content="Hexo 3.8.0">
+    <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="utf-8">
+<title>机器学习|划分聚类之 K-Means 详解 (Python 语言描述) - Laugh&#39;s blog</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+    <meta name="description" content="划分聚类，顾名思义，通过划分的方式将数据集划分为多个不重叠的子集（簇），每一个子集作为一个聚类（类别）。 在划分的过程中，首先由用户确定划分子集的个数 `k`，然后随机选定 `k` 个点作为每一个子集的中心点，接下来通过迭代的方式：计算数据集中每个点与各个中心点之间的距离，更新中心点的位置；最终将数据集划分为 `k` 个子集，即将数据划分为 `k` 类。 而评估划分的好坏标准就是：保证同一划分的样">
+<meta name="keywords" content="Machine Learning,Python,K-Means,Cluster">
+<meta property="og:type" content="article">
+<meta property="og:title" content="机器学习|划分聚类之 K-Means 详解 (Python 语言描述)">
+<meta property="og:url" content="https://www.laugh12321.cn/2019/02/09/Cluster_Of_K-Means/index.html">
+<meta property="og:site_name" content="Laugh&#39;s blog">
+<meta property="og:description" content="划分聚类，顾名思义，通过划分的方式将数据集划分为多个不重叠的子集（簇），每一个子集作为一个聚类（类别）。 在划分的过程中，首先由用户确定划分子集的个数 `k`，然后随机选定 `k` 个点作为每一个子集的中心点，接下来通过迭代的方式：计算数据集中每个点与各个中心点之间的距离，更新中心点的位置；最终将数据集划分为 `k` 个子集，即将数据划分为 `k` 类。 而评估划分的好坏标准就是：保证同一划分的样">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/K-means/1.png">
+<meta property="og:image" content="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/K-means/2.png">
+<meta property="og:image" content="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/K-means/3.png">
+<meta property="og:image" content="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/K-means/4.png">
+<meta property="og:image" content="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/K-means/output_21_1.png">
+<meta property="og:image" content="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/K-means/output_26_1.png">
+<meta property="og:image" content="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/K-means/output_50_1.png">
+<meta property="og:image" content="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/K-means/output_53_1.png">
+<meta property="og:image" content="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/K-means/output_60_1.png">
+<meta property="og:image" content="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/K-means/output_63_1.png">
+<meta property="og:image" content="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/K-means/output_71_1.png">
+<meta property="og:image" content="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/K-means/output_74_1.png">
+<meta property="og:image" content="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/K-means/output_77_1.png">
+<meta property="og:image" content="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/K-means/output_79_1.png">
+<meta property="og:image" content="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/K-means/output_96_1.png">
+<meta property="og:image" content="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/K-means/output_100_1.png">
+<meta property="og:image" content="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/K-means/output_106_1.png">
+<meta property="og:updated_time" content="2019-02-09T03:54:16.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="机器学习|划分聚类之 K-Means 详解 (Python 语言描述)">
+<meta name="twitter:description" content="划分聚类，顾名思义，通过划分的方式将数据集划分为多个不重叠的子集（簇），每一个子集作为一个聚类（类别）。 在划分的过程中，首先由用户确定划分子集的个数 `k`，然后随机选定 `k` 个点作为每一个子集的中心点，接下来通过迭代的方式：计算数据集中每个点与各个中心点之间的距离，更新中心点的位置；最终将数据集划分为 `k` 个子集，即将数据划分为 `k` 类。 而评估划分的好坏标准就是：保证同一划分的样">
+<meta name="twitter:image" content="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/K-means/1.png">
+
+
+
+
+
+<link rel="icon" href="https://avatars0.githubusercontent.com/u/38065710?s=400&u=80ee4d360562451484188e6f1677fa442720891b&v=4">
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.7.2/css/bulma.css">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Ubuntu:400,600|Source+Code+Pro">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/atelier-sulphurpool-dark.css">
+
+
+    
+    
+    
+    <style>body>.footer,body>.navbar,body>.section{opacity:0}</style>
+    
+
+    
+    
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/css/lightgallery.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/css/justifiedGallery.min.css">
+    
+
+    
+    
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/outdatedbrowser@1.1.5/outdatedbrowser/outdatedbrowser.min.css">
+
+
+    
+    
+    
+    
+
+<link rel="stylesheet" href="/css/back-to-top.css">
+
+
+    
+    
+
+    
+    
+<script>
+var _hmt = _hmt || [];
+(function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?b159f3ddbb6d9197633e49de94480102";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+    
+    
+
+    
+    
+<link rel="stylesheet" href="/css/progressbar.css">
+<script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script>
+
+    
+    
+    
+
+    
+
+
+<link rel="stylesheet" href="/css/style.css"><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</head>
+<body class="is-3-column">
+    <!-- hexo-inject:begin --><!-- hexo-inject:end --><nav class="navbar navbar-main">
+    <div class="container">
+        <div class="navbar-brand is-flex-center">
+            <a class="navbar-item navbar-logo" href="/">
+            
+                <img src="/images/logo.svg" alt="机器学习|划分聚类之 K-Means 详解 (Python 语言描述)" height="28">
+            
+            </a>
+        </div>
+        <div class="navbar-menu">
+            
+            <div class="navbar-start">
+                
+                <a class="navbar-item" href="/">Home</a>
+                
+                <a class="navbar-item" href="/archives">Archives</a>
+                
+                <a class="navbar-item" href="/categories">Categories</a>
+                
+                <a class="navbar-item" href="/tags">Tags</a>
+                
+                <a class="navbar-item" href="/about">About</a>
+                
+            </div>
+            
+            <div class="navbar-end">
+                
+                    
+                    
+                    <a class="navbar-item" target="_blank" title="Download on GitHub" href="http://github.com/laugh12321">
+                        
+                        <i class="fab fa-github"></i>
+                        
+                    </a>
+                    
+                
+                
+                
+                <a class="navbar-item search" title="搜索" href="javascript:;">
+                    <i class="fas fa-search"></i>
+                </a>
+                
+            </div>
+        </div>
+    </div>
+</nav>
+    
+
+    <section class="section">
+        <div class="container">
+            <div class="columns">
+                <div class="column is-8-tablet is-8-desktop is-6-widescreen has-order-2 column-main"><div class="card">
+    
+    <div class="card-image">
+        <span class="image is-7by1">
+            <img class="thumbnail" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/photo/10.jpg" alt="机器学习|划分聚类之 K-Means 详解 (Python 语言描述)">
+        </span>
+    </div>
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2019-02-08T16:00:00.000Z">2019-02-09</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/机器学习/">机器学习</a>&nbsp;/&nbsp;<a class="has-link-grey -link" href="/categories/机器学习/K-Means/">K-Means</a>&nbsp;/&nbsp;<a class="has-link-grey -link" href="/categories/机器学习/K-Means/划分聚类/">划分聚类</a>
+                </div>
+                
+                
+                <span class="level-item has-text-grey">
+                    
+                    
+                    1 小时 读完 (大约 6924 个字)
+                </span>
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                机器学习|划分聚类之 K-Means 详解 (Python 语言描述)
+            
+        </h1>
+        <div class="content">
+            <p>划分聚类，顾名思义，通过划分的方式将数据集划分为多个不重叠的子集（簇），每一个子集作为一个聚类（类别）。</p>
+<p>在划分的过程中，首先由用户确定划分子集的个数 `k`，然后随机选定 `k` 个点作为每一个子集的中心点，接下来通过迭代的方式：计算数据集中每个点与各个中心点之间的距离，更新中心点的位置；最终将数据集划分为 `k` 个子集，即将数据划分为 `k` 类。</p>
+<p>而评估划分的好坏标准就是：保证同一划分的样本之间的差异尽可能的小，且不同划分中的样本差异尽可能的大。</p>
+<a id="more"></a>
+<h2 id="K-Means-聚类方法"><a href="#K-Means-聚类方法" class="headerlink" title="K-Means 聚类方法"></a>K-Means 聚类方法</h2><p>在划分聚类中，K-Means 是最具有代表性的算法，下面用图片的方式演示 K-Means 的基本算法流程。希望大家能通过简单的图文演示，对 K-Means 方法的原理过程产生大致的印象。</p>
+<p><strong>[1] 对于未聚类数据集，首先随机初始化 K 个（代表拟聚类簇个数）中心点，如图红色五角星所示。</strong></p>
+<p><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/K-means/1.png" alt=""></p>
+<p><strong>[2] 每一个样本按照距离自身最近的中心点进行聚类，等效于通过两中心点连线的中垂线划分区域。</strong></p>
+<p><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/K-means/2.png" alt=""></p>
+<p><strong>[3] 依据上次聚类结果，移动中心点到个簇的质心位置，并将此质心作为新的中心点</strong></p>
+<p><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/K-means/3.png" alt=""></p>
+<p><strong>[4] 反复迭代，直至中心点的变化满足收敛条件（变化很小或几乎不变化），最终得到聚类结果。</strong></p>
+<p><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/K-means/4.png" alt=""></p>
+<p>在对 K-Means 有了一个直观了解后，下面我们用 Python 来进行实现。</p>
+<h3 id="生成示例数据"><a href="#生成示例数据" class="headerlink" title="生成示例数据"></a>生成示例数据</h3><p>首先通过 <code>scikit-learn</code> 模块的 <code>make_blobs()</code> 函数生成本次实验所需的示例数据。该方法可以按照我们的要求，生成特定的团状数据。</p>
+<figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">data,label = sklearn.datasets.make_blobs(n_samples=<span class="hljs-number">100</span>,n_features=<span class="hljs-number">2</span>,centers=<span class="hljs-number">3</span>,center_box=(<span class="hljs-number">-10.0</span>,<span class="hljs-number">10.0</span>),random_state=<span class="hljs-keyword">None</span>)</span><br></pre></td></tr></table></figure>
+<p>其中参数为：   </p>
+<ul>
+<li><code>n_samples</code>：表示生成数据总个数,默认为 100 个。  </li>
+<li><code>n_features</code>：表示每一个样本的特征个数，默认为 2 个。  </li>
+<li><code>centers</code>：表示中心点的个数，默认为 3 个。 </li>
+<li><code>center_box</code>：表示每一个中心的边界,默认为 -10.0到10.0。</li>
+<li><code>random_state</code>：表示生成数据的随机数种子。  </li>
+</ul>
+<p>返回值为：</p>
+<ul>
+<li><code>data</code>：表示数据信息。</li>
+<li><code>label</code>：表示数据类别。</li>
+</ul>
+<p>根据上面函数，在 0.0 到 10.0 上生成 200 条数据，大致包含 3 个中心。由于是用于演示聚类效果，数据标签就不是必须的了，在生成数据时赋值给 <code>_</code>，后面也不会使用到。</p>
+<figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-string">"""构造数据</span></span><br><span class="line"><span class="hljs-string">"""</span></span><br><span class="line"><span class="hljs-keyword">from</span> sklearn.datasets <span class="hljs-keyword">import</span> make_blobs</span><br><span class="line"></span><br><span class="line">blobs, _ = make_blobs(n_samples=<span class="hljs-number">200</span>, centers=<span class="hljs-number">3</span>, random_state=<span class="hljs-number">18</span>)</span><br><span class="line">blobs[:<span class="hljs-number">10</span>] <span class="hljs-comment"># 打印出前 10 条数据的信息</span></span><br></pre></td></tr></table></figure>
+<pre><code>array([[ 8.28390539,  4.98011149],
+       [ 7.05638504,  7.00948082],
+       [ 7.43101466, -6.56941148],
+       [ 8.20192526, -6.4442691 ],
+       [ 3.15614247,  0.46193832],
+       [ 7.7037692 ,  6.14317389],
+       [ 5.62705611, -0.35067953],
+       [ 7.53828533, -4.86595492],
+       [ 8.649291  ,  3.98488194],
+       [ 7.91651636,  4.54935348]])
+</code></pre><h3 id="数据可视化"><a href="#数据可视化" class="headerlink" title="数据可视化"></a>数据可视化</h3><p>为了更加直观的查看数据分布情况，使用 <code>matplotlib</code> 将生成数据绘画出来。</p>
+<figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-string">"""数据展示</span></span><br><span class="line"><span class="hljs-string">"""</span></span><br><span class="line">%matplotlib inline</span><br><span class="line"><span class="hljs-keyword">import</span> matplotlib.pyplot <span class="hljs-keyword">as</span> plt</span><br><span class="line"></span><br><span class="line">plt.scatter(blobs[:, <span class="hljs-number">0</span>], blobs[:, <span class="hljs-number">1</span>], s=<span class="hljs-number">20</span>);</span><br></pre></td></tr></table></figure>
+<p><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/K-means/output_21_1.png" alt="&lt;matplotlib.collections.PathCollection at 0x2dbd80877b8&gt;"></p>
+<h3 id="随机初始化中心点"><a href="#随机初始化中心点" class="headerlink" title="随机初始化中心点"></a>随机初始化中心点</h3><p>当我们得到数据时，依照划分聚类方法的思想，首先需要随机选取 `k` 个点作为每一个子集的中心点。从图像中，通过肉眼很容易的发现该数据集有 <code>3</code> 个子集。接下来，用 <code>numpy</code> 模块随机生成 <code>3</code> 个中心点，为了更方便展示，这里我们加入了随机数种子以便每一次运行结果相同。</p>
+<figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-string">"""初始化中心点</span></span><br><span class="line"><span class="hljs-string">"""</span></span><br><span class="line"><span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np</span><br><span class="line"></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">random_k</span><span class="hljs-params">(k, data)</span>:</span></span><br><span class="line">    <span class="hljs-string">"""</span></span><br><span class="line"><span class="hljs-string">    参数:</span></span><br><span class="line"><span class="hljs-string">    k -- 中心点个数</span></span><br><span class="line"><span class="hljs-string">    data -- 数据集</span></span><br><span class="line"><span class="hljs-string"></span></span><br><span class="line"><span class="hljs-string">    返回:</span></span><br><span class="line"><span class="hljs-string">    init_centers -- 初始化中心点</span></span><br><span class="line"><span class="hljs-string">    """</span></span><br><span class="line">    </span><br><span class="line">    prng = np.random.RandomState(<span class="hljs-number">27</span>) <span class="hljs-comment"># 定义随机种子</span></span><br><span class="line">    num_feature=np.shape(data)[<span class="hljs-number">1</span>]</span><br><span class="line">    init_centers = prng.randn(k, num_feature)*<span class="hljs-number">5</span> <span class="hljs-comment"># 由于初始化的随机数是从-1到1，为了更加贴近数据集这里乘了一个 5</span></span><br><span class="line">    <span class="hljs-keyword">return</span> init_centers</span><br><span class="line"></span><br><span class="line">init_centers=random_k(<span class="hljs-number">3</span>, blobs)</span><br><span class="line">init_centers</span><br></pre></td></tr></table></figure>
+<pre><code>array([[ 6.42802708, -1.51776689],
+       [ 3.09537831,  1.97999275],
+       [ 1.11702824, -0.27169709]])
+</code></pre><p>在随机生成好中心点之后，将其在图像中表示出来，这里同样使用红色五角星表示。</p>
+<figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-string">"""初始中心点展示</span></span><br><span class="line"><span class="hljs-string">"""</span></span><br><span class="line">plt.scatter(blobs[:, <span class="hljs-number">0</span>], blobs[:, <span class="hljs-number">1</span>], s=<span class="hljs-number">20</span>);</span><br><span class="line">plt.scatter(init_centers[:,<span class="hljs-number">0</span>], init_centers[:,<span class="hljs-number">1</span>], s=<span class="hljs-number">100</span>, marker=<span class="hljs-string">'*'</span>, c=<span class="hljs-string">"r"</span>)</span><br></pre></td></tr></table></figure>
+<p><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/K-means/output_26_1.png" alt="&lt;matplotlib.collections.PathCollection at 0x2dbd849b128&gt;"></p>
+<h3 id="计算样本与中心点的距离"><a href="#计算样本与中心点的距离" class="headerlink" title="计算样本与中心点的距离"></a>计算样本与中心点的距离</h3><p>为了找到最合适的中心点位置，需要计算每一个样本和中心点的距离，从而根据距离更新中心点位置。常见的距离计算方法有欧几里得距离和余弦相似度，本实验采用更常见且更易于理解的欧几里得距离（欧式距离）。  </p>
+<p>欧式距离源自 `N` 维欧氏空间中两点之间的距离公式。表达式如下:</p>
+<p>$$<br>d_{euc}= \sqrt{\sum_{i=1}^{N}(X_{i}-Y_{i})^{2}} \tag{1}<br>$$</p>
+<p>其中：</p>
+<ul>
+<li>`X`, `Y` ：两个数据点</li>
+<li>`N`：每个数据中有 `N` 个特征值，</li>
+<li>`X_{i}` ：数据  `X` 的第  `i` 个特征值  </li>
+</ul>
+<p>将两个数据 `X` 和 `Y` 中的每一个对应的特征值之间差值的平方，再求和，最后开平方，便是欧式距离。</p>
+<figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-string">"""计算欧氏距离</span></span><br><span class="line"><span class="hljs-string">"""</span></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">d_euc</span><span class="hljs-params">(x, y)</span>:</span></span><br><span class="line">    <span class="hljs-string">"""</span></span><br><span class="line"><span class="hljs-string">    参数:</span></span><br><span class="line"><span class="hljs-string">    x -- 数据 a</span></span><br><span class="line"><span class="hljs-string">    y -- 数据 b</span></span><br><span class="line"><span class="hljs-string"></span></span><br><span class="line"><span class="hljs-string">    返回:</span></span><br><span class="line"><span class="hljs-string">    d -- 数据 a 和 b 的欧氏距离</span></span><br><span class="line"><span class="hljs-string">    """</span></span><br><span class="line">    d = np.sqrt(np.sum(np.square(x - y)))</span><br><span class="line">    <span class="hljs-keyword">return</span> d</span><br></pre></td></tr></table></figure>
+<h3 id="最小化-SSE，更新聚类中心"><a href="#最小化-SSE，更新聚类中心" class="headerlink" title="最小化 SSE，更新聚类中心"></a>最小化 SSE，更新聚类中心</h3><p>和第一章的回归算法通过减小目标函数（如：损失函数）的值拟合数据集一样，聚类算法通常也是优化一个目标函数，从而提高聚类的质量。在聚类算法中，常常使用误差的平方和 SSE（Sum of squared errors）作为度量聚类效果的标准，当 SSE 越小表示聚类效果越好。其中 SSE 表示为：</p>
+<p>$$<br>SSE(C)=\sum_{k=1}^{K}\sum_{x_{i}\in C_{k}}\left | x_{i}-c_{k} \right |^{2}  \tag{2}<br>$$</p>
+<p>其中数据集 \(D=\{ x_{1},x_{2},…,x_{n} \}\)，\(x_{i}\)表示每一个样本值，`C` 表示通过 K-Means 聚类分析后的产生类别集合 \(C=\{ C_{1},C_{2},…,C_{K} \}\) ，\(c_{k}\) 是类别 \(C_{k}\) 的中心点，其中 \(c_{k}\) 计算方式为：</p>
+<p>$$<br>c_{k}=\frac{\sum_{x_{i} \in C_{k}}x_{i}}{I(C_{k})}  \tag{3}<br>$$</p>
+<p>\(I(C_{k})\) 表示在第 `k` 个集合 \(C_{k}\) 中数据的个数。</p>
+<p>当然，我们希望同最小化损失函数一样，最小化 SSE 函数，从而找出最优化的聚类模型，但是求其最小值并不容易，是一个 NP 难（非确定性多项式）的问题，其中 NP 难问题是一个经典图论问题，至今也没有找到一个完美且有效的算法。</p>
+<p>下面我们对中心点的更新用代码的方式进行实现：</p>
+<figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-string">"""中心点的更新</span></span><br><span class="line"><span class="hljs-string">"""</span></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">update_center</span><span class="hljs-params">(clusters, data, centers)</span>:</span></span><br><span class="line">    <span class="hljs-string">"""</span></span><br><span class="line"><span class="hljs-string">    参数:</span></span><br><span class="line"><span class="hljs-string">    clusters -- 每一点分好的类别</span></span><br><span class="line"><span class="hljs-string">    data -- 数据集</span></span><br><span class="line"><span class="hljs-string">    centers -- 中心点集合</span></span><br><span class="line"><span class="hljs-string"></span></span><br><span class="line"><span class="hljs-string">    返回:</span></span><br><span class="line"><span class="hljs-string">    new_centers.reshape(num_centers,num_features) -- 新中心点集合</span></span><br><span class="line"><span class="hljs-string">    """</span></span><br><span class="line"></span><br><span class="line">    num_centers = np.shape(centers)[<span class="hljs-number">0</span>]  <span class="hljs-comment"># 中心点的个数</span></span><br><span class="line">    num_features = np.shape(centers)[<span class="hljs-number">1</span>]  <span class="hljs-comment"># 每一个中心点的特征数</span></span><br><span class="line">    container = []</span><br><span class="line">    <span class="hljs-keyword">for</span> x <span class="hljs-keyword">in</span> range(num_centers):</span><br><span class="line">        each_container = []</span><br><span class="line">        container.append(each_container)  <span class="hljs-comment"># 首先创建一个容器,将相同类别数据存放到一起</span></span><br><span class="line"></span><br><span class="line">    <span class="hljs-keyword">for</span> i, cluster <span class="hljs-keyword">in</span> enumerate(clusters):</span><br><span class="line">        container[cluster].append(data[i])</span><br><span class="line"></span><br><span class="line">    <span class="hljs-comment"># 为方便计算，将 list 类型转换为 np.array 类型</span></span><br><span class="line">    container = np.array(list(map(<span class="hljs-keyword">lambda</span> x: np.array(x), container)))</span><br><span class="line"></span><br><span class="line">    new_centers = np.array([])  <span class="hljs-comment"># 创建一个容器，存放中心点的坐标</span></span><br><span class="line">    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> range(len(container)):</span><br><span class="line">        each_center = np.mean(container[i], axis=<span class="hljs-number">0</span>)  <span class="hljs-comment"># 计算每一子集中数据均值作为中心点</span></span><br><span class="line">        new_centers = np.append(new_centers, each_center)</span><br><span class="line"></span><br><span class="line">    <span class="hljs-keyword">return</span> new_centers.reshape(num_centers, num_features)  <span class="hljs-comment"># 以矩阵的方式返回中心点坐标</span></span><br></pre></td></tr></table></figure>
+<h3 id="K-Means-聚类算法实现"><a href="#K-Means-聚类算法实现" class="headerlink" title="K-Means 聚类算法实现"></a>K-Means 聚类算法实现</h3><p>K-Means 算法则采用的是迭代算法，避开优化 SSE 函数，通过不断移动中心点的距离，最终达到聚类的效果。</p>
+<h4 id="算法流程"><a href="#算法流程" class="headerlink" title="算法流程"></a>算法流程</h4><ol>
+<li>初始化中心点：判断数据集可能被分为 `k` 个子集，随机生成 `k` 个随机点作为每一个子集的中心点。  </li>
+<li>距离计算，类别标记：样本和每一个中心点进行距离计算，将距离最近的中心点所代表的类别标记为该样本的类别。  </li>
+<li>中心点位置更新：计算每一个类别中的所有样本的均值，作为新的中心点位置。  </li>
+<li>重复 2，3 步骤，直到中心点位置不再变化。</li>
+</ol>
+<h4 id="算法实现"><a href="#算法实现" class="headerlink" title="算法实现"></a>算法实现</h4><figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-string">"""K-Means 聚类</span></span><br><span class="line"><span class="hljs-string">"""</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">kmeans_cluster</span><span class="hljs-params">(data, init_centers, k)</span>:</span></span><br><span class="line">    <span class="hljs-string">"""</span></span><br><span class="line"><span class="hljs-string">    参数:</span></span><br><span class="line"><span class="hljs-string">    data -- 数据集</span></span><br><span class="line"><span class="hljs-string">    init_centers -- 初始化中心点集合</span></span><br><span class="line"><span class="hljs-string">    k -- 中心点个数</span></span><br><span class="line"><span class="hljs-string"></span></span><br><span class="line"><span class="hljs-string">    返回:</span></span><br><span class="line"><span class="hljs-string">    centers_container -- 每一次更新中心点的集合</span></span><br><span class="line"><span class="hljs-string">    cluster_container -- 每一次更新类别的集合</span></span><br><span class="line"><span class="hljs-string">    """</span></span><br><span class="line">    max_step = <span class="hljs-number">50</span>  <span class="hljs-comment"># 定义最大迭代次数，中心点最多移动的次数。</span></span><br><span class="line">    epsilon = <span class="hljs-number">0.001</span>  <span class="hljs-comment"># 定义一个足够小的数，通过中心点变化的距离是否小于该数，判断中心点是否变化。</span></span><br><span class="line"></span><br><span class="line">    old_centers = init_centers</span><br><span class="line"></span><br><span class="line">    centers_container = []  <span class="hljs-comment"># 建立一个中心点容器，存放每一次变化后的中心点，以便后面的绘图。</span></span><br><span class="line">    cluster_container = []  <span class="hljs-comment"># 建立一个分类容器，存放每一次中心点变化后数据的类别</span></span><br><span class="line">    centers_container.append(old_centers)</span><br><span class="line"></span><br><span class="line">    <span class="hljs-keyword">for</span> step <span class="hljs-keyword">in</span> range(max_step):</span><br><span class="line">        cluster = np.array([], dtype=int)</span><br><span class="line">        <span class="hljs-keyword">for</span> each_data <span class="hljs-keyword">in</span> data:</span><br><span class="line">            distances = np.array([])</span><br><span class="line">            <span class="hljs-keyword">for</span> each_center <span class="hljs-keyword">in</span> old_centers:</span><br><span class="line">                temp_distance = d_euc(each_data, each_center)  <span class="hljs-comment"># 计算样本和中心点的欧式距离</span></span><br><span class="line">                distances = np.append(distances, temp_distance)</span><br><span class="line">            lab = np.argmin(distances)  <span class="hljs-comment"># 返回距离最近中心点的索引，即按照最近中心点分类</span></span><br><span class="line">            cluster = np.append(cluster, lab)</span><br><span class="line">        cluster_container.append(cluster)</span><br><span class="line"></span><br><span class="line">        new_centers = update_center(cluster, data, old_centers)  <span class="hljs-comment"># 根据子集分类更新中心点</span></span><br><span class="line"></span><br><span class="line">        <span class="hljs-comment"># 计算每个中心点更新前后之间的欧式距离</span></span><br><span class="line">        difference = []</span><br><span class="line">        <span class="hljs-keyword">for</span> each_old_center, each_new_center <span class="hljs-keyword">in</span> zip(old_centers, new_centers):</span><br><span class="line">            difference.append(d_euc(each_old_center, each_new_center))</span><br><span class="line">        </span><br><span class="line">        <span class="hljs-keyword">if</span> (np.array(difference) &lt; epsilon).all():  <span class="hljs-comment"># 判断每个中心点移动是否均小于 epsilon</span></span><br><span class="line">            <span class="hljs-keyword">return</span> centers_container, cluster_container</span><br><span class="line"></span><br><span class="line">        centers_container.append(new_centers)</span><br><span class="line">        old_centers = new_centers</span><br><span class="line"></span><br><span class="line">    <span class="hljs-keyword">return</span> centers_container, cluster_container</span><br></pre></td></tr></table></figure>
+<p>完成 K-Means 聚类函数后，接下来用函数得到最终中心点的位置。</p>
+<figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-string">"""计算最终中心点</span></span><br><span class="line"><span class="hljs-string">"""</span></span><br><span class="line">centers_container, cluster_container = kmeans_cluster(blobs, init_centers, <span class="hljs-number">3</span>)</span><br><span class="line">final_center = centers_container[<span class="hljs-number">-1</span>]</span><br><span class="line">final_cluster = cluster_container[<span class="hljs-number">-1</span>]</span><br><span class="line">final_center</span><br></pre></td></tr></table></figure>
+<pre><code>array([[ 7.67007252, -6.44697348],
+       [ 6.83832746,  4.98604668],
+       [ 3.28477676,  0.15456871]])
+</code></pre><p>最后，我们把聚类得到的中心绘制到原图中看一看聚类效果。</p>
+<figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-string">"""可视化展示</span></span><br><span class="line"><span class="hljs-string">"""</span></span><br><span class="line">plt.scatter(blobs[:, <span class="hljs-number">0</span>], blobs[:, <span class="hljs-number">1</span>], s=<span class="hljs-number">20</span>, c=final_cluster);</span><br><span class="line">plt.scatter(final_center[:,<span class="hljs-number">0</span>], final_center[:,<span class="hljs-number">1</span>], s=<span class="hljs-number">100</span>, marker=<span class="hljs-string">'*'</span>, c=<span class="hljs-string">"r"</span>)</span><br></pre></td></tr></table></figure>
+<p><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/K-means/output_50_1.png" alt="&lt;matplotlib.collections.PathCollection at 0x2dbd89e8438&gt;"></p>
+<h3 id="中心点移动过程可视化"><a href="#中心点移动过程可视化" class="headerlink" title="中心点移动过程可视化"></a>中心点移动过程可视化</h3><p>截止上小节，已经完成了 K-Means 聚类的流程。为了帮助大家理解，我们尝试将 K-Means 聚类过程中，中心点移动变化的过程绘制出来。</p>
+<figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">num_axes = len(centers_container)</span><br><span class="line"></span><br><span class="line">fig, axes = plt.subplots(<span class="hljs-number">1</span>, num_axes, figsize=(<span class="hljs-number">20</span>, <span class="hljs-number">4</span>))</span><br><span class="line"></span><br><span class="line">axes[<span class="hljs-number">0</span>].scatter(blobs[:, <span class="hljs-number">0</span>], blobs[:, <span class="hljs-number">1</span>], s=<span class="hljs-number">20</span>, c=cluster_container[<span class="hljs-number">0</span>])</span><br><span class="line">axes[<span class="hljs-number">0</span>].scatter(init_centers[:, <span class="hljs-number">0</span>], init_centers[:, <span class="hljs-number">1</span>], s=<span class="hljs-number">100</span>, marker=<span class="hljs-string">'*'</span>, c=<span class="hljs-string">"r"</span>)</span><br><span class="line">axes[<span class="hljs-number">0</span>].set_title(<span class="hljs-string">"initial center"</span>)</span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> range(<span class="hljs-number">1</span>, num_axes<span class="hljs-number">-1</span>):</span><br><span class="line">    axes[i].scatter(blobs[:, <span class="hljs-number">0</span>], blobs[:, <span class="hljs-number">1</span>], s=<span class="hljs-number">20</span>, c=cluster_container[i])</span><br><span class="line">    axes[i].scatter(centers_container[i][:, <span class="hljs-number">0</span>],</span><br><span class="line">                    centers_container[i][:, <span class="hljs-number">1</span>], s=<span class="hljs-number">100</span>, marker=<span class="hljs-string">'*'</span>, c=<span class="hljs-string">"r"</span>)</span><br><span class="line">    axes[i].set_title(<span class="hljs-string">"step &#123;&#125;"</span>.format(i))</span><br><span class="line"></span><br><span class="line">axes[<span class="hljs-number">-1</span>].scatter(blobs[:, <span class="hljs-number">0</span>], blobs[:, <span class="hljs-number">1</span>], s=<span class="hljs-number">20</span>, c=cluster_container[<span class="hljs-number">-1</span>])</span><br><span class="line">axes[<span class="hljs-number">-1</span>].scatter(final_center[:, <span class="hljs-number">0</span>], final_center[:, <span class="hljs-number">1</span>], s=<span class="hljs-number">100</span>, marker=<span class="hljs-string">'*'</span>, c=<span class="hljs-string">"r"</span>)</span><br><span class="line">axes[<span class="hljs-number">-1</span>].set_title(<span class="hljs-string">"final center"</span>)</span><br></pre></td></tr></table></figure>
+<p><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/K-means/output_53_1.png" alt="Text(0.5, 1.0, &#39;final center&#39;)"></p>
+<p>你会惊讶的发现，对于示例数据集，虽然我们先前将最大迭代次数 <code>max_step</code> 设为了 <code>50</code>，但实际上 K-Means 迭代 3 次即收敛。原因主要有 2 点：</p>
+<ul>
+<li>初始化中心点的位置很好，比较均匀分布在了数据范围中。如果初始化中心点集中分布在某一角落，迭代次数肯定会增加。</li>
+<li>示例数据分布规整和简单，使得无需迭代多次就能收敛。</li>
+</ul>
+<h3 id="K-Means-算法聚类中的-K-值选择"><a href="#K-Means-算法聚类中的-K-值选择" class="headerlink" title="K-Means 算法聚类中的 K 值选择"></a>K-Means 算法聚类中的 K 值选择</h3><p>不知道你是否还记得，前面在学习分类算法 K-近邻的时候，我们讲到了 K 值的选择。而在使用 K-Means 算法聚类时，由于要提前确定随机初始化中心点的数量，同样面临着 K 值选择问题。</p>
+<p>在前面寻找 K 值时，我们通过肉眼观察认为应该聚为 3 类。那么，如果我们设定聚类为 5 类呢？</p>
+<p>这一次，我们尝试通过 <code>scikit-learn</code> 模块中的 K-Means 算法完成聚类。</p>
+<figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">from</span> sklearn.cluster <span class="hljs-keyword">import</span> k_means</span><br><span class="line"></span><br><span class="line">k_means(X, n_clusters)</span><br></pre></td></tr></table></figure>
+<p>其中参数为：  </p>
+<ul>
+<li><code>X</code>：表示需要聚类的数据。</li>
+<li><code>n_clusters</code>：表示聚类的个数，也就是 K 值。</li>
+</ul>
+<p>返回值包含：</p>
+<ul>
+<li><code>centroid</code>：表示中心点坐标。</li>
+<li><code>label</code>：表示聚类后每一个样本的类别。</li>
+<li><code>inertia</code>：每一个样本与最近中心点距离的平方和，即 SSE。</li>
+</ul>
+<figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-string">"""用 scikit-learn 聚类并绘图</span></span><br><span class="line"><span class="hljs-string">"""</span></span><br><span class="line"><span class="hljs-keyword">from</span> sklearn.cluster <span class="hljs-keyword">import</span> k_means</span><br><span class="line">model = k_means(blobs, n_clusters=<span class="hljs-number">5</span>)</span><br><span class="line"></span><br><span class="line">centers = model[<span class="hljs-number">0</span>]</span><br><span class="line">clusters_info = model[<span class="hljs-number">1</span>]</span><br><span class="line">plt.scatter(blobs[:, <span class="hljs-number">0</span>], blobs[:, <span class="hljs-number">1</span>], s=<span class="hljs-number">20</span>, c=clusters_info)</span><br><span class="line">plt.scatter(centers[:, <span class="hljs-number">0</span>], centers[:, <span class="hljs-number">1</span>], s=<span class="hljs-number">100</span>, marker=<span class="hljs-string">'*'</span>, c=<span class="hljs-string">"r"</span>)</span><br></pre></td></tr></table></figure>
+<p><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/K-means/output_60_1.png" alt="&lt;matplotlib.collections.PathCollection at 0x2dbdab66e10&gt;"></p>
+<p>从图片上来看，聚为 5 类效果明显不如聚为 3 类的好。当然，我们提前用肉眼就能看出数据大致为 3 团。</p>
+<p>实际的应用过程中，如果通过肉眼无法判断数据应该聚为几类？或者是高维数据无法可视化展示。面对这样的情况，我们就要从数值计算的角度去判断 K 值的大小。</p>
+<p><strong>接下来，将介绍一种启发式学习算法，被称之为 肘部法则，可以帮助我们选取 K 值。</strong></p>
+<p>使用 K-Means 算法聚类时，我们可以计算出按不同 K 值聚类后，每一个样本距离最近中心点距离的平方和 SSE。</p>
+<p>随着 K 值增加时，也就是类别增加时，每个类别中的类内相似性也随之增加，由此造成的 SSE 的变化是单调减小的。可以想象一下，聚类类别的数量和样本的总数相同时，也就是说一个样本就代表一个类别时，这个数值会变成 0。</p>
+<p>下面我们通过代码将不同的数量的聚类下，样本和最近中心点的距离和绘制出来。</p>
+<figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">index = [] <span class="hljs-comment"># 横坐标数组</span></span><br><span class="line">inertia = [] <span class="hljs-comment"># 纵坐标数组</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># K 从 1~ 6 聚类</span></span><br><span class="line"><span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> range(<span class="hljs-number">6</span>):</span><br><span class="line">    model = k_means(blobs, n_clusters=i + <span class="hljs-number">1</span>)</span><br><span class="line">    index.append(i + <span class="hljs-number">1</span>)</span><br><span class="line">    inertia.append(model[<span class="hljs-number">2</span>])</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># 绘制折线图</span></span><br><span class="line">plt.plot(index, inertia, <span class="hljs-string">"-o"</span>)</span><br></pre></td></tr></table></figure>
+<p><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/K-means/output_63_1.png" alt="&lt;matplotlib.lines.Line2D at 0x2dbdac2fdd8&gt;"></p>
+<p>通过上图可以看到，和预想的一样，样本距离最近中心点距离的总和会随着 K 值的增大而降低。</p>
+<p>现在，回想本实验划分聚类中所讲评估划分的好坏标准：「保证同一划分的样本之间的差异尽可能的小，且不同划分中的样本差异尽可能的大」。</p>
+<p>当 K 值越大时，越满足「同一划分的样本之间的差异尽可能的小」。而当 K 值越小时，越满足「不同划分中的样本差异尽可能的大畸变程度最大」。那么如何做到两端的平衡呢？</p>
+<p>于是，<strong>我们通过 SSE 所绘制出来的图，将畸变程度最大的点称之为「肘部」</strong>。从图中可以看到，这里的「肘部」是 K = 3（内角最小，弯曲度最大）。这也说明，将样本聚为 3 类是最佳选择（K = 2 比较接近）。这就是所谓的「肘部法则」，你明白了吗？</p>
+<h2 id="K-Means-聚类算法"><a href="#K-Means-聚类算法" class="headerlink" title="K-Means++ 聚类算法"></a>K-Means++ 聚类算法</h2><h3 id="问题引入"><a href="#问题引入" class="headerlink" title="问题引入"></a>问题引入</h3><p>随着数据量的增长，分类数目增多时，由于 K-Means 中初始化中心点是随机的，常常会出现：一个较大子集有多个中心点，而其他多个较小子集公用一个中心点的问题。即算法陷入局部最优解而不是达到全局最优解的问题。</p>
+<p>造成这种问题主要原因就是：一部分中心点在初始化时离的太近。下面我们通过例子来进一步了解。</p>
+<h3 id="生成示例数据-1"><a href="#生成示例数据-1" class="headerlink" title="生成示例数据"></a>生成示例数据</h3><p>同样，我们先使用 <code>scikit-learn</code> 模块的 <code>make_blobs</code> 函数生成本次实验所需数据，本次生成 <code>800</code> 条数据，共 5 堆。</p>
+<figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-string">"""生成数据并展示</span></span><br><span class="line"><span class="hljs-string">"""</span></span><br><span class="line">blobs_plus, _ = make_blobs(n_samples=<span class="hljs-number">800</span>, centers=<span class="hljs-number">5</span>, random_state=<span class="hljs-number">18</span>)  <span class="hljs-comment"># 生成数据</span></span><br><span class="line"></span><br><span class="line">plt.scatter(blobs_plus[:, <span class="hljs-number">0</span>], blobs_plus[:, <span class="hljs-number">1</span>], s=<span class="hljs-number">20</span>)  <span class="hljs-comment"># 将数据可视化展示</span></span><br></pre></td></tr></table></figure>
+<p><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/K-means/output_71_1.png" alt="&lt;matplotlib.collections.PathCollection at 0x2dbdae88278&gt;"></p>
+<h3 id="随机初始化中心点-1"><a href="#随机初始化中心点-1" class="headerlink" title="随机初始化中心点"></a>随机初始化中心点</h3><p>从数据点分布中可以很容易的观测出聚类数量应该为 5 类，我们先用 K-Means 中随机初始中心点的方法完成聚类：</p>
+<figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">km_init_center=random_k(<span class="hljs-number">5</span>, blobs_plus)</span><br><span class="line"></span><br><span class="line">plt.scatter(blobs_plus[:, <span class="hljs-number">0</span>], blobs_plus[:, <span class="hljs-number">1</span>], s=<span class="hljs-number">20</span>);</span><br><span class="line">plt.scatter(km_init_center[:,<span class="hljs-number">0</span>], km_init_center[:,<span class="hljs-number">1</span>], s=<span class="hljs-number">100</span>, marker=<span class="hljs-string">'*'</span>, c=<span class="hljs-string">"r"</span>)</span><br></pre></td></tr></table></figure>
+<p><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/K-means/output_74_1.png" alt="&lt;matplotlib.collections.PathCollection at 0x2dbdabfea90&gt;"></p>
+<h3 id="K-Means-聚类"><a href="#K-Means-聚类" class="headerlink" title="K-Means 聚类"></a>K-Means 聚类</h3><p>用传统的 K-Means 算法，将数据集进行聚类，聚类数量为 5。</p>
+<figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">km_centers, km_clusters = kmeans_cluster(blobs_plus, km_init_center, <span class="hljs-number">5</span>)</span><br><span class="line">km_final_center = km_centers[<span class="hljs-number">-1</span>]</span><br><span class="line">km_final_cluster = km_clusters[<span class="hljs-number">-1</span>]</span><br><span class="line">plt.scatter(blobs_plus[:, <span class="hljs-number">0</span>], blobs_plus[:, <span class="hljs-number">1</span>], s=<span class="hljs-number">20</span>, c=km_final_cluster)</span><br><span class="line">plt.scatter(km_final_center[:, <span class="hljs-number">0</span>], km_final_center[:, <span class="hljs-number">1</span>], s=<span class="hljs-number">100</span>, marker=<span class="hljs-string">'*'</span>, c=<span class="hljs-string">"r"</span>)</span><br></pre></td></tr></table></figure>
+<p><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/K-means/output_77_1.png" alt="&lt;matplotlib.collections.PathCollection at 0x2dbdb2a92b0&gt;"></p>
+<p>通过传统 K-Means 算法聚类后，你会发现聚类效果和我们预想不同，我们预想的结果应该是下面这样的：</p>
+<figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">plt.scatter(blobs_plus[:, <span class="hljs-number">0</span>], blobs_plus[:, <span class="hljs-number">1</span>], s=<span class="hljs-number">20</span>, c=_)</span><br></pre></td></tr></table></figure>
+<p><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/K-means/output_79_1.png" alt="&lt;matplotlib.collections.PathCollection at 0x2dbdb2e6978&gt;"></p>
+<p>对比 K-Means 聚类和预想聚类的两张图，可以直观的看出 K-Means 算法显然没有达到最优的聚类效果，出现了本章开头所提到的局部最优解的问题。</p>
+<p>对于局部最优问题是可以通过 SSE 来解决的，即在同一数据集上运行多次 K-Means 算法聚类，之后选取 SSE 最小的那次作为最终的聚类结果。虽然通过 SSE 找到最优解十分困难，但通过 SSE 判断最优解是十分容易的。  </p>
+<p>但当遇到更大的数据集，每一次 K-Means 算法会花费大量时间时，如果使用多次运行通过 SSE 来判断最优解，显然不是好的选择。是否有一种方法在初始化中心点时，就能有效避免局部最优问题的出现呢？</p>
+<p>在 K-Means 的基础上，D.Arthur 等人在 2007 年提出了 K-Means++ 算法。其中 K-Means++ 算法主要针对初始化中心点问题进行改进，这样就可以从源头上解决局部最优解的问题。</p>
+<h3 id="K-Means-算法流程"><a href="#K-Means-算法流程" class="headerlink" title="K-Means++ 算法流程"></a>K-Means++ 算法流程</h3><p>K-Means++ 相较于 K-Means 在初始化中心点上做了改进，在其他方面和 K-Means 相同。</p>
+<ol>
+<li>在数据集中随机选择一个样本点作为第一个初始化的聚类中心。  </li>
+<li>计算样本中的非中心点与最近中心点之间的距离 `D(x)` 并保存于一个数组里，将数组中的这些距离加起来得到 \(Sum(D(x))\)。  </li>
+<li>取一个落在 \(Sum(D(x))\)范围中的随机值 `R` ，重复计算 \(R=R-D(x)\) 直至得到 \(R\leq0\) ，选取此时的点作为下一个中心点。  </li>
+<li>重复 2,3 步骤，直到 `K` 个聚类中心都被确定。  </li>
+<li>对 `K` 个初始化的聚类中心，利用 K-Means 算法计算最终的聚类中心。</li>
+</ol>
+<p>看完整个算法流程，可能会出现一个疑问：为避免初始点距离太近，直接选取距离最远的点不就好了，为什么要引入一个随机值 `R` 呢？  </p>
+<p>其实当采用直接选取距离最远的点作为初始点的方法，会容易受到数据集中离群点的干扰。采用引入随机值 `R` 的方法避免数据集中所包含的离群点对算法思想中要选择相距最远的中心点的目标干扰。</p>
+<p>相对于正常的数据点，离群点所计算得出的 `D(x)` 距离一定比较大，这样在选取的过程中，它被选中的概率也就相对较大，但是离群点在整个数据集中只占一小部分，大部分依然是正常的点，这样离群点由于距离大而造成的概率大，就被正常点的数量大给平衡掉。从而保证了整个算法的平衡性。</p>
+<h3 id="K-Means-算法实现"><a href="#K-Means-算法实现" class="headerlink" title="K-Means++ 算法实现"></a>K-Means++ 算法实现</h3><p>K-Means++ 在初始化样本点之后，计算其他样本与其最近的中心点距离之和，以备下一个中心点的选择，下面用 Python 来进行实现：</p>
+<figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">get_sum_dis</span><span class="hljs-params">(centers, data)</span>:</span></span><br><span class="line">    <span class="hljs-string">"""</span></span><br><span class="line"><span class="hljs-string">    参数:</span></span><br><span class="line"><span class="hljs-string">    centers -- 中心点集合</span></span><br><span class="line"><span class="hljs-string">    data -- 数据集</span></span><br><span class="line"><span class="hljs-string"></span></span><br><span class="line"><span class="hljs-string">    返回:</span></span><br><span class="line"><span class="hljs-string">    np.sum(dis_container) -- 样本距离最近中心点的距离之和</span></span><br><span class="line"><span class="hljs-string">    dis_container -- 样本距离最近中心点的距离集合</span></span><br><span class="line"><span class="hljs-string">    """</span></span><br><span class="line">    </span><br><span class="line">    dis_container = np.array([])</span><br><span class="line">    <span class="hljs-keyword">for</span> each_data <span class="hljs-keyword">in</span> data:</span><br><span class="line">        distances = np.array([])</span><br><span class="line">        <span class="hljs-keyword">for</span> each_center <span class="hljs-keyword">in</span> centers:</span><br><span class="line">            temp_distance = d_euc(each_data, each_center)  <span class="hljs-comment"># 计算样本和中心点的欧式距离</span></span><br><span class="line">            distances = np.append(distances, temp_distance)</span><br><span class="line">        lab = np.min(distances)</span><br><span class="line">        dis_container = np.append(dis_container, lab)</span><br><span class="line">    <span class="hljs-keyword">return</span> np.sum(dis_container), dis_container</span><br></pre></td></tr></table></figure>
+<p>接下来，我们初始化中心点：</p>
+<figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-string">"""K-Means++ 初始化中心点</span></span><br><span class="line"><span class="hljs-string">"""</span></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">get_init_center</span><span class="hljs-params">(data, k)</span>:</span></span><br><span class="line">    <span class="hljs-string">"""</span></span><br><span class="line"><span class="hljs-string">    参数:</span></span><br><span class="line"><span class="hljs-string">    data -- 数据集</span></span><br><span class="line"><span class="hljs-string">    k -- 中心点个数</span></span><br><span class="line"><span class="hljs-string"></span></span><br><span class="line"><span class="hljs-string">    返回:</span></span><br><span class="line"><span class="hljs-string">    np.array(center_container) -- 初始化中心点集合</span></span><br><span class="line"><span class="hljs-string">    """</span></span><br><span class="line">    </span><br><span class="line">    seed = np.random.RandomState(<span class="hljs-number">20</span>)</span><br><span class="line">    p = seed.randint(<span class="hljs-number">0</span>, len(data))</span><br><span class="line">    first_center = data[p]</span><br><span class="line"></span><br><span class="line">    center_container = []</span><br><span class="line">    center_container.append(first_center)</span><br><span class="line"></span><br><span class="line">    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> range(k<span class="hljs-number">-1</span>):</span><br><span class="line">        sum_dis, dis_con = get_sum_dis(center_container, data)</span><br><span class="line">        r = np.random.randint(<span class="hljs-number">0</span>, sum_dis)</span><br><span class="line">        <span class="hljs-keyword">for</span> j <span class="hljs-keyword">in</span> range(len(dis_con)):</span><br><span class="line">            r = r - dis_con[j]</span><br><span class="line">            <span class="hljs-keyword">if</span> r &lt;= <span class="hljs-number">0</span>:</span><br><span class="line">                center_container.append(data[j])</span><br><span class="line">                <span class="hljs-keyword">break</span></span><br><span class="line">            <span class="hljs-keyword">else</span>:</span><br><span class="line">                <span class="hljs-keyword">pass</span></span><br><span class="line"></span><br><span class="line">    <span class="hljs-keyword">return</span> np.array(center_container)</span><br></pre></td></tr></table></figure>
+<p>实现 K-Means++ 初始化中心点函数之后，根据生成数据，得到初始化的中心点坐标。 </p>
+<figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">plus_init_center = get_init_center(blobs_plus, <span class="hljs-number">5</span>)</span><br><span class="line">plus_init_center</span><br></pre></td></tr></table></figure>
+<pre><code>array([[ 4.1661903 ,  0.81807492],
+       [ 8.9161603 ,  5.58757202],
+       [ 7.62699601,  2.3492678 ],
+       [-3.42049424, -9.57117787],
+       [ 3.35681598, -0.54000802]])
+</code></pre><p>为了让你更清晰的看到 K-Means++ 初始化中心点的过程，我们用 <code>matplotlib</code> 进行展示。</p>
+<figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">num = len(plus_init_center)</span><br><span class="line"></span><br><span class="line">fig, axes = plt.subplots(<span class="hljs-number">1</span>, num, figsize=(<span class="hljs-number">25</span>, <span class="hljs-number">4</span>))</span><br><span class="line"></span><br><span class="line">axes[<span class="hljs-number">0</span>].scatter(blobs_plus[:, <span class="hljs-number">0</span>], blobs_plus[:, <span class="hljs-number">1</span>], s=<span class="hljs-number">20</span>, c=<span class="hljs-string">"b"</span>)</span><br><span class="line">axes[<span class="hljs-number">0</span>].scatter(plus_init_center[<span class="hljs-number">0</span>, <span class="hljs-number">0</span>], plus_init_center[<span class="hljs-number">0</span>, <span class="hljs-number">1</span>], s=<span class="hljs-number">100</span>, marker=<span class="hljs-string">'*'</span>, c=<span class="hljs-string">"r"</span>)</span><br><span class="line">axes[<span class="hljs-number">0</span>].set_title(<span class="hljs-string">"first center"</span>)</span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> range(<span class="hljs-number">1</span>, num):</span><br><span class="line">    axes[i].scatter(blobs_plus[:, <span class="hljs-number">0</span>], blobs_plus[:, <span class="hljs-number">1</span>], s=<span class="hljs-number">20</span>, c=<span class="hljs-string">"b"</span>)</span><br><span class="line">    axes[i].scatter(plus_init_center[:i+<span class="hljs-number">1</span>, <span class="hljs-number">0</span>],</span><br><span class="line">                    plus_init_center[:i+<span class="hljs-number">1</span>, <span class="hljs-number">1</span>], s=<span class="hljs-number">100</span>, marker=<span class="hljs-string">'*'</span>, c=<span class="hljs-string">"r"</span>)</span><br><span class="line">    axes[i].set_title(<span class="hljs-string">"step&#123;&#125;"</span>.format(i))</span><br><span class="line"></span><br><span class="line">axes[<span class="hljs-number">-1</span>].scatter(blobs_plus[:, <span class="hljs-number">0</span>], blobs_plus[:, <span class="hljs-number">1</span>], s=<span class="hljs-number">20</span>, c=<span class="hljs-string">"b"</span>)</span><br><span class="line">axes[<span class="hljs-number">-1</span>].scatter(plus_init_center[:, <span class="hljs-number">0</span>], plus_init_center[:, <span class="hljs-number">1</span>], s=<span class="hljs-number">100</span>, marker=<span class="hljs-string">'*'</span>, c=<span class="hljs-string">"r"</span>)</span><br><span class="line">axes[<span class="hljs-number">-1</span>].set_title(<span class="hljs-string">"final center"</span>)</span><br></pre></td></tr></table></figure>
+<p><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/K-means/output_96_1.png" alt="Text(0.5, 1.0, &#39;final center&#39;)"></p>
+<p>通过上图可以看到点的变化，即除了最初随机选择点之外，之后的每一个点都是尽可能选择远一些的点。这样就很好的保证初始中心点的分散。</p>
+<p>通过多次执行代码可以看到，使用 K-Means++ 同样可能出现两个中心点较近的情况，因此，在极端情况也可能出现局部最优的问题。但相比于 K-Means 算法的随机选取，K-Means++ 的初始化中心点会在很大程度上降低局部最优问题出现的概率。</p>
+<p>在通过 K-Means++ 算法初始化中心点后，下面我们通过 K-Means 算法对数据进行聚类。</p>
+<figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">plus_centers, plus_clusters = kmeans_cluster(blobs_plus, plus_init_center, <span class="hljs-number">5</span>)</span><br><span class="line">plus_final_center = plus_centers[<span class="hljs-number">-1</span>]</span><br><span class="line">plus_final_cluster = plus_clusters[<span class="hljs-number">-1</span>]</span><br><span class="line"></span><br><span class="line">plt.scatter(blobs_plus[:, <span class="hljs-number">0</span>], blobs_plus[:, <span class="hljs-number">1</span>], s=<span class="hljs-number">20</span>, c=plus_final_cluster)</span><br><span class="line">plt.scatter(plus_final_center[:, <span class="hljs-number">0</span>], plus_final_center[:, <span class="hljs-number">1</span>], s=<span class="hljs-number">100</span>, marker=<span class="hljs-string">'*'</span>, c=<span class="hljs-string">"r"</span>)</span><br></pre></td></tr></table></figure>
+<p><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/K-means/output_100_1.png" alt="&lt;matplotlib.collections.PathCollection at 0x2dbdb3e3630&gt;"></p>
+<p>在 K-Means++ 算法中，我们依旧无法完全避免随机选择中心点带来的不稳定性，所以偶尔也会得到不太好的结果。当然，K-Means++ 算法得到不太好的聚类的概率远小于 K-Means 算法。所以，如果你并没有得到一个较好的聚类效果，可以再次初始化中心点尝试。</p>
+<h2 id="Mini-Batch-K-Means-聚类算法"><a href="#Mini-Batch-K-Means-聚类算法" class="headerlink" title="Mini-Batch K-Means 聚类算法"></a>Mini-Batch K-Means 聚类算法</h2><p>在「大数据」如此火的时代，K-Means 算法是否还能一如既往优秀的处理大数据呢？现在我们重新回顾下 K-Means 的算法原理：首先，计算每一个样本同所有中心点的距离，通过比较找到最近的中心点，将距离最近中心点的距离进行存储并归类。然后通过相同类别样本的特征值，更新中心点的位置。至此完成一次迭代，经过多次迭代后最终进行聚类。</p>
+<p>通过上面的表述，你是否感觉到不断计算距离的过程，涉及到的计算量有多大呢？那么，设想一下数据量达到十万，百万，千万级别，且如果每一条数据有上百个特征，这将会消耗大量的计算资源。</p>
+<p>为了解决大规模数据的聚类问题，我们就可以使用 K-Means 的另外一个变种 Mini Batch K-Means 来完成。</p>
+<p>其算法原理也十分简单：在每一次迭代过程中，从数据集中随机抽取一部分数据形成小批量数据集，用该部分数据集进行距离计算和中心点的更新。由于每一次都是随机抽取，所以每一次抽取的数据能很好的表现原本数据集的特性。</p>
+<p>下面，我们生成一组测试数据，并测试 K-Means 算法和 Mini Batch K-Means 在同一组数据上聚类时间和 SSE 上的差异。由于  scikit-learn 中 <code>MiniBatchKMeans()</code> 和 <code>KMeans()</code> 方法的参数几乎一致，这里就不再赘述了。</p>
+<figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">import</span> time</span><br><span class="line"><span class="hljs-keyword">from</span> sklearn.cluster <span class="hljs-keyword">import</span> MiniBatchKMeans, KMeans</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">test_data, _ = make_blobs(<span class="hljs-number">2000</span>, n_features=<span class="hljs-number">2</span>, cluster_std=<span class="hljs-number">2</span>, centers=<span class="hljs-number">5</span>)</span><br><span class="line"></span><br><span class="line">km = KMeans(n_clusters=<span class="hljs-number">5</span>)</span><br><span class="line">mini_km = MiniBatchKMeans(n_clusters=<span class="hljs-number">5</span>)</span><br><span class="line"></span><br><span class="line">fig, axes = plt.subplots(nrows=<span class="hljs-number">1</span>, ncols=<span class="hljs-number">2</span>, figsize=(<span class="hljs-number">10</span>, <span class="hljs-number">5</span>))</span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">for</span> i, model <span class="hljs-keyword">in</span> enumerate([km, mini_km]):</span><br><span class="line">    t0 = time.time()</span><br><span class="line">    model.fit(test_data)</span><br><span class="line">    t1 = time.time()</span><br><span class="line">    t = t1 - t0</span><br><span class="line">    sse = model.inertia_</span><br><span class="line">    axes[i].scatter(test_data[:, <span class="hljs-number">0</span>], test_data[:, <span class="hljs-number">1</span>], c=model.labels_)</span><br><span class="line">    axes[i].set_xlabel(<span class="hljs-string">"time: &#123;:.4f&#125; s"</span>.format(t))</span><br><span class="line">    axes[i].set_ylabel(<span class="hljs-string">"SSE: &#123;:.4f&#125;"</span>.format(sse))</span><br><span class="line"></span><br><span class="line">axes[<span class="hljs-number">0</span>].set_title(<span class="hljs-string">"K-Means"</span>)</span><br><span class="line">axes[<span class="hljs-number">1</span>].set_title(<span class="hljs-string">"Mini Batch K-Means"</span>)</span><br></pre></td></tr></table></figure>
+<p><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/K-means/output_106_1.png" alt="Text(0.5, 1.0, &#39;Mini Batch K-Means&#39;)"></p>
+<p>以上是对 2000 条数据分别用 K-Means 和 Mini Batch K-Means进行聚类，从图像中可以看出，Mini Batch K-Means 在训练时间上明显比 K-Means 快（大于 2 倍不等），且聚类得到的 SSE 值比较接近。</p>
+<hr>
+<p><strong>拓展阅读：</strong> </p>
+<ul>
+<li><a href="https://zh.wikipedia.org/zh-hans/K-平均算法" target="_blank" rel="noopener">K-平均算法- 维基百科</a></li>
+<li><a href="https://towardsdatascience.com/the-5-clustering-algorithms-data-scientists-need-to-know-a36d136ef68" target="_blank" rel="noopener">The 5 Clustering Algorithms Data Scientists Need to Know</a></li>
+<li><a href="https://www.naftaliharris.com/blog/visualizing-k-means-clustering/" target="_blank" rel="noopener">Visualizing K-Means Clustering</a></li>
+</ul>
+
+        </div>
+        
+        <div class="level is-size-7 is-uppercase">
+            <div class="level-start">
+                <div class="level-item">
+                    <span class="is-size-6 has-text-grey has-mr-7">#</span>
+                    <a class="has-link-grey -link" href="/tags/Cluster/">Cluster</a>, <a class="has-link-grey -link" href="/tags/K-Means/">K-Means</a>, <a class="has-link-grey -link" href="/tags/Machine-Learning/">Machine Learning</a>, <a class="has-link-grey -link" href="/tags/Python/">Python</a>
+                </div>
+            </div>
+        </div>
+        
+        
+        
+    </div>
+</div>
+
+
+
+<div class="card">
+    <div class="card-content">
+        <h3 class="menu-label has-text-centered">喜欢这篇文章？打赏一下作者吧</h3>
+        <div class="buttons is-centered">
+            
+                
+<a class="button is-info donate">
+    <span class="icon is-small">
+        <i class="fab fa-alipay"></i>
+    </span>
+    <span>支付宝</span>
+    <div class="qrcode"><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/reward/alipay-reward-image.jpg" alt="支付宝"></div>
+</a>
+
+                
+                
+<a class="button is-success donate">
+    <span class="icon is-small">
+        <i class="fab fa-weixin"></i>
+    </span>
+    <span>微信</span>
+    <div class="qrcode"><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/reward/wechat-reward-image.jpg" alt="微信"></div>
+</a>
+
+                
+        </div>
+    </div>
+</div>
+
+
+
+<div class="card card-transparent">
+    <div class="level post-navigation is-flex-wrap is-mobile">
+        
+        
+        <div class="level-end">
+            <a class="level level-item has-link-grey  article-nav-next" href="/2019/02/07/Bagging_and_Boosting/">
+                <span class="level-item">机器学习|装袋和提升方法详解 (Python 语言描述)</span>
+                <i class="level-item fas fa-chevron-right"></i>
+            </a>
+        </div>
+        
+    </div>
+</div>
+
+
+
+<div class="card">
+    <div class="card-content">
+        <h3 class="title is-5 has-text-weight-normal">评论</h3>
+        
+<div id="valine-thread"></div>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+<script>
+    new Valine({
+        el: '#valine-thread' ,
+        notify: true,
+        verify: false,
+        app_id: 'zzN9t0v9tihDucYhBujOYJUJ-gzGzoHsz',
+        app_key: 'gngT5gD2rOh2hc7C62097Ql6',
+        placeholder: 'Say something...'
+    });
+</script>
+
+    </div>
+</div>
+</div>
+                
+
+
+
+
+<div class="column is-4-tablet is-4-desktop is-3-widescreen  has-order-1 column-left ">
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <nav class="level">
+            <div class="level-item has-text-centered">
+                <div>
+                    <img class="image is-128x128 has-mb-6" src="https://avatars0.githubusercontent.com/u/38065710?s=400&amp;u=80ee4d360562451484188e6f1677fa442720891b&amp;v=4" alt="Laugh">
+                    
+                    <p class="is-size-4 is-block">
+                        Laugh
+                    </p>
+                    
+                    
+                    <p class="is-size-6 is-block">
+                        The life I want, there is no shortcut.
+                    </p>
+                    
+                    
+                    <p class="is-size-6 is-flex is-flex-center has-text-grey">
+                        <i class="fas fa-map-marker-alt has-mr-7"></i>
+                        <span>Northern Hemisphere</span>
+                    </p>
+                    
+                </div>
+            </div>
+        </nav>
+        <nav class="level is-mobile">
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        文章
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        18
+                    </p>
+                </div>
+            </div>
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        分类
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        22
+                    </p>
+                </div>
+            </div>
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        标签
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        28
+                    </p>
+                </div>
+            </div>
+        </nav>
+        <div class="level">
+            <a class="level-item button is-link is-rounded" href="http://github.com/laugh12321">
+                follow</a>
+        </div>
+        
+        
+        <div class="level is-mobile">
+            
+            <a class="level-item button is-white is-marginless" target="_blank" title="Github" href="http://github.com/laugh12321">
+                
+                <i class="fab fa-github"></i>
+                
+            </a>
+            
+            <a class="level-item button is-white is-marginless" target="_blank" title="Steam" href="https://steamcommunity.com/profiles/76561198445204275/">
+                
+                <i class="fab fa-steam-square"></i>
+                
+            </a>
+            
+            <a class="level-item button is-white is-marginless" target="_blank" title="RSS" href="/">
+                
+                <i class="fas fa-rss"></i>
+                
+            </a>
+            
+        </div>
+        
+    </div>
+</div>
+    
+        
+    
+        
+
+<div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+        <h3 class="menu-label">
+            链接
+        </h3>
+        <ul class="menu-list">
+        
+            <li>
+                <a class="level is-mobile" href="https://styx11.github.io/" target="_blank">
+                    <span class="level-left">
+                        <span class="level-item">Styx</span>
+                    </span>
+                    <span class="level-right">
+                        <span class="level-item tag">styx11.github.io</span>
+                    </span>
+                </a>
+            </li>
+        
+            <li>
+                <a class="level is-mobile" href="http://luuuuyang.com/" target="_blank">
+                    <span class="level-left">
+                        <span class="level-item">Luuuuyang</span>
+                    </span>
+                    <span class="level-right">
+                        <span class="level-item tag">luuuuyang.com</span>
+                    </span>
+                </a>
+            </li>
+        
+            <li>
+                <a class="level is-mobile" href="https://www.vseu.com/" target="_blank">
+                    <span class="level-left">
+                        <span class="level-item">幸运草</span>
+                    </span>
+                    <span class="level-right">
+                        <span class="level-item tag">www.vseu.com</span>
+                    </span>
+                </a>
+            </li>
+        
+            <li>
+                <a class="level is-mobile" href="https://tea9.xyz/" target="_blank">
+                    <span class="level-left">
+                        <span class="level-item">tea9</span>
+                    </span>
+                    <span class="level-right">
+                        <span class="level-item tag">tea9.xyz</span>
+                    </span>
+                </a>
+            </li>
+        
+            <li>
+                <a class="level is-mobile" href="https://hongjay233.github.io/" target="_blank">
+                    <span class="level-left">
+                        <span class="level-item">HongJay</span>
+                    </span>
+                    <span class="level-right">
+                        <span class="level-item tag">hongjay233.github.io</span>
+                    </span>
+                </a>
+            </li>
+        
+            <li>
+                <a class="level is-mobile" href="https://www.itfire.cn/" target="_blank">
+                    <span class="level-left">
+                        <span class="level-item">仓鼠‘s blog</span>
+                    </span>
+                    <span class="level-right">
+                        <span class="level-item tag">www.itfire.cn</span>
+                    </span>
+                </a>
+            </li>
+        
+            <li>
+                <a class="level is-mobile" href="https://blog.wzy1999.wang/" target="_blank">
+                    <span class="level-left">
+                        <span class="level-item">执念</span>
+                    </span>
+                    <span class="level-right">
+                        <span class="level-item tag">blog.wzy1999.wang</span>
+                    </span>
+                </a>
+            </li>
+        
+        </ul>
+        </div>
+    </div>
+</div>
+
+
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                分类
+            </h3>
+            <ul class="menu-list">
+            <li>
+        <a class="level is-marginless" href="/categories/Python/">
+            <span class="level-start">
+                <span class="level-item">Python</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">2</span>
+            </span>
+        </a><ul><li>
+        <a class="level is-marginless" href="/categories/Python/排序算法/">
+            <span class="level-start">
+                <span class="level-item">排序算法</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">2</span>
+            </span>
+        </a></li></ul></li><li>
+        <a class="level is-marginless" href="/categories/Ubuntu/">
+            <span class="level-start">
+                <span class="level-item">Ubuntu</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">2</span>
+            </span>
+        </a><ul><li>
+        <a class="level is-marginless" href="/categories/Ubuntu/ECS/">
+            <span class="level-start">
+                <span class="level-item">ECS</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">2</span>
+            </span>
+        </a></li></ul></li><li>
+        <a class="level is-marginless" href="/categories/博客/">
+            <span class="level-start">
+                <span class="level-item">博客</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">2</span>
+            </span>
+        </a><ul><li>
+        <a class="level is-marginless" href="/categories/博客/GitHub-Pages/">
+            <span class="level-start">
+                <span class="level-item">GitHub Pages</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">1</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/博客/主题优化/">
+            <span class="level-start">
+                <span class="level-item">主题优化</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">1</span>
+            </span>
+        </a></li></ul></li><li>
+        <a class="level is-marginless" href="/categories/机器学习/">
+            <span class="level-start">
+                <span class="level-item">机器学习</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">11</span>
+            </span>
+        </a><ul><li>
+        <a class="level is-marginless" href="/categories/机器学习/K-Means/">
+            <span class="level-start">
+                <span class="level-item">K-Means</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">1</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/机器学习/K-近邻算法/">
+            <span class="level-start">
+                <span class="level-item">K-近邻算法</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">1</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/机器学习/决策树/">
+            <span class="level-start">
+                <span class="level-item">决策树</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">1</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/机器学习/多项式回归/">
+            <span class="level-start">
+                <span class="level-item">多项式回归</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">1</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/机器学习/感知机/">
+            <span class="level-start">
+                <span class="level-item">感知机</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">1</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/机器学习/支持向量机/">
+            <span class="level-start">
+                <span class="level-item">支持向量机</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">1</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/机器学习/朴素贝叶斯/">
+            <span class="level-start">
+                <span class="level-item">朴素贝叶斯</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">1</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/机器学习/线性回归/">
+            <span class="level-start">
+                <span class="level-item">线性回归</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">2</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/机器学习/装袋/">
+            <span class="level-start">
+                <span class="level-item">装袋</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">1</span>
+            </span>
+        </a></li></ul></li><li>
+        <a class="level is-marginless" href="/categories/深度学习/">
+            <span class="level-start">
+                <span class="level-item">深度学习</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">1</span>
+            </span>
+        </a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <h3 class="menu-label">
+            标签云
+        </h3>
+        <a href="/tags/Artificial-Neural-Network/" style="font-size: 10px;">Artificial Neural Network</a> <a href="/tags/Bagging/" style="font-size: 10px;">Bagging</a> <a href="/tags/Blog/" style="font-size: 13.33px;">Blog</a> <a href="/tags/Boosting/" style="font-size: 10px;">Boosting</a> <a href="/tags/Cluster/" style="font-size: 10px;">Cluster</a> <a href="/tags/Decision-Tree/" style="font-size: 10px;">Decision Tree</a> <a href="/tags/Deep-Learning/" style="font-size: 10px;">Deep Learning</a> <a href="/tags/ECS/" style="font-size: 13.33px;">ECS</a> <a href="/tags/GitHub-Pages/" style="font-size: 13.33px;">GitHub Pages</a> <a href="/tags/Jekyll/" style="font-size: 10px;">Jekyll</a> <a href="/tags/K-Means/" style="font-size: 10px;">K-Means</a> <a href="/tags/K-Nearest-Neighbors/" style="font-size: 10px;">K-Nearest Neighbors</a> <a href="/tags/Linear-Regression/" style="font-size: 13.33px;">Linear Regression</a> <a href="/tags/MAE/" style="font-size: 10px;">MAE</a> <a href="/tags/MAPE/" style="font-size: 10px;">MAPE</a> <a href="/tags/MSE/" style="font-size: 10px;">MSE</a> <a href="/tags/Machine-Learning/" style="font-size: 20px;">Machine Learning</a> <a href="/tags/Naive-Bayes/" style="font-size: 10px;">Naive Bayes</a> <a href="/tags/Next/" style="font-size: 10px;">Next</a> <a href="/tags/Perceptron/" style="font-size: 10px;">Perceptron</a> <a href="/tags/Polynomial-Regression/" style="font-size: 10px;">Polynomial Regression</a> <a href="/tags/Python/" style="font-size: 16.67px;">Python</a> <a href="/tags/Seafile/" style="font-size: 10px;">Seafile</a> <a href="/tags/Support-Vector-Machine/" style="font-size: 10px;">Support Vector Machine</a> <a href="/tags/Ubuntu/" style="font-size: 13.33px;">Ubuntu</a> <a href="/tags/python/" style="font-size: 13.33px;">python</a> <a href="/tags/排序算法/" style="font-size: 13.33px;">排序算法</a> <a href="/tags/服务器/" style="font-size: 13.33px;">服务器</a>
+    </div>
+</div>
+
+    
+    
+        <div class="column-right-shadow is-hidden-widescreen ">
+        
+            
+<div class="card widget">
+    <div class="card-content">
+        <h3 class="menu-label">
+            最新文章
+        </h3>
+        
+        <article class="media">
+            
+            <a href="/2019/02/09/Cluster_Of_K-Means/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/photo/10.jpg" alt="机器学习|划分聚类之 K-Means 详解 (Python 语言描述)">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-02-08T16:00:00.000Z">2019-02-09</time></div>
+                    <a href="/2019/02/09/Cluster_Of_K-Means/" class="has-link-black-ter is-size-6">机器学习|划分聚类之 K-Means 详解 (Python 语言描述)</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/机器学习/">机器学习</a> / <a class="has-link-grey -link" href="/categories/机器学习/K-Means/">K-Means</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2019/02/07/Bagging_and_Boosting/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/photo/09.jpg" alt="机器学习|装袋和提升方法详解 (Python 语言描述)">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-02-06T16:00:00.000Z">2019-02-07</time></div>
+                    <a href="/2019/02/07/Bagging_and_Boosting/" class="has-link-black-ter is-size-6">机器学习|装袋和提升方法详解 (Python 语言描述)</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/机器学习/">机器学习</a> / <a class="has-link-grey -link" href="/categories/机器学习/装袋/">装袋</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2019/02/01/Decision_Tree/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/photo/08.jpg" alt="机器学习|决策树详解 (Python 语言描述)">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-01-31T16:00:00.000Z">2019-02-01</time></div>
+                    <a href="/2019/02/01/Decision_Tree/" class="has-link-black-ter is-size-6">机器学习|决策树详解 (Python 语言描述)</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/机器学习/">机器学习</a> / <a class="has-link-grey -link" href="/categories/机器学习/决策树/">决策树</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2019/01/31/Neural_Network/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/photo/07.jpg" alt="机器学习|感知机和人工神经网络详解 (Python 语言描述)">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-01-30T16:00:00.000Z">2019-01-31</time></div>
+                    <a href="/2019/01/31/Neural_Network/" class="has-link-black-ter is-size-6">机器学习|感知机和人工神经网络详解 (Python 语言描述)</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/机器学习/">机器学习</a> / <a class="has-link-grey -link" href="/categories/机器学习/感知机/">感知机</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2019/01/24/Seafile_Pro_settings/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/photo/Iskushuban%2C%20Somalia.jpg" alt="阿里云服务器ECS Ubuntu16.04 + Seafile 搭建私人网盘 （Seafile Pro）">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-01-23T16:00:00.000Z">2019-01-24</time></div>
+                    <a href="/2019/01/24/Seafile_Pro_settings/" class="has-link-black-ter is-size-6">阿里云服务器ECS Ubuntu16.04 + Seafile 搭建私人网盘 （Seafile Pro）</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/Ubuntu/">Ubuntu</a> / <a class="has-link-grey -link" href="/categories/Ubuntu/ECS/">ECS</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+    </div>
+</div>
+
+        
+            <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+        <h3 class="menu-label">
+            归档
+        </h3>
+        <ul class="menu-list">
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/02/">
+                <span class="level-start">
+                    <span class="level-item">二月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">9</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        </ul>
+        </div>
+    </div>
+</div>
+        
+            <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                标签
+            </h3>
+            <div class="field is-grouped is-grouped-multiline">
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Artificial-Neural-Network/">
+                        <span class="tag">Artificial Neural Network</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Bagging/">
+                        <span class="tag">Bagging</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Blog/">
+                        <span class="tag">Blog</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Boosting/">
+                        <span class="tag">Boosting</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Cluster/">
+                        <span class="tag">Cluster</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Decision-Tree/">
+                        <span class="tag">Decision Tree</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Deep-Learning/">
+                        <span class="tag">Deep Learning</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/ECS/">
+                        <span class="tag">ECS</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/GitHub-Pages/">
+                        <span class="tag">GitHub Pages</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Jekyll/">
+                        <span class="tag">Jekyll</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/K-Means/">
+                        <span class="tag">K-Means</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/K-Nearest-Neighbors/">
+                        <span class="tag">K-Nearest Neighbors</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Linear-Regression/">
+                        <span class="tag">Linear Regression</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/MAE/">
+                        <span class="tag">MAE</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/MAPE/">
+                        <span class="tag">MAPE</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/MSE/">
+                        <span class="tag">MSE</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Machine-Learning/">
+                        <span class="tag">Machine Learning</span>
+                        <span class="tag is-grey">11</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Naive-Bayes/">
+                        <span class="tag">Naive Bayes</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Next/">
+                        <span class="tag">Next</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Perceptron/">
+                        <span class="tag">Perceptron</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Polynomial-Regression/">
+                        <span class="tag">Polynomial Regression</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Python/">
+                        <span class="tag">Python</span>
+                        <span class="tag is-grey">10</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Seafile/">
+                        <span class="tag">Seafile</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Support-Vector-Machine/">
+                        <span class="tag">Support Vector Machine</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Ubuntu/">
+                        <span class="tag">Ubuntu</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/python/">
+                        <span class="tag">python</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/排序算法/">
+                        <span class="tag">排序算法</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/服务器/">
+                        <span class="tag">服务器</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+        
+        </div>
+    
+</div>
+
+                
+
+
+
+
+<div class="column is-4-tablet is-4-desktop is-3-widescreen is-hidden-touch is-hidden-desktop-only has-order-3 column-right ">
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <h3 class="menu-label">
+            最新文章
+        </h3>
+        
+        <article class="media">
+            
+            <a href="/2019/02/09/Cluster_Of_K-Means/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/photo/10.jpg" alt="机器学习|划分聚类之 K-Means 详解 (Python 语言描述)">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-02-08T16:00:00.000Z">2019-02-09</time></div>
+                    <a href="/2019/02/09/Cluster_Of_K-Means/" class="has-link-black-ter is-size-6">机器学习|划分聚类之 K-Means 详解 (Python 语言描述)</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/机器学习/">机器学习</a> / <a class="has-link-grey -link" href="/categories/机器学习/K-Means/">K-Means</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2019/02/07/Bagging_and_Boosting/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/photo/09.jpg" alt="机器学习|装袋和提升方法详解 (Python 语言描述)">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-02-06T16:00:00.000Z">2019-02-07</time></div>
+                    <a href="/2019/02/07/Bagging_and_Boosting/" class="has-link-black-ter is-size-6">机器学习|装袋和提升方法详解 (Python 语言描述)</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/机器学习/">机器学习</a> / <a class="has-link-grey -link" href="/categories/机器学习/装袋/">装袋</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2019/02/01/Decision_Tree/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/photo/08.jpg" alt="机器学习|决策树详解 (Python 语言描述)">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-01-31T16:00:00.000Z">2019-02-01</time></div>
+                    <a href="/2019/02/01/Decision_Tree/" class="has-link-black-ter is-size-6">机器学习|决策树详解 (Python 语言描述)</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/机器学习/">机器学习</a> / <a class="has-link-grey -link" href="/categories/机器学习/决策树/">决策树</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2019/01/31/Neural_Network/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/photo/07.jpg" alt="机器学习|感知机和人工神经网络详解 (Python 语言描述)">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-01-30T16:00:00.000Z">2019-01-31</time></div>
+                    <a href="/2019/01/31/Neural_Network/" class="has-link-black-ter is-size-6">机器学习|感知机和人工神经网络详解 (Python 语言描述)</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/机器学习/">机器学习</a> / <a class="has-link-grey -link" href="/categories/机器学习/感知机/">感知机</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2019/01/24/Seafile_Pro_settings/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/photo/Iskushuban%2C%20Somalia.jpg" alt="阿里云服务器ECS Ubuntu16.04 + Seafile 搭建私人网盘 （Seafile Pro）">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-01-23T16:00:00.000Z">2019-01-24</time></div>
+                    <a href="/2019/01/24/Seafile_Pro_settings/" class="has-link-black-ter is-size-6">阿里云服务器ECS Ubuntu16.04 + Seafile 搭建私人网盘 （Seafile Pro）</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/Ubuntu/">Ubuntu</a> / <a class="has-link-grey -link" href="/categories/Ubuntu/ECS/">ECS</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+    </div>
+</div>
+
+    
+        <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+        <h3 class="menu-label">
+            归档
+        </h3>
+        <ul class="menu-list">
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/02/">
+                <span class="level-start">
+                    <span class="level-item">二月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">9</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        </ul>
+        </div>
+    </div>
+</div>
+    
+        <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                标签
+            </h3>
+            <div class="field is-grouped is-grouped-multiline">
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Artificial-Neural-Network/">
+                        <span class="tag">Artificial Neural Network</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Bagging/">
+                        <span class="tag">Bagging</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Blog/">
+                        <span class="tag">Blog</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Boosting/">
+                        <span class="tag">Boosting</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Cluster/">
+                        <span class="tag">Cluster</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Decision-Tree/">
+                        <span class="tag">Decision Tree</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Deep-Learning/">
+                        <span class="tag">Deep Learning</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/ECS/">
+                        <span class="tag">ECS</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/GitHub-Pages/">
+                        <span class="tag">GitHub Pages</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Jekyll/">
+                        <span class="tag">Jekyll</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/K-Means/">
+                        <span class="tag">K-Means</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/K-Nearest-Neighbors/">
+                        <span class="tag">K-Nearest Neighbors</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Linear-Regression/">
+                        <span class="tag">Linear Regression</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/MAE/">
+                        <span class="tag">MAE</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/MAPE/">
+                        <span class="tag">MAPE</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/MSE/">
+                        <span class="tag">MSE</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Machine-Learning/">
+                        <span class="tag">Machine Learning</span>
+                        <span class="tag is-grey">11</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Naive-Bayes/">
+                        <span class="tag">Naive Bayes</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Next/">
+                        <span class="tag">Next</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Perceptron/">
+                        <span class="tag">Perceptron</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Polynomial-Regression/">
+                        <span class="tag">Polynomial Regression</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Python/">
+                        <span class="tag">Python</span>
+                        <span class="tag is-grey">10</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Seafile/">
+                        <span class="tag">Seafile</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Support-Vector-Machine/">
+                        <span class="tag">Support Vector Machine</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Ubuntu/">
+                        <span class="tag">Ubuntu</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/python/">
+                        <span class="tag">python</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/排序算法/">
+                        <span class="tag">排序算法</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/服务器/">
+                        <span class="tag">服务器</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+    
+    
+</div>
+
+            </div>
+        </div>
+    </section>
+    <footer class="footer">
+    <div class="container">
+        <div class="level">
+            <div class="level-start has-text-centered-mobile">
+                <a class="footer-logo is-block has-mb-6" href="/">
+                
+                    <img src="/images/logo.svg" alt="机器学习|划分聚类之 K-Means 详解 (Python 语言描述)" height="28">
+                
+                </a>
+                <p class="is-size-7">
+                &copy; 2019 Laugh&nbsp;
+                Powered by <a href="http://hexo.io/" target="_blank">Hexo</a> & <a href="http://github.com/ppoffice/hexo-theme-icarus">Icarus</a>
+                </p>
+            </div>
+            <div class="level-end">
+            
+                <div class="field has-addons is-flex-center-mobile has-mt-5-mobile is-flex-wrap is-flex-middle">
+                
+                
+                <p class="control">
+                    <a class="button is-white is-large" target="_blank" title="Creative Commons" href="https://creativecommons.org/">
+                        
+                        <i class="fab fa-creative-commons"></i>
+                        
+                    </a>
+                </p>
+                
+                <p class="control">
+                    <a class="button is-white is-large" target="_blank" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/">
+                        
+                        <i class="fab fa-creative-commons-by"></i>
+                        
+                    </a>
+                </p>
+                
+                <p class="control">
+                    <a class="button is-white is-large" target="_blank" title="Download on GitHub" href="http://github.com/ppoffice/hexo-theme-icarus">
+                        
+                        <i class="fab fa-github"></i>
+                        
+                    </a>
+                </p>
+                
+                </div>
+            
+            </div>
+        </div>
+    </div>
+</footer>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script>
+<script>moment.locale("zh-CN");</script>
+
+
+    
+    
+    
+    <script src="/js/animation.js"></script>
+    
+
+    
+    
+    
+    <script src="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/js/lightgallery.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js" defer></script>
+    <script src="/js/gallery.js" defer></script>
+    
+
+    
+    
+
+<div id="outdated">
+    <h6>Your browser is out-of-date!</h6>
+    <p>Update your browser to view this website correctly. <a id="btnUpdateBrowser" href="http://outdatedbrowser.com/">Update
+            my browser now </a></p>
+    <p class="last"><a href="#" id="btnCloseUpdateBrowser" title="Close">&times;</a></p>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/outdatedbrowser@1.1.5/outdatedbrowser/outdatedbrowser.min.js" defer></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        outdatedBrowser({
+            bgColor: '#f25648',
+            color: '#ffffff',
+            lowerThan: 'flex'
+        });
+    });
+</script>
+
+
+    
+    
+<script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    MathJax.Hub.Config({
+        'HTML-CSS': {matchFontHeight: false},
+        SVG: {matchFontHeight: false},
+        CommonHTML: {matchFontHeight: false}
+    });
+});
+</script>
+
+    
+    
+
+<a id="back-to-top" title="回到顶端" href="javascript:;">
+    <i class="fas fa-chevron-up"></i>
+</a>
+<script src="/js/back-to-top.js" defer></script>
+
+
+    
+    
+
+    
+    
+    
+    
+
+    
+    
+    
+    
+    
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script>
+    <script src="/js/clipboard.js" defer></script>
+    
+
+    
+
+
+<script src="/js/main.js" defer></script>
+
+    
+    <div class="searchbox ins-search">
+    <div class="searchbox-container ins-search-container">
+        <div class="searchbox-input-wrapper">
+            <input type="text" class="searchbox-input ins-search-input" placeholder="想要查找什么...">
+            <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="searchbox-result-wrapper ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+    (function (window) {
+        var INSIGHT_CONFIG = {
+            TRANSLATION: {
+                POSTS: '文章',
+                PAGES: '页面',
+                CATEGORIES: '分类',
+                TAGS: '标签',
+                UNTITLED: '(无标题)',
+            },
+            CONTENT_URL: '/content.json',
+        };
+        window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+    })(window);
+</script>
+<script src="/js/insight.js" defer></script>
+<link rel="stylesheet" href="/css/search.css">
+<link rel="stylesheet" href="/css/insight.css"><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+    
+</body>
+</html>
