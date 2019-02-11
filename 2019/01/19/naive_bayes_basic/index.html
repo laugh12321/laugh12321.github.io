@@ -197,20 +197,16 @@ var _hmt = _hmt || [];
 </ul>
 <p>而最终计算得到的 \(P(A \mid B)\) 便是条件概率，表示在 \(B\) 事件发生的情况下 \(A\) 事件发生的概率。</p>
 <h4 id="贝叶斯定理"><a href="#贝叶斯定理" class="headerlink" title="贝叶斯定理"></a>贝叶斯定理</h4><p>上面提到了条件概率的基本概念，那么当知道事件 \(B\) 发生的情况下事件 \(A\) 发生的概率 \(P(A \mid B)\)，如何求 \(P(B \mid A)\) 呢？贝叶斯定理应运而生。根据条件概率公式可以得到:</p>
-<script type="math/tex; mode=display">
-P(B \mid A)=\frac{P(AB)}{P(A)} \tag1</script><p>而同样通过条件概率公式可以得到：</p>
-<script type="math/tex; mode=display">
-P(AB)=P(A \mid B)*P(B) \tag2</script><p>将 (2) 式带入 (1) 式便可得到完整的贝叶斯定理：</p>
-<script type="math/tex; mode=display">
-P(B \mid A)=\frac{P(AB)}{P(A)}=\frac{P(A \mid B)*P(B)}{P(A)} \tag{3}</script><p>以下，通过一张图来完整且形象的展示条件概率和贝叶斯定理的原理。</p>
+<p>$$<br>P(B \mid A)=\frac{P(AB)}{P(A)} \tag1<br>$$<br>而同样通过条件概率公式可以得到：</p>
+<p>$$<br>P(AB)=P(A \mid B)*P(B) \tag2<br>$$</p>
+<p>将 (2) 式带入 (1) 式便可得到完整的贝叶斯定理：</p>
+<p>$$<br>P(B \mid A)=\frac{P(AB)}{P(A)}=\frac{P(A \mid B)*P(B)}{P(A)} \tag{3}<br>$$<br>以下，通过一张图来完整且形象的展示条件概率和贝叶斯定理的原理。</p>
 <p><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/Naive%20Bayes/2.png" alt=""></p>
 <h4 id="先验概率"><a href="#先验概率" class="headerlink" title="先验概率"></a>先验概率</h4><p>先验概率（Prior Probability）指的是根据以往经验和分析得到的概率。例如以上公式中的 \(P(A), P(B)\),又例如：\(X\) 表示投一枚质地均匀的硬币，正面朝上的概率，显然在我们根据以往的经验下，我们会认为 \(X\) 的概率 \(P(X) = 0.5\) 。其中 \(P(X) = 0.5\) 就是先验概率。</p>
 <h4 id="后验概率"><a href="#后验概率" class="headerlink" title="后验概率"></a>后验概率</h4><p>后验概率（Posterior Probability）是事件发生后求的反向条件概率；即基于先验概率通过贝叶斯公式求得的反向条件概率。例如公式中的 \(P(B \mid A)\)   就是通过先验概率 \(P(A)\)和\(P(B)\) 得到的后验概率，其通俗的讲就是「执果寻因」中的「因」。</p>
 <h3 id="什么是朴素贝叶斯"><a href="#什么是朴素贝叶斯" class="headerlink" title="什么是朴素贝叶斯"></a>什么是朴素贝叶斯</h3><p>朴素贝叶斯（Naive Bayes）就是将贝叶斯原理以及条件独立结合而成的算法，其思想非常的简单，根据贝叶斯公式：</p>
-<script type="math/tex; mode=display">
-P(B \mid A)=\frac{P(A \mid B)*P(B)}{P(A)} \tag{4}</script><p>变形表达式为：</p>
-<script type="math/tex; mode=display">
-P(类别 \mid 特征)=\frac{P(特征 \mid 类别) * P(类别)}{P(特征)} \tag{5}</script><p>公式（5）利用先验概率，即特征和类别的概率；再利用不同类别中各个特征的概率分布，最后计算得到后验概率，即各个特征分布下的预测不同的类别。</p>
+<p>$$<br>P(B \mid A)=\frac{P(A \mid B)*P(B)}{P(A)} \tag{4}<br>$$</p>
+<p>变形表达式为：<br>$$<br>P(类别 \mid 特征)=\frac{P(特征 \mid 类别) * P(类别)}{P(特征)} \tag{5}<br>$$<br>公式（5）利用先验概率，即特征和类别的概率；再利用不同类别中各个特征的概率分布，最后计算得到后验概率，即各个特征分布下的预测不同的类别。</p>
 <p>利用贝叶斯原理求解固然是一个很好的方法，但实际生活中数据的特征之间是有相互联系的，在计算 \(P(特征\mid类别)\) 时，考虑特征之间的联系会比较麻烦，而朴素贝叶斯则人为的将各个特征割裂开，认定特征之间相互独立。</p>
 <p>朴素贝叶斯中的「朴素」，即条件独立，表示其假设预测的各个属性都是相互独立的,每个属性独立地对分类结果产生影响，条件独立在数学上的表示为：\(P(AB)=P(A)*P(B)\)。这样，使得朴素贝叶斯算法变得简单，但有时会牺牲一定的分类准确率。对于预测数据，求解在该预测数据的属性出现时各个类别的出现概率，将概率值大的类别作为预测数据的类别。</p>
 <h2 id="朴素贝叶斯算法实现"><a href="#朴素贝叶斯算法实现" class="headerlink" title="朴素贝叶斯算法实现"></a>朴素贝叶斯算法实现</h2><p>前面主要介绍了朴素贝叶斯算法中几个重要的概率论知识，接下来我们对其进行具体的实现，算法流程如下：</p>
@@ -229,13 +225,13 @@ P(类别 \mid 特征)=\frac{P(特征 \mid 类别) * P(类别)}{P(特征)} \tag{5
 <p><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/Naive%20Bayes/3.png" alt=""></p>
 <blockquote>
 <p><strong>前提条件：</strong>假如有两个外形完全相同箱子，甲箱中有 <code>99</code> 个白球，<code>1</code> 个黑球；乙箱中有 <code>99</code> 个黑球，<code>1</code> 个白球。</p>
+</blockquote>
+<blockquote>
 <p><strong>问题：</strong>当我们进行一次实验，并取出一个球，取出的结果是白球。那么，请问白球是从哪一个箱子里取出的？</p>
 </blockquote>
 <p>我相信，你的第一印象很可能会是白球从甲箱中取出。因为甲箱中的白球数量多，所以这个推断符合人们经验。其中「最可能」就是「极大似然」。而极大似然估计的目的就是利用已知样本结果，反推最有可能造成这个结果的参数值。</p>
 <p>极大似然估计提供了一种给定观察数据来评估模型参数的方法，即：「模型已定，参数未知」。通过若干次试验，观察其结果，利用试验结果得到某个参数值能够使样本出现的概率为最大，则称为极大似然估计。</p>
-<p>在概率论中求解极大似然估计的方法比较复杂，基于实验，我们将讲解 `P(B)` 和 \(P(B/A)\) 是如何通过极大似然估计得到的。\(P(种类)\) 用数学的方法表示 ：</p>
-<script type="math/tex; mode=display">
-P(y_{i}=c_{k})=\frac{\sum_{N}^{i=1}I(y_{i}=c_{k})}{N},k=1,2,3,…,m \tag{6}</script><p>公式(6)中的 \(y_{i}\) 表示数据的类别，\(c_{k}\) 表示每一条数据的类别。</p>
+<p>在概率论中求解极大似然估计的方法比较复杂，基于实验，我们将讲解 `P(B)` 和 \(P(B/A)\) 是如何通过极大似然估计得到的。\(P(种类)\) 用数学的方法表示 ：<br>$$<br>P(y_{i}=c_{k})=\frac{\sum_{N}^{i=1}I(y_{i}=c_{k})}{N},k=1,2,3,…,m \tag{6}<br>$$<br>公式(6)中的 \(y_{i}\) 表示数据的类别，\(c_{k}\) 表示每一条数据的类别。</p>
 <p>你可以通俗的理解为，在现有的训练集中，每一个类别所占总数的比例，例如:<strong>生成的数据</strong>中 \(P(Y=A)=\frac{8}{15}\)，表示训练集中总共有 15 条数据，而类别为 <code>A</code> 的有 8 条数据。  </p>
 <p>下面我们用 Python 代码来实现先验概率 \(P(种类)\) 的求解：</p>
 <figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-string">"""P(种类) 先验概率计算</span></span><br><span class="line"><span class="hljs-string">"""</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">get_P_labels</span><span class="hljs-params">(labels)</span>:</span></span><br><span class="line">    labels = list(labels)  <span class="hljs-comment"># 转换为 list 类型</span></span><br><span class="line">    P_label = &#123;&#125;  <span class="hljs-comment"># 设置空字典用于存入 label 的概率</span></span><br><span class="line">    <span class="hljs-keyword">for</span> label <span class="hljs-keyword">in</span> labels:</span><br><span class="line">        P_label[label] = labels.count(label) / float(len(labels))  <span class="hljs-comment"># p = count(y) / count(Y)</span></span><br><span class="line">    <span class="hljs-keyword">return</span> P_label</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">P_labels = get_P_labels(data[<span class="hljs-string">"labels"</span>])</span><br><span class="line">P_labels</span><br></pre></td></tr></table></figure>
@@ -262,9 +258,7 @@ P(y_{i}=c_{k})=\frac{\sum_{N}^{i=1}I(y_{i}=c_{k})}{N},k=1,2,3,…,m \tag{6}</scr
 <figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&#123;<span class="hljs-string">'r|A'</span>: <span class="hljs-number">0.5</span>,</span><br><span class="line"> <span class="hljs-string">'m|A'</span>: <span class="hljs-number">0.375</span>,</span><br><span class="line"> <span class="hljs-string">'r|B'</span>: <span class="hljs-number">0.14285714285714285</span>,</span><br><span class="line"> <span class="hljs-string">'m|B'</span>: <span class="hljs-number">0.42857142857142855</span>&#125;</span><br></pre></td></tr></table></figure>
 <p>可以得到当特征 <code>x</code> 和 <code>y</code> 的值为 <code>r</code> 和 <code>m</code> 时，在不同类别下的先验概率。</p>
 <h4 id="贝叶斯估计"><a href="#贝叶斯估计" class="headerlink" title="贝叶斯估计"></a>贝叶斯估计</h4><p>在做极大似然估计时，若类别中缺少一些特征，则就会出现概率值为 <code>0</code> 的情况。此时，就会影响后验概率的计算结果，使得分类产生偏差。而解决这一问题最好的方法就是采用贝叶斯估计。  </p>
-<p>在计算先验概率 \(P(种类)\) 中，贝叶斯估计的数学表达式为：</p>
-<script type="math/tex; mode=display">
-P(y_{i}=c_{k})=\frac{\sum_{N}^{i=1}I(y_{i}=c_{k})+\lambda }{N+k\lambda} \tag{8}</script><p>其中 \(\lambda \geq 0\) 等价于在随机变量各个取值的频数上赋予一个正数，当 \(\lambda=0\) 时就是极大似然估计。在平时常取 \(\lambda=1\)，这时称为拉普拉斯平滑。例如：<strong>生成数据</strong> 中，\(P(Y=A)=\frac{8+1}{15+2*1}=\frac{9}{17}\),取 \(\lambda=1\) 此时由于一共有 <code>A</code>，<code>B</code> 两个类别，则 <code>k</code> 取 2。</p>
+<p>在计算先验概率 \(P(种类)\) 中，贝叶斯估计的数学表达式为：<br>$$<br>P(y_{i}=c_{k})=\frac{\sum_{N}^{i=1}I(y_{i}=c_{k})+\lambda }{N+k\lambda} \tag{8}<br>$$<br>其中 \(\lambda \geq 0\) 等价于在随机变量各个取值的频数上赋予一个正数，当 \(\lambda=0\) 时就是极大似然估计。在平时常取 \(\lambda=1\)，这时称为拉普拉斯平滑。例如：<strong>生成数据</strong> 中，\(P(Y=A)=\frac{8+1}{15+2*1}=\frac{9}{17}\),取 \(\lambda=1\) 此时由于一共有 <code>A</code>，<code>B</code> 两个类别，则 <code>k</code> 取 2。</p>
 <p>同样计算 \(P(特征 \mid 种类)\) 时，也是给计算时的分子分母加上拉普拉斯平滑。例如：<strong>生成数据</strong> 中，\(P(x_{1}=”r” \mid Y=A)=\frac{4+1}{8+3*1}=\frac{5}{11}\) 同样取 \(\lambda=1\) 此时由于 <code>x</code> 中有 <code>r</code>, <code>g</code>, <code>b</code> 三个种类，所以这里 k 取值为 3。</p>
 <h3 id="朴素贝叶斯算法实现-1"><a href="#朴素贝叶斯算法实现-1" class="headerlink" title="朴素贝叶斯算法实现"></a>朴素贝叶斯算法实现</h3><p>通过上面的内容，相信你已经对朴素贝叶斯算法原理有一定印象。接下来，我们对朴素贝叶斯分类过程进行完整实现。其中，参数估计方法则使用极大似然估计。<br><em>注：分类器实现的公式，请参考《机器学习》- 周志华 P151 页</em></p>
 <figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-string">"""朴素贝叶斯分类器</span></span><br><span class="line"><span class="hljs-string">"""</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">classify</span><span class="hljs-params">(data, features)</span>:</span></span><br><span class="line">    <span class="hljs-comment"># 求 labels 中每个 label 的先验概率</span></span><br><span class="line">    labels = data[<span class="hljs-string">'labels'</span>]</span><br><span class="line">    P_label = get_P_labels(labels)</span><br><span class="line">    P_fea_lab = get_P_fea_lab(P_label, features, data)</span><br><span class="line"></span><br><span class="line">    P = &#123;&#125;</span><br><span class="line">    P_show = &#123;&#125;  <span class="hljs-comment"># 后验概率</span></span><br><span class="line">    <span class="hljs-keyword">for</span> each_label <span class="hljs-keyword">in</span> P_label:</span><br><span class="line">        P[each_label] = P_label[each_label]</span><br><span class="line">        <span class="hljs-keyword">for</span> each_feature <span class="hljs-keyword">in</span> features:</span><br><span class="line">            key = str(each_label)+<span class="hljs-string">'|'</span>+str(features)</span><br><span class="line">            P_show[key] = P[each_label] * \</span><br><span class="line">                P_fea_lab[str(each_feature) + <span class="hljs-string">'|'</span> + str(each_label)]</span><br><span class="line">            P[each_label] = P[each_label] * \</span><br><span class="line">                P_fea_lab[str(each_feature) + <span class="hljs-string">'|'</span> +</span><br><span class="line">                          str(each_label)]  <span class="hljs-comment"># 由于分母相同，只需要比较分子</span></span><br><span class="line">    print(P_show)</span><br><span class="line">    features_label = max(P, key=P.get)  <span class="hljs-comment"># 概率最大值对应的类别</span></span><br><span class="line">    <span class="hljs-keyword">return</span> features_label</span><br></pre></td></tr></table></figure>
@@ -279,9 +273,7 @@ P(y_{i}=c_{k})=\frac{\sum_{N}^{i=1}I(y_{i}=c_{k})+\lambda }{N+k\lambda} \tag{8}<
 <li>当特征值 \(x_{i}=1\) 时，\(P(x_{i} \mid y_{k})=P(x_{i}=1 \mid y_{k})\);  </li>
 <li>当特征值 \(x_{i}=0\) 时，\(P(x_{i} \mid y_{k})=P(x_{i}=0 \mid y_{k})\)。</li>
 </ul>
-<h4 id="高斯模型"><a href="#高斯模型" class="headerlink" title="高斯模型"></a>高斯模型</h4><p>当特征是连续变量的时候，在不做平滑的情况下，运用多项式模型就会导致很多 \(P(x_{i} \mid y_{k})=0\)，此时即使做平滑，所得到的条件概率也难以描述真实情况。所以处理连续的特征变量，采用高斯模型。高斯模型是假设连续变量的特征数据是服从高斯分布的，高斯分布函数表达式为：</p>
-<script type="math/tex; mode=display">
-P(x_{i}|y_{k})=\frac{1}{\sqrt{2\pi}\sigma_{y_{k},i}}exp(-\frac{(x-\mu_{y_{k},i}) ^{2}}{2\sigma ^{2}_{y_{k}},i})</script><p>其中：</p>
+<h4 id="高斯模型"><a href="#高斯模型" class="headerlink" title="高斯模型"></a>高斯模型</h4><p>当特征是连续变量的时候，在不做平滑的情况下，运用多项式模型就会导致很多 \(P(x_{i} \mid y_{k})=0\)，此时即使做平滑，所得到的条件概率也难以描述真实情况。所以处理连续的特征变量，采用高斯模型。高斯模型是假设连续变量的特征数据是服从高斯分布的，高斯分布函数表达式为：<br>$$<br>P(x_{i}|y_{k})=\frac{1}{\sqrt{2\pi}\sigma_{y_{k},i}}exp(-\frac{(x-\mu_{y_{k},i}) ^{2}}{2\sigma ^{2}_{y_{k}},i})<br>$$<br>其中：</p>
 <ul>
 <li>\(\mu_{y_{k},i}\) 表示类别为 \(y_{k}\) 的样本中，第 `i` 维特征的均值。  </li>
 <li>\(\sigma ^{2}_{y_{k}},i\) 表示类别为 \(y_{k}\) 的样本中，第 `i` 维特征的方差。  </li>
@@ -292,7 +284,7 @@ P(x_{i}|y_{k})=\frac{1}{\sqrt{2\pi}\sigma_{y_{k},i}}exp(-\frac{(x-\mu_{y_{k},i})
 <p>关于贝叶斯定理，这里有一个有趣的视频，希望能加深大家对该定理的理解。</p>
 <center><video width="800px" controls src="http://labfile.oss.aliyuncs.com/courses/1081/beyes_video.mp4"></video></center>
 
-<div style="color: #999;font-size: 12px;text-align: center;">如何用贝叶斯方法帮助内容审核 | 视频来源：[回形针PaperClip](https://weibo.com/u/6414205745?is_all=1)</div>
+<div style="color: #999;font-size: 12px;text-align: center;">如何用贝叶斯方法帮助内容审核 | 视频来源：<a href="https://weibo.com/u/6414205745?is_all=1" target="_blank" rel="noopener">回形针PaperClip</a></div>
         </div>
         
         <div class="level is-size-7 is-uppercase">
@@ -426,7 +418,7 @@ P(x_{i}|y_{k})=\frac{1}{\sqrt{2\pi}\sigma_{y_{k},i}}exp(-\frac{(x-\mu_{y_{k},i})
                         文章
                     </p>
                     <p class="title has-text-weight-normal">
-                        19
+                        20
                     </p>
                 </div>
             </div>
@@ -436,7 +428,7 @@ P(x_{i}|y_{k})=\frac{1}{\sqrt{2\pi}\sigma_{y_{k},i}}exp(-\frac{(x-\mu_{y_{k},i})
                         分类
                     </p>
                     <p class="title has-text-weight-normal">
-                        22
+                        23
                     </p>
                 </div>
             </div>
@@ -446,7 +438,7 @@ P(x_{i}|y_{k})=\frac{1}{\sqrt{2\pi}\sigma_{y_{k},i}}exp(-\frac{(x-\mu_{y_{k},i})
                         标签
                     </p>
                     <p class="title has-text-weight-normal">
-                        26
+                        27
                     </p>
                 </div>
             </div>
@@ -648,7 +640,7 @@ P(x_{i}|y_{k})=\frac{1}{\sqrt{2\pi}\sigma_{y_{k},i}}exp(-\frac{(x-\mu_{y_{k},i})
                 <span class="level-item">机器学习</span>
             </span>
             <span class="level-end">
-                <span class="level-item tag">12</span>
+                <span class="level-item tag">13</span>
             </span>
         </a><ul><li>
         <a class="level is-marginless" href="/categories/机器学习/K-Means/">
@@ -656,7 +648,7 @@ P(x_{i}|y_{k})=\frac{1}{\sqrt{2\pi}\sigma_{y_{k},i}}exp(-\frac{(x-\mu_{y_{k},i})
                 <span class="level-item">K-Means</span>
             </span>
             <span class="level-end">
-                <span class="level-item tag">2</span>
+                <span class="level-item tag">3</span>
             </span>
         </a></li><li>
         <a class="level is-marginless" href="/categories/机器学习/K-近邻算法/">
@@ -742,7 +734,7 @@ P(x_{i}|y_{k})=\frac{1}{\sqrt{2\pi}\sigma_{y_{k},i}}exp(-\frac{(x-\mu_{y_{k},i})
         <h3 class="menu-label">
             标签云
         </h3>
-        <a href="/tags/ECS/" style="font-size: 13.33px;">ECS</a> <a href="/tags/MAE/" style="font-size: 10px;">MAE</a> <a href="/tags/MAPE/" style="font-size: 10px;">MAPE</a> <a href="/tags/MSE/" style="font-size: 10px;">MSE</a> <a href="/tags/Seafile/" style="font-size: 10px;">Seafile</a> <a href="/tags/Ubuntu/" style="font-size: 13.33px;">Ubuntu</a> <a href="/tags/artificial-neural-network/" style="font-size: 10px;">artificial neural network</a> <a href="/tags/bagging/" style="font-size: 10px;">bagging</a> <a href="/tags/blog/" style="font-size: 13.33px;">blog</a> <a href="/tags/boosting/" style="font-size: 10px;">boosting</a> <a href="/tags/cluster/" style="font-size: 10px;">cluster</a> <a href="/tags/decision-tree/" style="font-size: 10px;">decision tree</a> <a href="/tags/deep-learning/" style="font-size: 10px;">deep learning</a> <a href="/tags/github/" style="font-size: 13.33px;">github</a> <a href="/tags/jekyll/" style="font-size: 10px;">jekyll</a> <a href="/tags/k-means/" style="font-size: 13.33px;">k-means</a> <a href="/tags/k-nearest-neighbors/" style="font-size: 10px;">k-nearest neighbors</a> <a href="/tags/linear-regression/" style="font-size: 13.33px;">linear regression</a> <a href="/tags/machine-learning/" style="font-size: 16.67px;">machine learning</a> <a href="/tags/naive-bayes/" style="font-size: 10px;">naive bayes</a> <a href="/tags/next/" style="font-size: 10px;">next</a> <a href="/tags/perceptron/" style="font-size: 10px;">perceptron</a> <a href="/tags/polynomial-regression/" style="font-size: 10px;">polynomial regression</a> <a href="/tags/python/" style="font-size: 20px;">python</a> <a href="/tags/sort/" style="font-size: 13.33px;">sort</a> <a href="/tags/support-vector-machine/" style="font-size: 10px;">support vector machine</a>
+        <a href="/tags/ECS/" style="font-size: 13.33px;">ECS</a> <a href="/tags/HAC/" style="font-size: 10px;">HAC</a> <a href="/tags/MAE/" style="font-size: 10px;">MAE</a> <a href="/tags/MAPE/" style="font-size: 10px;">MAPE</a> <a href="/tags/MSE/" style="font-size: 10px;">MSE</a> <a href="/tags/Seafile/" style="font-size: 10px;">Seafile</a> <a href="/tags/Ubuntu/" style="font-size: 13.33px;">Ubuntu</a> <a href="/tags/artificial-neural-network/" style="font-size: 10px;">artificial neural network</a> <a href="/tags/bagging/" style="font-size: 10px;">bagging</a> <a href="/tags/blog/" style="font-size: 13.33px;">blog</a> <a href="/tags/boosting/" style="font-size: 10px;">boosting</a> <a href="/tags/cluster/" style="font-size: 10px;">cluster</a> <a href="/tags/decision-tree/" style="font-size: 10px;">decision tree</a> <a href="/tags/deep-learning/" style="font-size: 10px;">deep learning</a> <a href="/tags/github/" style="font-size: 13.33px;">github</a> <a href="/tags/jekyll/" style="font-size: 10px;">jekyll</a> <a href="/tags/k-means/" style="font-size: 13.33px;">k-means</a> <a href="/tags/k-nearest-neighbors/" style="font-size: 10px;">k-nearest neighbors</a> <a href="/tags/linear-regression/" style="font-size: 13.33px;">linear regression</a> <a href="/tags/machine-learning/" style="font-size: 16.67px;">machine learning</a> <a href="/tags/naive-bayes/" style="font-size: 10px;">naive bayes</a> <a href="/tags/next/" style="font-size: 10px;">next</a> <a href="/tags/perceptron/" style="font-size: 10px;">perceptron</a> <a href="/tags/polynomial-regression/" style="font-size: 10px;">polynomial regression</a> <a href="/tags/python/" style="font-size: 20px;">python</a> <a href="/tags/sort/" style="font-size: 13.33px;">sort</a> <a href="/tags/support-vector-machine/" style="font-size: 10px;">support vector machine</a>
     </div>
 </div>
 
@@ -759,16 +751,16 @@ P(x_{i}|y_{k})=\frac{1}{\sqrt{2\pi}\sigma_{y_{k},i}}exp(-\frac{(x-\mu_{y_{k},i})
         
         <article class="media">
             
-            <a href="/2019/02/09/Image_compression_using_Mini_Batch_k-means/" class="media-left">
+            <a href="/2019/02/11/Hierarchical_clustering_method/" class="media-left">
                 <p class="image is-64x64">
-                    <img class="thumbnail" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/photo/11.jpg" alt="使用 Mini Batch K-Means 进行图像压缩 ">
+                    <img class="thumbnail" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/photo/12.jpg" alt="机器学习|层次聚类方法 (Python 语言描述)">
                 </p>
             </a>
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-02-08T16:00:00.000Z">2019-02-09</time></div>
-                    <a href="/2019/02/09/Image_compression_using_Mini_Batch_k-means/" class="has-link-black-ter is-size-6">使用 Mini Batch K-Means 进行图像压缩 </a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-02-10T16:00:00.000Z">2019-02-11</time></div>
+                    <a href="/2019/02/11/Hierarchical_clustering_method/" class="has-link-black-ter is-size-6">机器学习|层次聚类方法 (Python 语言描述)</a>
                     <p class="is-size-7 is-uppercase">
                         <a class="has-link-grey -link" href="/categories/机器学习/">机器学习</a> / <a class="has-link-grey -link" href="/categories/机器学习/K-Means/">K-Means</a>
                     </p>
@@ -788,6 +780,25 @@ P(x_{i}|y_{k})=\frac{1}{\sqrt{2\pi}\sigma_{y_{k},i}}exp(-\frac{(x-\mu_{y_{k},i})
                 <div class="content">
                     <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-02-08T16:00:00.000Z">2019-02-09</time></div>
                     <a href="/2019/02/09/Cluster_Of_K-Means/" class="has-link-black-ter is-size-6">机器学习|划分聚类之 K-Means 详解 (Python 语言描述)</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/机器学习/">机器学习</a> / <a class="has-link-grey -link" href="/categories/机器学习/K-Means/">K-Means</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2019/02/09/Image_compression_using_Mini_Batch_k-means/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/photo/11.jpg" alt="使用 Mini Batch K-Means 进行图像压缩 ">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-02-08T16:00:00.000Z">2019-02-09</time></div>
+                    <a href="/2019/02/09/Image_compression_using_Mini_Batch_k-means/" class="has-link-black-ter is-size-6">使用 Mini Batch K-Means 进行图像压缩 </a>
                     <p class="is-size-7 is-uppercase">
                         <a class="has-link-grey -link" href="/categories/机器学习/">机器学习</a> / <a class="has-link-grey -link" href="/categories/机器学习/K-Means/">K-Means</a>
                     </p>
@@ -833,25 +844,6 @@ P(x_{i}|y_{k})=\frac{1}{\sqrt{2\pi}\sigma_{y_{k},i}}exp(-\frac{(x-\mu_{y_{k},i})
             </div>
         </article>
         
-        <article class="media">
-            
-            <a href="/2019/01/31/Neural_Network/" class="media-left">
-                <p class="image is-64x64">
-                    <img class="thumbnail" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/photo/07.jpg" alt="机器学习|感知机和人工神经网络详解 (Python 语言描述)">
-                </p>
-            </a>
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-01-30T16:00:00.000Z">2019-01-31</time></div>
-                    <a href="/2019/01/31/Neural_Network/" class="has-link-black-ter is-size-6">机器学习|感知机和人工神经网络详解 (Python 语言描述)</a>
-                    <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/机器学习/">机器学习</a> / <a class="has-link-grey -link" href="/categories/机器学习/感知机/">感知机</a>
-                    </p>
-                </div>
-            </div>
-        </article>
-        
     </div>
 </div>
 
@@ -870,7 +862,7 @@ P(x_{i}|y_{k})=\frac{1}{\sqrt{2\pi}\sigma_{y_{k},i}}exp(-\frac{(x-\mu_{y_{k},i})
                     <span class="level-item">二月 2019</span>
                 </span>
                 <span class="level-end">
-                    <span class="level-item tag">4</span>
+                    <span class="level-item tag">5</span>
                 </span>
             </a>
         </li>
@@ -925,6 +917,13 @@ P(x_{i}|y_{k})=\frac{1}{\sqrt{2\pi}\sigma_{y_{k},i}}exp(-\frac{(x-\mu_{y_{k},i})
                     <a class="tags has-addons" href="/tags/ECS/">
                         <span class="tag">ECS</span>
                         <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/HAC/">
+                        <span class="tag">HAC</span>
+                        <span class="tag is-grey">1</span>
                     </a>
                 </div>
                 
@@ -1050,7 +1049,7 @@ P(x_{i}|y_{k})=\frac{1}{\sqrt{2\pi}\sigma_{y_{k},i}}exp(-\frac{(x-\mu_{y_{k},i})
                 <div class="control">
                     <a class="tags has-addons" href="/tags/machine-learning/">
                         <span class="tag">machine learning</span>
-                        <span class="tag is-grey">12</span>
+                        <span class="tag is-grey">13</span>
                     </a>
                 </div>
                 
@@ -1085,7 +1084,7 @@ P(x_{i}|y_{k})=\frac{1}{\sqrt{2\pi}\sigma_{y_{k},i}}exp(-\frac{(x-\mu_{y_{k},i})
                 <div class="control">
                     <a class="tags has-addons" href="/tags/python/">
                         <span class="tag">python</span>
-                        <span class="tag is-grey">13</span>
+                        <span class="tag is-grey">14</span>
                     </a>
                 </div>
                 
@@ -1128,16 +1127,16 @@ P(x_{i}|y_{k})=\frac{1}{\sqrt{2\pi}\sigma_{y_{k},i}}exp(-\frac{(x-\mu_{y_{k},i})
         
         <article class="media">
             
-            <a href="/2019/02/09/Image_compression_using_Mini_Batch_k-means/" class="media-left">
+            <a href="/2019/02/11/Hierarchical_clustering_method/" class="media-left">
                 <p class="image is-64x64">
-                    <img class="thumbnail" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/photo/11.jpg" alt="使用 Mini Batch K-Means 进行图像压缩 ">
+                    <img class="thumbnail" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/photo/12.jpg" alt="机器学习|层次聚类方法 (Python 语言描述)">
                 </p>
             </a>
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-02-08T16:00:00.000Z">2019-02-09</time></div>
-                    <a href="/2019/02/09/Image_compression_using_Mini_Batch_k-means/" class="has-link-black-ter is-size-6">使用 Mini Batch K-Means 进行图像压缩 </a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-02-10T16:00:00.000Z">2019-02-11</time></div>
+                    <a href="/2019/02/11/Hierarchical_clustering_method/" class="has-link-black-ter is-size-6">机器学习|层次聚类方法 (Python 语言描述)</a>
                     <p class="is-size-7 is-uppercase">
                         <a class="has-link-grey -link" href="/categories/机器学习/">机器学习</a> / <a class="has-link-grey -link" href="/categories/机器学习/K-Means/">K-Means</a>
                     </p>
@@ -1157,6 +1156,25 @@ P(x_{i}|y_{k})=\frac{1}{\sqrt{2\pi}\sigma_{y_{k},i}}exp(-\frac{(x-\mu_{y_{k},i})
                 <div class="content">
                     <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-02-08T16:00:00.000Z">2019-02-09</time></div>
                     <a href="/2019/02/09/Cluster_Of_K-Means/" class="has-link-black-ter is-size-6">机器学习|划分聚类之 K-Means 详解 (Python 语言描述)</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/机器学习/">机器学习</a> / <a class="has-link-grey -link" href="/categories/机器学习/K-Means/">K-Means</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2019/02/09/Image_compression_using_Mini_Batch_k-means/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/photo/11.jpg" alt="使用 Mini Batch K-Means 进行图像压缩 ">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-02-08T16:00:00.000Z">2019-02-09</time></div>
+                    <a href="/2019/02/09/Image_compression_using_Mini_Batch_k-means/" class="has-link-black-ter is-size-6">使用 Mini Batch K-Means 进行图像压缩 </a>
                     <p class="is-size-7 is-uppercase">
                         <a class="has-link-grey -link" href="/categories/机器学习/">机器学习</a> / <a class="has-link-grey -link" href="/categories/机器学习/K-Means/">K-Means</a>
                     </p>
@@ -1202,25 +1220,6 @@ P(x_{i}|y_{k})=\frac{1}{\sqrt{2\pi}\sigma_{y_{k},i}}exp(-\frac{(x-\mu_{y_{k},i})
             </div>
         </article>
         
-        <article class="media">
-            
-            <a href="/2019/01/31/Neural_Network/" class="media-left">
-                <p class="image is-64x64">
-                    <img class="thumbnail" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/photo/07.jpg" alt="机器学习|感知机和人工神经网络详解 (Python 语言描述)">
-                </p>
-            </a>
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-01-30T16:00:00.000Z">2019-01-31</time></div>
-                    <a href="/2019/01/31/Neural_Network/" class="has-link-black-ter is-size-6">机器学习|感知机和人工神经网络详解 (Python 语言描述)</a>
-                    <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/机器学习/">机器学习</a> / <a class="has-link-grey -link" href="/categories/机器学习/感知机/">感知机</a>
-                    </p>
-                </div>
-            </div>
-        </article>
-        
     </div>
 </div>
 
@@ -1239,7 +1238,7 @@ P(x_{i}|y_{k})=\frac{1}{\sqrt{2\pi}\sigma_{y_{k},i}}exp(-\frac{(x-\mu_{y_{k},i})
                     <span class="level-item">二月 2019</span>
                 </span>
                 <span class="level-end">
-                    <span class="level-item tag">4</span>
+                    <span class="level-item tag">5</span>
                 </span>
             </a>
         </li>
@@ -1294,6 +1293,13 @@ P(x_{i}|y_{k})=\frac{1}{\sqrt{2\pi}\sigma_{y_{k},i}}exp(-\frac{(x-\mu_{y_{k},i})
                     <a class="tags has-addons" href="/tags/ECS/">
                         <span class="tag">ECS</span>
                         <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/HAC/">
+                        <span class="tag">HAC</span>
+                        <span class="tag is-grey">1</span>
                     </a>
                 </div>
                 
@@ -1419,7 +1425,7 @@ P(x_{i}|y_{k})=\frac{1}{\sqrt{2\pi}\sigma_{y_{k},i}}exp(-\frac{(x-\mu_{y_{k},i})
                 <div class="control">
                     <a class="tags has-addons" href="/tags/machine-learning/">
                         <span class="tag">machine learning</span>
-                        <span class="tag is-grey">12</span>
+                        <span class="tag is-grey">13</span>
                     </a>
                 </div>
                 
@@ -1454,7 +1460,7 @@ P(x_{i}|y_{k})=\frac{1}{\sqrt{2\pi}\sigma_{y_{k},i}}exp(-\frac{(x-\mu_{y_{k},i})
                 <div class="control">
                     <a class="tags has-addons" href="/tags/python/">
                         <span class="tag">python</span>
-                        <span class="tag is-grey">13</span>
+                        <span class="tag is-grey">14</span>
                     </a>
                 </div>
                 

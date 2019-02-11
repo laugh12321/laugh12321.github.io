@@ -1,0 +1,2083 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head><meta name="generator" content="Hexo 3.8.0">
+    <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="utf-8">
+<title>机器学习|层次聚类方法 (Python 语言描述) - Laugh&#39;s blog</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+    <meta name="description" content="在之前的文章中，我们学习了划分聚类方法，并着重介绍了其中的 K-Means 算法。K-Means 算法可以说是用处非常广泛的聚类算法之一，它非常好用。但是，当你使用过这种算法之后，你就会发现一个比较让人「头疼」的问题，那就是我们需要手动指定 K 值，也就是聚类的类别数量。 预先确定聚类的类别数量看起来是个小事情，但是在很多时候是比较麻烦的，因为我们可能在聚类前并不知道数据集到底要被聚成几类。例如，">
+<meta name="keywords" content="python,machine learning,HAC">
+<meta property="og:type" content="article">
+<meta property="og:title" content="机器学习|层次聚类方法 (Python 语言描述)">
+<meta property="og:url" content="https://www.laugh12321.cn/2019/02/11/Hierarchical_clustering_method/index.html">
+<meta property="og:site_name" content="Laugh&#39;s blog">
+<meta property="og:description" content="在之前的文章中，我们学习了划分聚类方法，并着重介绍了其中的 K-Means 算法。K-Means 算法可以说是用处非常广泛的聚类算法之一，它非常好用。但是，当你使用过这种算法之后，你就会发现一个比较让人「头疼」的问题，那就是我们需要手动指定 K 值，也就是聚类的类别数量。 预先确定聚类的类别数量看起来是个小事情，但是在很多时候是比较麻烦的，因为我们可能在聚类前并不知道数据集到底要被聚成几类。例如，">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/Hierarchical%20clustering%20method/1.png">
+<meta property="og:image" content="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/Hierarchical%20clustering%20method/2.png">
+<meta property="og:image" content="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/Hierarchical%20clustering%20method/3.png">
+<meta property="og:image" content="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/Hierarchical%20clustering%20method/4.png">
+<meta property="og:image" content="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/Hierarchical%20clustering%20method/5.png">
+<meta property="og:image" content="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/Hierarchical%20clustering%20method/6.png">
+<meta property="og:image" content="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/Hierarchical%20clustering%20method/7.png">
+<meta property="og:image" content="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/Hierarchical%20clustering%20method/8.png">
+<meta property="og:image" content="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/Hierarchical%20clustering%20method/9.png">
+<meta property="og:image" content="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/Hierarchical%20clustering%20method/10.png">
+<meta property="og:image" content="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/Hierarchical%20clustering%20method/output_46_1.png">
+<meta property="og:image" content="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/Hierarchical%20clustering%20method/11.png">
+<meta property="og:image" content="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/Hierarchical%20clustering%20method/12.png">
+<meta property="og:image" content="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/Hierarchical%20clustering%20method/13.png">
+<meta property="og:image" content="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/Hierarchical%20clustering%20method/14.png">
+<meta property="og:image" content="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/Hierarchical%20clustering%20method/15.png">
+<meta property="og:image" content="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/Hierarchical%20clustering%20method/16.png">
+<meta property="og:image" content="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/Hierarchical%20clustering%20method/17.png">
+<meta property="og:image" content="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/Hierarchical%20clustering%20method/18.png">
+<meta property="og:image" content="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/Hierarchical%20clustering%20method/19.png">
+<meta property="og:image" content="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/Hierarchical%20clustering%20method/20.png">
+<meta property="og:image" content="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/Hierarchical%20clustering%20method/21.png">
+<meta property="og:image" content="https://www.laugh12321.cn/2019/02/11/Hierarchical_clustering_method/output_117_0.png">
+<meta property="og:image" content="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/Hierarchical%20clustering%20method/output_147_1.png">
+<meta property="og:image" content="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/Hierarchical%20clustering%20method/output_156_1.png">
+<meta property="og:image" content="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/Hierarchical%20clustering%20method/output_157_1.png">
+<meta property="og:image" content="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/Hierarchical%20clustering%20method/output_159_1.png">
+<meta property="og:image" content="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/Hierarchical%20clustering%20method/output_163_1.png">
+<meta property="og:image" content="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/Hierarchical%20clustering%20method/22.png">
+<meta property="og:updated_time" content="2019-02-11T14:11:14.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="机器学习|层次聚类方法 (Python 语言描述)">
+<meta name="twitter:description" content="在之前的文章中，我们学习了划分聚类方法，并着重介绍了其中的 K-Means 算法。K-Means 算法可以说是用处非常广泛的聚类算法之一，它非常好用。但是，当你使用过这种算法之后，你就会发现一个比较让人「头疼」的问题，那就是我们需要手动指定 K 值，也就是聚类的类别数量。 预先确定聚类的类别数量看起来是个小事情，但是在很多时候是比较麻烦的，因为我们可能在聚类前并不知道数据集到底要被聚成几类。例如，">
+<meta name="twitter:image" content="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/Hierarchical%20clustering%20method/1.png">
+
+
+
+
+
+<link rel="icon" href="https://avatars0.githubusercontent.com/u/38065710?s=400&u=80ee4d360562451484188e6f1677fa442720891b&v=4">
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.7.2/css/bulma.css">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Ubuntu:400,600|Source+Code+Pro">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/atelier-sulphurpool-dark.css">
+
+
+    
+    
+    
+    <style>body>.footer,body>.navbar,body>.section{opacity:0}</style>
+    
+
+    
+    
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/css/lightgallery.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/css/justifiedGallery.min.css">
+    
+
+    
+    
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/outdatedbrowser@1.1.5/outdatedbrowser/outdatedbrowser.min.css">
+
+
+    
+    
+    
+    
+
+<link rel="stylesheet" href="/css/back-to-top.css">
+
+
+    
+    
+
+    
+    
+<script>
+var _hmt = _hmt || [];
+(function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?b159f3ddbb6d9197633e49de94480102";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+    
+    
+
+    
+    
+<link rel="stylesheet" href="/css/progressbar.css">
+<script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script>
+
+    
+    
+    
+
+    
+
+
+<link rel="stylesheet" href="/css/style.css"><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</head>
+<body class="is-3-column">
+    <!-- hexo-inject:begin --><!-- hexo-inject:end --><nav class="navbar navbar-main">
+    <div class="container">
+        <div class="navbar-brand is-flex-center">
+            <a class="navbar-item navbar-logo" href="/">
+            
+                <img src="/images/logo.svg" alt="机器学习|层次聚类方法 (Python 语言描述)" height="28">
+            
+            </a>
+        </div>
+        <div class="navbar-menu">
+            
+            <div class="navbar-start">
+                
+                <a class="navbar-item" href="/">Home</a>
+                
+                <a class="navbar-item" href="/archives">Archives</a>
+                
+                <a class="navbar-item" href="/categories">Categories</a>
+                
+                <a class="navbar-item" href="/tags">Tags</a>
+                
+                <a class="navbar-item" href="/about">About</a>
+                
+            </div>
+            
+            <div class="navbar-end">
+                
+                    
+                    
+                    <a class="navbar-item" target="_blank" title="Download on GitHub" href="http://github.com/laugh12321">
+                        
+                        <i class="fab fa-github"></i>
+                        
+                    </a>
+                    
+                
+                
+                
+                <a class="navbar-item search" title="搜索" href="javascript:;">
+                    <i class="fas fa-search"></i>
+                </a>
+                
+            </div>
+        </div>
+    </div>
+</nav>
+    
+
+    <section class="section">
+        <div class="container">
+            <div class="columns">
+                <div class="column is-8-tablet is-8-desktop is-6-widescreen has-order-2 column-main"><div class="card">
+    
+    <div class="card-image">
+        <span class="image is-7by1">
+            <img class="thumbnail" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/photo/12.jpg" alt="机器学习|层次聚类方法 (Python 语言描述)">
+        </span>
+    </div>
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2019-02-10T16:00:00.000Z">2019-02-11</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/机器学习/">机器学习</a>&nbsp;/&nbsp;<a class="has-link-grey -link" href="/categories/机器学习/K-Means/">K-Means</a>&nbsp;/&nbsp;<a class="has-link-grey -link" href="/categories/机器学习/K-Means/层次聚类/">层次聚类</a>
+                </div>
+                
+                
+                <span class="level-item has-text-grey">
+                    
+                    
+                    1 小时 读完 (大约 7465 个字)
+                </span>
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                机器学习|层次聚类方法 (Python 语言描述)
+            
+        </h1>
+        <div class="content">
+            <p>在之前的文章中，我们学习了划分聚类方法，并着重介绍了其中的 K-Means 算法。K-Means 算法可以说是用处非常广泛的聚类算法之一，它非常好用。但是，当你使用过这种算法之后，你就会发现一个比较让人「头疼」的问题，那就是我们需要手动指定 K 值，也就是聚类的类别数量。</p>
+<p>预先确定聚类的类别数量看起来是个小事情，但是在很多时候是比较麻烦的，因为我们可能在聚类前并不知道数据集到底要被聚成几类。例如，下面的示意图中，感觉聚成 2 类或者 4 类都是比较合理的。<br><a id="more"></a><br><img width="550px" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/Hierarchical%20clustering%20method/1.png"></p>
+<p>今天要学习的层次聚类方法与划分聚类最大的区别之一，就是我们<strong>无需提前指定需要聚类类别的数量</strong>。这听起来是非常诱人的，到底是怎样做到的呢？</p>
+<p>简单来讲，层次聚类方法的特点在于通过计算数据集元素间的相似度来生成一颗具备层次结构的树。首先在这里强调一点，这里的「层次树」和之前学习的「决策树」是完全不同，不要混淆。</p>
+<p>与此同时，当我们使用层次聚类方法时，可以根据创建树的方式分为两种情况：</p>
+<ul>
+<li><p><strong>自底向上层次聚类法</strong>：该方法的过程被称为「凝聚」(Agglomerative)，也就是把数据集中的每个元素看作是一个类别，然后进行迭代合并成为更大的类别，直到满足某个终止条件。</p>
+</li>
+<li><p><strong>自顶向下层次聚类法</strong>：该方法的过程被称为「分裂」(Divisive)，也就是凝聚的反向过程。首先，把数据集看作是一个类别，然后递归地划分为多个较小的子类，直到满足某个终止条件。</p>
+</li>
+</ul>
+<h2 id="自底向上层次聚类法"><a href="#自底向上层次聚类法" class="headerlink" title="自底向上层次聚类法"></a>自底向上层次聚类法</h2><p>自底向上层次聚类法也就是 Agglomerative Clustering 算法。这种算法的主要特点在于，我们使用「自底向上」进行聚类的思路来帮助距离相近的样本被放在同一类别中。</p>
+<h3 id="自底向上层次聚类流程"><a href="#自底向上层次聚类流程" class="headerlink" title="自底向上层次聚类流程"></a>自底向上层次聚类流程</h3><p>具体来讲，这种方法的主要步骤如下：</p>
+<p>对于数据集 `D`，\(D=\left ( {x_1,x_2,\cdots,x_n} \right )\)：</p>
+<ol>
+<li>将数据集中每个样本标记为 <code>1</code> 类，即 $D$ 初始时包含的类别（Class）为 `C`，\(C=\left ( {c_1,c_2,\cdots,c_n} \right )\)。</li>
+<li>计算并找出 `C` 中距离最近的 <code>2</code> 个类别，合并为 <code>1</code> 类。</li>
+<li>依次合并直到最后仅剩下一个列表，即建立起一颗完整的层次树。</li>
+</ol>
+<p>我们通过下图来演示自底向上层次聚类法的过程，首先平面上有 5 个样本点，我们将每个样本点都单独划为 1 类。</p>
+<p><img width="250px" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/Hierarchical%20clustering%20method/2.png"></p>
+<p>接下来，我们可以计算元素间的距离，并将距离最近的合并为 1 类。于是，总类别变为 3 类。</p>
+<p><img width="250px" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/Hierarchical%20clustering%20method/3.png"></p>
+<p>重复上面的步骤，总类别变为 2 类。</p>
+<p><img width="250px" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/Hierarchical%20clustering%20method/4.png"></p>
+<p>最后，合并为 1 类，聚类终止。</p>
+<p><img width="250px" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/Hierarchical%20clustering%20method/5.png"></p>
+<p>我们将上面的聚类过程变为层次树就为：</p>
+<p><img width="250px" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/Hierarchical%20clustering%20method/6.png"></p>
+<p>看完上面的演示过程，你会发现「自底向上层次聚类法」原来这么简单呀！</p>
+<h3 id="距离计算方法"><a href="#距离计算方法" class="headerlink" title="距离计算方法"></a>距离计算方法</h3><p>虽然聚类过程看似简单，但不知道你是否意识到一个问题：<strong>当一个类别中包含多个元素时，类别与类别之间的距离是怎样确定的呢？</strong></p>
+<p>也就是说，上面的演示过程中，为什么要把 `5` 归为 `&lt;3, 4&gt;` 组成的那一类，而不是 `&lt;1, 2&gt;` 组成的类呢？或者说，为什么不先把 `&lt;1, 2&gt;` 与 `&lt;3, 4&gt;` 合并，最后才合并 `5` 呢？</p>
+<p>这就涉及到 Agglomerative 聚类过程中的距离计算方式。简单来讲，我们一般有 3 种不同的距离计算方式：</p>
+<h4 id="单连接（Single-linkage）"><a href="#单连接（Single-linkage）" class="headerlink" title="单连接（Single-linkage）"></a>单连接（Single-linkage）</h4><p>单连接的计算方式是根据两种类别之间<strong>最近</strong>的元素间距离作为两类别之间的距离。</p>
+<p><img width="250px" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/Hierarchical%20clustering%20method/7.png"></p>
+<h4 id="全连接（Complete-linkage）"><a href="#全连接（Complete-linkage）" class="headerlink" title="全连接（Complete-linkage）"></a>全连接（Complete-linkage）</h4><p>全连接的计算方式是根据两种类别之间<strong>最远</strong>的元素间距离作为两类别之间的距离。</p>
+<p><img width="250px" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/Hierarchical%20clustering%20method/8.png"></p>
+<h4 id="平均连接（Average-linkage）"><a href="#平均连接（Average-linkage）" class="headerlink" title="平均连接（Average-linkage）"></a>平均连接（Average-linkage）</h4><p>平均连接的计算方式是依次计算两种类别之间两两元素间距离，并最终求得平均值作为两类别之间的距离。</p>
+<p><img width="250px" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/Hierarchical%20clustering%20method/9.png"></p>
+<h4 id="中心连接（Center-linkage）"><a href="#中心连接（Center-linkage）" class="headerlink" title="中心连接（Center-linkage）"></a>中心连接（Center-linkage）</h4><p>平均连接虽然看起来更加合理，但是两两元素间的距离计算量往往非常庞大。有时候，也可以使用中心连接计算方法。即先计算类别中心，再以中心连线作为两类别之间的距离。</p>
+<p><img width="250px" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/Hierarchical%20clustering%20method/10.png"></p>
+<p>总之，上面 4 种距离计算方法中，<strong>一般常用「平均连接」和「中心连接」</strong>方法，因为「单连接」和「全连接」都相对极端，容易受到噪声点和分布不均匀数据造成的干扰。</p>
+<h3 id="Agglomerative-聚类-Python-实现"><a href="#Agglomerative-聚类-Python-实现" class="headerlink" title="Agglomerative 聚类 Python 实现"></a>Agglomerative 聚类 Python 实现</h3><p>下面，我们尝试通过 Python 实现自底向上层次聚类算法。首先导入实验必要的模块：</p>
+<figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np</span><br><span class="line"><span class="hljs-keyword">from</span> sklearn <span class="hljs-keyword">import</span> datasets</span><br><span class="line"><span class="hljs-keyword">from</span> matplotlib <span class="hljs-keyword">import</span> pyplot <span class="hljs-keyword">as</span> plt</span><br><span class="line">%matplotlib inline</span><br></pre></td></tr></table></figure>
+<p>然后，通过 <code>make_blobs</code> 方法随机生成一组示例数据，且使得示例数据呈现出 2 类数据的趋势。这里，我们设定随机数种子 <code>random_state=10</code> 以保证你的结果和实验结果一致。</p>
+<figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">data = datasets.make_blobs(<span class="hljs-number">10</span>, n_features=<span class="hljs-number">2</span>, centers=<span class="hljs-number">2</span>, random_state=<span class="hljs-number">10</span>)</span><br><span class="line">data</span><br></pre></td></tr></table></figure>
+<pre><code>(array([[  6.04774884, -10.30504657],
+        [  2.90159483,   5.42121526],
+        [  4.1575017 ,   3.89627276],
+        [  1.53636249,   5.11121453],
+        [  3.88101257,  -9.59334486],
+        [  1.70789903,   6.00435173],
+        [  5.69192445,  -9.47641249],
+        [  5.4307043 ,  -9.75956122],
+        [  5.85943906,  -8.38192364],
+        [  0.69523642,   3.23270535]]), array([0, 1, 1, 1, 0, 1, 0, 0, 0, 1]))
+</code></pre><p>使用 Matplotlib 绘制示例数据结果，可以看到数据的确呈现出 <code>2</code> 种类别的趋势。其中 <code>data[1]</code> 的结果即为生成数据时预设的类别，当然接下来的聚类过程，我们是不知道数据的预设类别。</p>
+<figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">plt.scatter(data[<span class="hljs-number">0</span>][:,<span class="hljs-number">0</span>], data[<span class="hljs-number">0</span>][:,<span class="hljs-number">1</span>], c=data[<span class="hljs-number">1</span>], s=<span class="hljs-number">60</span>)</span><br></pre></td></tr></table></figure>
+<p><img width="400px" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/Hierarchical%20clustering%20method/output_46_1.png"></p>
+<p>首先，我们实现欧式距离的计算函数：</p>
+<figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-string">"""欧式距离</span></span><br><span class="line"><span class="hljs-string">"""</span></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">euclidean_distance</span><span class="hljs-params">(a, b)</span>:</span></span><br><span class="line">    <span class="hljs-string">"""</span></span><br><span class="line"><span class="hljs-string">    参数:</span></span><br><span class="line"><span class="hljs-string">    a -- 数组 a</span></span><br><span class="line"><span class="hljs-string">    b -- 数组 b</span></span><br><span class="line"><span class="hljs-string">    </span></span><br><span class="line"><span class="hljs-string">    返回:</span></span><br><span class="line"><span class="hljs-string">    dist -- a, b 间欧式距离</span></span><br><span class="line"><span class="hljs-string">    """</span></span><br><span class="line">    x = float(a[<span class="hljs-number">0</span>]) - float(b[<span class="hljs-number">0</span>])</span><br><span class="line">    x = x * x</span><br><span class="line">    y = float(a[<span class="hljs-number">1</span>]) - float(b[<span class="hljs-number">1</span>])</span><br><span class="line">    y = y * y</span><br><span class="line">    dist = round(np.sqrt(x + y), <span class="hljs-number">2</span>)</span><br><span class="line">    <span class="hljs-keyword">return</span> dist</span><br></pre></td></tr></table></figure>
+<p>然后，实现 Agglomerative 聚类函数，这里使用中心连接的方法。为了更加具体的展示层次聚类的过程，这里在函数中添加一些多余的 <code>print()</code> 函数。</p>
+<figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-string">"""Agglomerative 聚类计算过程</span></span><br><span class="line"><span class="hljs-string">"""</span></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">agglomerative_clustering</span><span class="hljs-params">(data)</span>:</span></span><br><span class="line">    </span><br><span class="line">    <span class="hljs-keyword">while</span> len(data) &gt; <span class="hljs-number">1</span>:</span><br><span class="line">        print(<span class="hljs-string">"☞ 第 &#123;&#125; 次迭代\n"</span>.format(<span class="hljs-number">10</span> - len(data) + <span class="hljs-number">1</span>))</span><br><span class="line">        min_distance = float(<span class="hljs-string">'inf'</span>) <span class="hljs-comment"># 设定初始距离为无穷大</span></span><br><span class="line">        <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> range(len(data)):</span><br><span class="line">            print(<span class="hljs-string">"---"</span>)</span><br><span class="line">            <span class="hljs-keyword">for</span> j <span class="hljs-keyword">in</span> range(i + <span class="hljs-number">1</span>, len(data)):</span><br><span class="line">                distance = euclidean_distance(data[i], data[j])</span><br><span class="line">                print(<span class="hljs-string">"计算 &#123;&#125; 与 &#123;&#125; 距离为 &#123;&#125;"</span>.format(data[i], data[j],distance))</span><br><span class="line">                <span class="hljs-keyword">if</span> distance &lt; min_distance:</span><br><span class="line">                    min_distance = distance</span><br><span class="line">                    min_ij = (i, j)</span><br><span class="line">        i, j = min_ij <span class="hljs-comment"># 最近数据点序号</span></span><br><span class="line">        data1 = data[i]</span><br><span class="line">        data2 = data[j]</span><br><span class="line">        data = np.delete(data, j, <span class="hljs-number">0</span>) <span class="hljs-comment"># 删除原数据</span></span><br><span class="line">        data = np.delete(data, i, <span class="hljs-number">0</span>) <span class="hljs-comment"># 删除原数据</span></span><br><span class="line">        b = np.atleast_2d([(data1[<span class="hljs-number">0</span>] + data2[<span class="hljs-number">0</span>]) / <span class="hljs-number">2</span>, (data1[<span class="hljs-number">1</span>] + data2[<span class="hljs-number">1</span>]) / <span class="hljs-number">2</span>]) <span class="hljs-comment"># 计算两点新中心</span></span><br><span class="line">        data = np.concatenate((data, b), axis=<span class="hljs-number">0</span>) <span class="hljs-comment"># 将新数据点添加到迭代过程</span></span><br><span class="line">        print(<span class="hljs-string">"\n最近距离:&#123;&#125; &amp; &#123;&#125; = &#123;&#125;, 合并后中心:&#123;&#125;\n"</span>.format(data1, data2, min_distance, b))</span><br><span class="line">        </span><br><span class="line">    <span class="hljs-keyword">return</span> data</span><br></pre></td></tr></table></figure>
+<figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">agglomerative_clustering(data[<span class="hljs-number">0</span>])</span><br></pre></td></tr></table></figure>
+<pre><code>☞ 第 1 次迭代
+
+---
+计算 [  6.04774884 -10.30504657] 与 [2.90159483 5.42121526] 距离为 16.04
+计算 [  6.04774884 -10.30504657] 与 [4.1575017  3.89627276] 距离为 14.33
+计算 [  6.04774884 -10.30504657] 与 [1.53636249 5.11121453] 距离为 16.06
+计算 [  6.04774884 -10.30504657] 与 [ 3.88101257 -9.59334486] 距离为 2.28
+计算 [  6.04774884 -10.30504657] 与 [1.70789903 6.00435173] 距离为 16.88
+计算 [  6.04774884 -10.30504657] 与 [ 5.69192445 -9.47641249] 距离为 0.9
+计算 [  6.04774884 -10.30504657] 与 [ 5.4307043  -9.75956122] 距离为 0.82
+计算 [  6.04774884 -10.30504657] 与 [ 5.85943906 -8.38192364] 距离为 1.93
+计算 [  6.04774884 -10.30504657] 与 [0.69523642 3.23270535] 距离为 14.56
+---
+计算 [2.90159483 5.42121526] 与 [4.1575017  3.89627276] 距离为 1.98
+计算 [2.90159483 5.42121526] 与 [1.53636249 5.11121453] 距离为 1.4
+计算 [2.90159483 5.42121526] 与 [ 3.88101257 -9.59334486] 距离为 15.05
+计算 [2.90159483 5.42121526] 与 [1.70789903 6.00435173] 距离为 1.33
+计算 [2.90159483 5.42121526] 与 [ 5.69192445 -9.47641249] 距离为 15.16
+计算 [2.90159483 5.42121526] 与 [ 5.4307043  -9.75956122] 距离为 15.39
+计算 [2.90159483 5.42121526] 与 [ 5.85943906 -8.38192364] 距离为 14.12
+计算 [2.90159483 5.42121526] 与 [0.69523642 3.23270535] 距离为 3.11
+---
+计算 [4.1575017  3.89627276] 与 [1.53636249 5.11121453] 距离为 2.89
+计算 [4.1575017  3.89627276] 与 [ 3.88101257 -9.59334486] 距离为 13.49
+计算 [4.1575017  3.89627276] 与 [1.70789903 6.00435173] 距离为 3.23
+计算 [4.1575017  3.89627276] 与 [ 5.69192445 -9.47641249] 距离为 13.46
+计算 [4.1575017  3.89627276] 与 [ 5.4307043  -9.75956122] 距离为 13.72
+计算 [4.1575017  3.89627276] 与 [ 5.85943906 -8.38192364] 距离为 12.4
+计算 [4.1575017  3.89627276] 与 [0.69523642 3.23270535] 距离为 3.53
+---
+计算 [1.53636249 5.11121453] 与 [ 3.88101257 -9.59334486] 距离为 14.89
+计算 [1.53636249 5.11121453] 与 [1.70789903 6.00435173] 距离为 0.91
+计算 [1.53636249 5.11121453] 与 [ 5.69192445 -9.47641249] 距离为 15.17
+计算 [1.53636249 5.11121453] 与 [ 5.4307043  -9.75956122] 距离为 15.37
+计算 [1.53636249 5.11121453] 与 [ 5.85943906 -8.38192364] 距离为 14.17
+计算 [1.53636249 5.11121453] 与 [0.69523642 3.23270535] 距离为 2.06
+---
+计算 [ 3.88101257 -9.59334486] 与 [1.70789903 6.00435173] 距离为 15.75
+计算 [ 3.88101257 -9.59334486] 与 [ 5.69192445 -9.47641249] 距离为 1.81
+计算 [ 3.88101257 -9.59334486] 与 [ 5.4307043  -9.75956122] 距离为 1.56
+计算 [ 3.88101257 -9.59334486] 与 [ 5.85943906 -8.38192364] 距离为 2.32
+计算 [ 3.88101257 -9.59334486] 与 [0.69523642 3.23270535] 距离为 13.22
+---
+计算 [1.70789903 6.00435173] 与 [ 5.69192445 -9.47641249] 距离为 15.99
+计算 [1.70789903 6.00435173] 与 [ 5.4307043  -9.75956122] 距离为 16.2
+计算 [1.70789903 6.00435173] 与 [ 5.85943906 -8.38192364] 距离为 14.97
+计算 [1.70789903 6.00435173] 与 [0.69523642 3.23270535] 距离为 2.95
+---
+计算 [ 5.69192445 -9.47641249] 与 [ 5.4307043  -9.75956122] 距离为 0.39
+计算 [ 5.69192445 -9.47641249] 与 [ 5.85943906 -8.38192364] 距离为 1.11
+计算 [ 5.69192445 -9.47641249] 与 [0.69523642 3.23270535] 距离为 13.66
+---
+计算 [ 5.4307043  -9.75956122] 与 [ 5.85943906 -8.38192364] 距离为 1.44
+计算 [ 5.4307043  -9.75956122] 与 [0.69523642 3.23270535] 距离为 13.83
+---
+计算 [ 5.85943906 -8.38192364] 与 [0.69523642 3.23270535] 距离为 12.71
+---
+
+最近距离:[ 5.69192445 -9.47641249] &amp; [ 5.4307043  -9.75956122] = 0.39, 合并后中心:[[ 5.56131437 -9.61798686]]
+
+☞ 第 2 次迭代
+
+---
+计算 [  6.04774884 -10.30504657] 与 [2.90159483 5.42121526] 距离为 16.04
+计算 [  6.04774884 -10.30504657] 与 [4.1575017  3.89627276] 距离为 14.33
+计算 [  6.04774884 -10.30504657] 与 [1.53636249 5.11121453] 距离为 16.06
+计算 [  6.04774884 -10.30504657] 与 [ 3.88101257 -9.59334486] 距离为 2.28
+计算 [  6.04774884 -10.30504657] 与 [1.70789903 6.00435173] 距离为 16.88
+计算 [  6.04774884 -10.30504657] 与 [ 5.85943906 -8.38192364] 距离为 1.93
+计算 [  6.04774884 -10.30504657] 与 [0.69523642 3.23270535] 距离为 14.56
+计算 [  6.04774884 -10.30504657] 与 [ 5.56131437 -9.61798686] 距离为 0.84
+---
+计算 [2.90159483 5.42121526] 与 [4.1575017  3.89627276] 距离为 1.98
+计算 [2.90159483 5.42121526] 与 [1.53636249 5.11121453] 距离为 1.4
+计算 [2.90159483 5.42121526] 与 [ 3.88101257 -9.59334486] 距离为 15.05
+计算 [2.90159483 5.42121526] 与 [1.70789903 6.00435173] 距离为 1.33
+计算 [2.90159483 5.42121526] 与 [ 5.85943906 -8.38192364] 距离为 14.12
+计算 [2.90159483 5.42121526] 与 [0.69523642 3.23270535] 距离为 3.11
+计算 [2.90159483 5.42121526] 与 [ 5.56131437 -9.61798686] 距离为 15.27
+---
+计算 [4.1575017  3.89627276] 与 [1.53636249 5.11121453] 距离为 2.89
+计算 [4.1575017  3.89627276] 与 [ 3.88101257 -9.59334486] 距离为 13.49
+计算 [4.1575017  3.89627276] 与 [1.70789903 6.00435173] 距离为 3.23
+计算 [4.1575017  3.89627276] 与 [ 5.85943906 -8.38192364] 距离为 12.4
+计算 [4.1575017  3.89627276] 与 [0.69523642 3.23270535] 距离为 3.53
+计算 [4.1575017  3.89627276] 与 [ 5.56131437 -9.61798686] 距离为 13.59
+---
+计算 [1.53636249 5.11121453] 与 [ 3.88101257 -9.59334486] 距离为 14.89
+计算 [1.53636249 5.11121453] 与 [1.70789903 6.00435173] 距离为 0.91
+计算 [1.53636249 5.11121453] 与 [ 5.85943906 -8.38192364] 距离为 14.17
+计算 [1.53636249 5.11121453] 与 [0.69523642 3.23270535] 距离为 2.06
+计算 [1.53636249 5.11121453] 与 [ 5.56131437 -9.61798686] 距离为 15.27
+---
+计算 [ 3.88101257 -9.59334486] 与 [1.70789903 6.00435173] 距离为 15.75
+计算 [ 3.88101257 -9.59334486] 与 [ 5.85943906 -8.38192364] 距离为 2.32
+计算 [ 3.88101257 -9.59334486] 与 [0.69523642 3.23270535] 距离为 13.22
+计算 [ 3.88101257 -9.59334486] 与 [ 5.56131437 -9.61798686] 距离为 1.68
+---
+计算 [1.70789903 6.00435173] 与 [ 5.85943906 -8.38192364] 距离为 14.97
+计算 [1.70789903 6.00435173] 与 [0.69523642 3.23270535] 距离为 2.95
+计算 [1.70789903 6.00435173] 与 [ 5.56131437 -9.61798686] 距离为 16.09
+---
+计算 [ 5.85943906 -8.38192364] 与 [0.69523642 3.23270535] 距离为 12.71
+计算 [ 5.85943906 -8.38192364] 与 [ 5.56131437 -9.61798686] 距离为 1.27
+---
+计算 [0.69523642 3.23270535] 与 [ 5.56131437 -9.61798686] 距离为 13.74
+---
+
+最近距离:[  6.04774884 -10.30504657] &amp; [ 5.56131437 -9.61798686] = 0.84, 合并后中心:[[ 5.80453161 -9.96151671]]
+
+☞ 第 3 次迭代
+
+---
+计算 [2.90159483 5.42121526] 与 [4.1575017  3.89627276] 距离为 1.98
+计算 [2.90159483 5.42121526] 与 [1.53636249 5.11121453] 距离为 1.4
+计算 [2.90159483 5.42121526] 与 [ 3.88101257 -9.59334486] 距离为 15.05
+计算 [2.90159483 5.42121526] 与 [1.70789903 6.00435173] 距离为 1.33
+计算 [2.90159483 5.42121526] 与 [ 5.85943906 -8.38192364] 距离为 14.12
+计算 [2.90159483 5.42121526] 与 [0.69523642 3.23270535] 距离为 3.11
+计算 [2.90159483 5.42121526] 与 [ 5.80453161 -9.96151671] 距离为 15.65
+---
+计算 [4.1575017  3.89627276] 与 [1.53636249 5.11121453] 距离为 2.89
+计算 [4.1575017  3.89627276] 与 [ 3.88101257 -9.59334486] 距离为 13.49
+计算 [4.1575017  3.89627276] 与 [1.70789903 6.00435173] 距离为 3.23
+计算 [4.1575017  3.89627276] 与 [ 5.85943906 -8.38192364] 距离为 12.4
+计算 [4.1575017  3.89627276] 与 [0.69523642 3.23270535] 距离为 3.53
+计算 [4.1575017  3.89627276] 与 [ 5.80453161 -9.96151671] 距离为 13.96
+---
+计算 [1.53636249 5.11121453] 与 [ 3.88101257 -9.59334486] 距离为 14.89
+计算 [1.53636249 5.11121453] 与 [1.70789903 6.00435173] 距离为 0.91
+计算 [1.53636249 5.11121453] 与 [ 5.85943906 -8.38192364] 距离为 14.17
+计算 [1.53636249 5.11121453] 与 [0.69523642 3.23270535] 距离为 2.06
+计算 [1.53636249 5.11121453] 与 [ 5.80453161 -9.96151671] 距离为 15.67
+---
+计算 [ 3.88101257 -9.59334486] 与 [1.70789903 6.00435173] 距离为 15.75
+计算 [ 3.88101257 -9.59334486] 与 [ 5.85943906 -8.38192364] 距离为 2.32
+计算 [ 3.88101257 -9.59334486] 与 [0.69523642 3.23270535] 距离为 13.22
+计算 [ 3.88101257 -9.59334486] 与 [ 5.80453161 -9.96151671] 距离为 1.96
+---
+计算 [1.70789903 6.00435173] 与 [ 5.85943906 -8.38192364] 距离为 14.97
+计算 [1.70789903 6.00435173] 与 [0.69523642 3.23270535] 距离为 2.95
+计算 [1.70789903 6.00435173] 与 [ 5.80453161 -9.96151671] 距离为 16.48
+---
+计算 [ 5.85943906 -8.38192364] 与 [0.69523642 3.23270535] 距离为 12.71
+计算 [ 5.85943906 -8.38192364] 与 [ 5.80453161 -9.96151671] 距离为 1.58
+---
+计算 [0.69523642 3.23270535] 与 [ 5.80453161 -9.96151671] 距离为 14.15
+---
+
+最近距离:[1.53636249 5.11121453] &amp; [1.70789903 6.00435173] = 0.91, 合并后中心:[[1.62213076 5.55778313]]
+
+☞ 第 4 次迭代
+
+---
+计算 [2.90159483 5.42121526] 与 [4.1575017  3.89627276] 距离为 1.98
+计算 [2.90159483 5.42121526] 与 [ 3.88101257 -9.59334486] 距离为 15.05
+计算 [2.90159483 5.42121526] 与 [ 5.85943906 -8.38192364] 距离为 14.12
+计算 [2.90159483 5.42121526] 与 [0.69523642 3.23270535] 距离为 3.11
+计算 [2.90159483 5.42121526] 与 [ 5.80453161 -9.96151671] 距离为 15.65
+计算 [2.90159483 5.42121526] 与 [1.62213076 5.55778313] 距离为 1.29
+---
+计算 [4.1575017  3.89627276] 与 [ 3.88101257 -9.59334486] 距离为 13.49
+计算 [4.1575017  3.89627276] 与 [ 5.85943906 -8.38192364] 距离为 12.4
+计算 [4.1575017  3.89627276] 与 [0.69523642 3.23270535] 距离为 3.53
+计算 [4.1575017  3.89627276] 与 [ 5.80453161 -9.96151671] 距离为 13.96
+计算 [4.1575017  3.89627276] 与 [1.62213076 5.55778313] 距离为 3.03
+---
+计算 [ 3.88101257 -9.59334486] 与 [ 5.85943906 -8.38192364] 距离为 2.32
+计算 [ 3.88101257 -9.59334486] 与 [0.69523642 3.23270535] 距离为 13.22
+计算 [ 3.88101257 -9.59334486] 与 [ 5.80453161 -9.96151671] 距离为 1.96
+计算 [ 3.88101257 -9.59334486] 与 [1.62213076 5.55778313] 距离为 15.32
+---
+计算 [ 5.85943906 -8.38192364] 与 [0.69523642 3.23270535] 距离为 12.71
+计算 [ 5.85943906 -8.38192364] 与 [ 5.80453161 -9.96151671] 距离为 1.58
+计算 [ 5.85943906 -8.38192364] 与 [1.62213076 5.55778313] 距离为 14.57
+---
+计算 [0.69523642 3.23270535] 与 [ 5.80453161 -9.96151671] 距离为 14.15
+计算 [0.69523642 3.23270535] 与 [1.62213076 5.55778313] 距离为 2.5
+---
+计算 [ 5.80453161 -9.96151671] 与 [1.62213076 5.55778313] 距离为 16.07
+---
+
+最近距离:[2.90159483 5.42121526] &amp; [1.62213076 5.55778313] = 1.29, 合并后中心:[[2.26186279 5.4894992 ]]
+
+☞ 第 5 次迭代
+
+---
+计算 [4.1575017  3.89627276] 与 [ 3.88101257 -9.59334486] 距离为 13.49
+计算 [4.1575017  3.89627276] 与 [ 5.85943906 -8.38192364] 距离为 12.4
+计算 [4.1575017  3.89627276] 与 [0.69523642 3.23270535] 距离为 3.53
+计算 [4.1575017  3.89627276] 与 [ 5.80453161 -9.96151671] 距离为 13.96
+计算 [4.1575017  3.89627276] 与 [2.26186279 5.4894992 ] 距离为 2.48
+---
+计算 [ 3.88101257 -9.59334486] 与 [ 5.85943906 -8.38192364] 距离为 2.32
+计算 [ 3.88101257 -9.59334486] 与 [0.69523642 3.23270535] 距离为 13.22
+计算 [ 3.88101257 -9.59334486] 与 [ 5.80453161 -9.96151671] 距离为 1.96
+计算 [ 3.88101257 -9.59334486] 与 [2.26186279 5.4894992 ] 距离为 15.17
+---
+计算 [ 5.85943906 -8.38192364] 与 [0.69523642 3.23270535] 距离为 12.71
+计算 [ 5.85943906 -8.38192364] 与 [ 5.80453161 -9.96151671] 距离为 1.58
+计算 [ 5.85943906 -8.38192364] 与 [2.26186279 5.4894992 ] 距离为 14.33
+---
+计算 [0.69523642 3.23270535] 与 [ 5.80453161 -9.96151671] 距离为 14.15
+计算 [0.69523642 3.23270535] 与 [2.26186279 5.4894992 ] 距离为 2.75
+---
+计算 [ 5.80453161 -9.96151671] 与 [2.26186279 5.4894992 ] 距离为 15.85
+---
+
+最近距离:[ 5.85943906 -8.38192364] &amp; [ 5.80453161 -9.96151671] = 1.58, 合并后中心:[[ 5.83198533 -9.17172018]]
+
+☞ 第 6 次迭代
+
+---
+计算 [4.1575017  3.89627276] 与 [ 3.88101257 -9.59334486] 距离为 13.49
+计算 [4.1575017  3.89627276] 与 [0.69523642 3.23270535] 距离为 3.53
+计算 [4.1575017  3.89627276] 与 [2.26186279 5.4894992 ] 距离为 2.48
+计算 [4.1575017  3.89627276] 与 [ 5.83198533 -9.17172018] 距离为 13.17
+---
+计算 [ 3.88101257 -9.59334486] 与 [0.69523642 3.23270535] 距离为 13.22
+计算 [ 3.88101257 -9.59334486] 与 [2.26186279 5.4894992 ] 距离为 15.17
+计算 [ 3.88101257 -9.59334486] 与 [ 5.83198533 -9.17172018] 距离为 2.0
+---
+计算 [0.69523642 3.23270535] 与 [2.26186279 5.4894992 ] 距离为 2.75
+计算 [0.69523642 3.23270535] 与 [ 5.83198533 -9.17172018] 距离为 13.43
+---
+计算 [2.26186279 5.4894992 ] 与 [ 5.83198533 -9.17172018] 距离为 15.09
+---
+
+最近距离:[ 3.88101257 -9.59334486] &amp; [ 5.83198533 -9.17172018] = 2.0, 合并后中心:[[ 4.85649895 -9.38253252]]
+
+☞ 第 7 次迭代
+
+---
+计算 [4.1575017  3.89627276] 与 [0.69523642 3.23270535] 距离为 3.53
+计算 [4.1575017  3.89627276] 与 [2.26186279 5.4894992 ] 距离为 2.48
+计算 [4.1575017  3.89627276] 与 [ 4.85649895 -9.38253252] 距离为 13.3
+---
+计算 [0.69523642 3.23270535] 与 [2.26186279 5.4894992 ] 距离为 2.75
+计算 [0.69523642 3.23270535] 与 [ 4.85649895 -9.38253252] 距离为 13.28
+---
+计算 [2.26186279 5.4894992 ] 与 [ 4.85649895 -9.38253252] 距离为 15.1
+---
+
+最近距离:[4.1575017  3.89627276] &amp; [2.26186279 5.4894992 ] = 2.48, 合并后中心:[[3.20968225 4.69288598]]
+
+☞ 第 8 次迭代
+
+---
+计算 [0.69523642 3.23270535] 与 [ 4.85649895 -9.38253252] 距离为 13.28
+计算 [0.69523642 3.23270535] 与 [3.20968225 4.69288598] 距离为 2.91
+---
+计算 [ 4.85649895 -9.38253252] 与 [3.20968225 4.69288598] 距离为 14.17
+---
+
+最近距离:[0.69523642 3.23270535] &amp; [3.20968225 4.69288598] = 2.91, 合并后中心:[[1.95245933 3.96279567]]
+
+☞ 第 9 次迭代
+
+---
+计算 [ 4.85649895 -9.38253252] 与 [1.95245933 3.96279567] 距离为 13.66
+---
+
+最近距离:[ 4.85649895 -9.38253252] &amp; [1.95245933 3.96279567] = 13.66, 合并后中心:[[ 3.40447914 -2.70986843]]
+
+array([[ 3.40447914, -2.70986843]])
+</code></pre><p>通过上面的计算过程，你应该能很清晰地看出 Agglomerative 聚类的完整过程了。我们将 <code>data</code> 数组的每行依次按 <code>0-9</code> 编号，并将计算过程绘制成层次聚类的二叉树结构如下：</p>
+<p><img width="700px" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/Hierarchical%20clustering%20method/11.png"></p>
+<p>建立好树形结构后，如果我们想取类别为 <code>2</code>，就从顶部画一条横线就可以了。然后，沿着网络延伸到叶节点就能找到各自对应的类别。如下图所示：</p>
+<p><img width="700px" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/Hierarchical%20clustering%20method/12.png"></p>
+<p>如果你对着 <code>data</code> 预设的类别，你会发现最终的聚类结果和 <code>data[1] = [0, 1, 1, 1, 0, 1, 0, 0, 0, 1]</code>完全一致。</p>
+<p>至此，我们就完整实现了自底向上层次聚类法。</p>
+<h3 id="使用-scikit-learn-完成-Agglomerative-聚类"><a href="#使用-scikit-learn-完成-Agglomerative-聚类" class="headerlink" title="使用 scikit-learn 完成 Agglomerative 聚类"></a>使用 scikit-learn 完成 Agglomerative 聚类</h3><p>scikit-learn 中也提供了 Agglomerative 聚类的类，相应的参数解释如下：</p>
+<figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sklearn.cluster.AgglomerativeClustering(n_clusters=<span class="hljs-number">2</span>, affinity=<span class="hljs-string">'euclidean'</span>, memory=<span class="hljs-keyword">None</span>, connectivity=<span class="hljs-keyword">None</span>, compute_full_tree=<span class="hljs-string">'auto'</span>, linkage=<span class="hljs-string">'ward'</span>, pooling_func=&lt;function mean&gt;)</span><br></pre></td></tr></table></figure>
+<p>其中：</p>
+<ul>
+<li><code>n_clusters</code>: 表示最终要查找类别的数量，例如上面的 2 类。</li>
+<li><code>affinity</code>: 亲和力度量，有 <code>euclidean</code>（欧式距离）, <code>l1</code>（L1 范数）, <code>l2</code>（L2 范数）, <code>manhattan</code>（曼哈顿距离）等可选。</li>
+<li><code>linkage</code>: 连接方法：<code>ward</code>（单连接）, <code>complete</code>（全连接）, <code>average</code>（平均连接）可选。</li>
+</ul>
+<p>实验同样使用上面的数据集完成模型构建并聚类：</p>
+<figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">from</span> sklearn.cluster <span class="hljs-keyword">import</span> AgglomerativeClustering</span><br><span class="line"></span><br><span class="line">model = AgglomerativeClustering(n_clusters=<span class="hljs-number">2</span>, affinity=<span class="hljs-string">'euclidean'</span>, linkage=<span class="hljs-string">'average'</span>)</span><br><span class="line">model.fit_predict(data[<span class="hljs-number">0</span>])</span><br></pre></td></tr></table></figure>
+<pre><code>array([1, 0, 0, 0, 1, 0, 1, 1, 1, 0])
+</code></pre><p>可以看到，最终的聚类结构和我们上面是一致的。（表示类别的 <code>1, 0</code> 相反没有影响）</p>
+<h2 id="自顶向下层次聚类法"><a href="#自顶向下层次聚类法" class="headerlink" title="自顶向下层次聚类法"></a>自顶向下层次聚类法</h2><p>除了上面讲到的自底向上的层次聚类法，还有一类是自顶向下层次聚类法，这种方法的计算流程与前一种正好相反，但过程要复杂很多。</p>
+<p>大致说来，我们首先将全部数据归为一类，然后逐步分割成小类，而这里的分割方法又有常见的 2 种形式：</p>
+<h3 id="利用-K-Means-算法进行分割"><a href="#利用-K-Means-算法进行分割" class="headerlink" title="利用 K-Means 算法进行分割"></a>利用 K-Means 算法进行分割</h3><p>首先，我们说一说利用 K-Means 算法分割方法：</p>
+<ol>
+<li>把数据集 `D` 归为单个类别 `C` 作为顶层。</li>
+<li>使用 K-Means 算法把 `C` 划分成 2 个子类别，构成子层；</li>
+<li>可递归使用 K-Means 算法继续划分子层到终止条件。</li>
+</ol>
+<p>同样，我们可以通过示意图来演示该聚类算法的流程。</p>
+<p>首先，全部数据在一个类别中：</p>
+<p><img width="250px" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/Hierarchical%20clustering%20method/13.png"></p>
+<p>然后，通过 K-Means 算法把其聚成 <code>2</code> 类。</p>
+<p><img width="250px" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/Hierarchical%20clustering%20method/14.png"></p>
+<p>紧接着，将子类再分别使用 K-Means 算法聚成 <code>2</code> 类。</p>
+<p><img width="250px" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/Hierarchical%20clustering%20method/15.png"></p>
+<p>最终，直到所以的数据都各自为 1 个类别，即分割完成。</p>
+<p><img width="250px" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/Hierarchical%20clustering%20method/16.png"></p>
+<p>利用 K-Means 算法进行自顶向下层次聚类过程同样属于看起来简单，但计算量庞大的过程。</p>
+<h3 id="利用平均距离进行分割"><a href="#利用平均距离进行分割" class="headerlink" title="利用平均距离进行分割"></a>利用平均距离进行分割</h3><ol>
+<li>把数据集 `D` 归为单个类别 `C` 作为顶层。</li>
+<li>从类别 `C` 中取出点 `d`，使得 `d` 满足到 `C` 中其他点的平均距离最远，构成类别 `N`。</li>
+<li>继续从类别 `C` 中取出点 `d’`, 使得 `d’` 满足到 `C` 中其他点的平均距离与到 `N` 中点的平均距离之间的差值最大，并将点放入 `N`。</li>
+<li>重复步骤 <code>3</code>，直到差值为负数。</li>
+<li>再从子类中重复步骤 <code>2</code>,<code>3</code>,<code>4</code> 直到全部点单独成类，即完成分割。</li>
+</ol>
+<p>同样，我们可以通过示意图来演示该聚类算法的流程。</p>
+<p>首先，全部数据在一个类别中：</p>
+<p><img width="250px" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/Hierarchical%20clustering%20method/17.png"></p>
+<p>然后，我们依次抽取 1 个数据点，并计算它与其他点的平均距离，且最终取平均距离最大的点单独成类。例如这里计算出结果为 5。</p>
+<p><img width="250px" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/Hierarchical%20clustering%20method/18.png"></p>
+<p>同样，从剩下的 4 个点再取出一个点，使该点到剩下点的平均距离与该点到点 5 的距离差值最大且不为负数。这里没有点满足条件，终止。</p>
+<p>接下来，从剩下的 4 个点中再取出一个点，并计算它与其他 3 点的距离，取最大单独成类。</p>
+<p><img width="250px" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/Hierarchical%20clustering%20method/19.png"></p>
+<p>同样，从剩下的 3 个点中再取出一个点，使该点到剩下点的平均距离与该点到点 4 的距离差值最大且不为负数，合并为 1 类。点 3 明显满足：</p>
+<p><img width="250px" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/Hierarchical%20clustering%20method/20.png"></p>
+<p>重复步骤，继续计算形成子层。然后对子层中包含有对应元素的类重复上面的步骤聚类，直到全部点单独成类，即完成分割。</p>
+<p>自顶向下层次聚类法在实施过程中常常遇到一个问题，那就是如果两个样本在上一步聚类中被划分成不同的类别，那么即使这两个点距离非常近，后面也不会被放到一类中。</p>
+<p>所以在实际应用中，自顶向下层次聚类法没有自底而上的层次聚类法常用，这里也就不再进行实现了，了解其运行原理即可。</p>
+<h2 id="BIRCH-聚类算法"><a href="#BIRCH-聚类算法" class="headerlink" title="BIRCH 聚类算法"></a>BIRCH 聚类算法</h2><p>除了上文提到的两种层次聚类方法，还有一种非常常用且高效的层次聚类法，叫做 BIRCH。</p>
+<p>BIRCH 的全称为 Balanced Iterative Reducing and Clustering using Hierarchies，直译过来就是「使用层次方法的平衡迭代规约和聚类」。该算法由时任 IBM 工程师 Tian Zhang 于 1996 年发明，详见 <a href="http://www.cs.sfu.ca/CourseCentral/459/han/papers/zhang96.pdf" target="_blank" rel="noopener">论文</a>。</p>
+<p>BIRCH 最大的特点就是高效，可用于大型数据集的快速聚类。</p>
+<h3 id="CF-聚类特征"><a href="#CF-聚类特征" class="headerlink" title="`CF`  聚类特征"></a>`CF`  聚类特征</h3><p>BIRCH 的聚类过程主要是涉及到 `CF`  聚类特征和 `CF`  Tree 聚类特征树的概念。所以，我们需要先了解什么是聚类特征。</p>
+<p>一组样本的 `CF`  聚类特征定义为如下所示的三元组：</p>
+<p>$$<br>CF = \langle ( N, LS, SS ) \rangle<br>$$</p>
+<p>其中，`N` 表示该 `CF`  中拥有的样本点的数量； `LS` 表示该 `CF` 中拥有的样本点各特征维度的和向量；`SS` 表示该 `CF` 中拥有的样本点各特征维度的平方和。</p>
+<p>例如，我们有 5 个样本，分别为：`(1,3), (2,5), (1,3), (7,9), (8,8)`，那么：</p>
+<ul>
+<li>`N = 5`</li>
+<li>\(LS = (1+2+1+7+8, 3+5+3+9+8) =(19, 28)\)</li>
+<li>\(SS = (1^2+2^2+1^2+7^2+8^2+3^2+5^2+3^2+9^2+8^2) = (307)\)</li>
+</ul>
+<p>于是，对应的 `CF` 值就为：</p>
+<p>$$<br>CF = \langle 5, (19,28), (307) \rangle<br>$$</p>
+<p>`CF` 拥有可加性，例如当 \(CF’= \langle 3, (35, 36), 857 \rangle\) 时：</p>
+<p>$$<br>CF’ + CF = \langle 5, (19,28), (307) \rangle + \langle 3, (12, 26), 87 \rangle = \langle 8, (31, 54), (394) \rangle<br>$$</p>
+<p>`CF` 聚类特征本质上是定义类别（簇）的信息，并有效地对数据进行压缩。</p>
+<h3 id="CF-聚类特征树"><a href="#CF-聚类特征树" class="headerlink" title="`CF`  聚类特征树"></a>`CF`  聚类特征树</h3><p>接下来，我们介绍第二个概念 `CF`  聚类特征树。</p>
+<p>`CF` 树由根节点（root node）、枝节点（branch node）和叶节点（leaf node）构成。另包含有三个参数，分别为：枝平衡因子 \(\beta\)、叶平衡因子 \(\lambda\) 和空间阈值 \(\tau\)。而非叶节点（nonleaf node）中包含不多于 \(\beta\) 个 \([CF,child_{i}]\) 的元项。</p>
+<p><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/Hierarchical%20clustering%20method/21.png" alt=""></p>
+<p>BIRCH 算法的核心就是基于训练样本建立了 `CF` 聚类特征树。`CF` 聚类特征树对应的输出就是若干个 `CF` 节点，每个节点里的样本点就是一个聚类的类别。</p>
+<p>其实，关于 `CF`  聚类特征树的特点以及树的生成过程还有很多内容可以深入学习，不过这里面涉及到大量的数学理论和推导过程，不太好理解，这里就不再展开了。有兴趣的同学可以阅读 <a href="http://www.cs.sfu.ca/CourseCentral/459/han/papers/zhang96.pdf" target="_blank" rel="noopener">原论文</a>。</p>
+<p>最后，我们简单说一下 BIRCH 算法相比 Agglomerative 算法的优势，也就是总结学习 BIRCH 算法的必要性：</p>
+<ol>
+<li>BIRCH 算法在建立 CF 特征树时只存储原始数据的特征信息，并不需要存储原始数据信息，内存开销上更优，计算高效。</li>
+<li>BIRCH 算法只需要遍历一遍原始数据，而 Agglomerative 算法在每次迭代都需要遍历一遍数据，再次突出 BIRCH 的高效性。</li>
+<li>BIRCH 属于在线学习算法，并支持对流数据的聚类，开始聚类时并不需要知道所有的数据。</li>
+</ol>
+<h3 id="BIRCH-聚类实现"><a href="#BIRCH-聚类实现" class="headerlink" title="BIRCH 聚类实现"></a>BIRCH 聚类实现</h3><p>上面说了这么多，总结就是 BIRCH 属于层次聚类算法中非常高效的那一种方法。下面，就来看一看如何调用 scikit-learn 提供的 BIRCH 类完成聚类任务。</p>
+<p>我们先导入 DIGITS 数据集，并查看前 5 个手写字符。</p>
+<figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np</span><br><span class="line"><span class="hljs-keyword">from</span> sklearn <span class="hljs-keyword">import</span> datasets</span><br><span class="line"></span><br><span class="line">digits = datasets.load_digits()</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># 查看前 5 个字符</span></span><br><span class="line">fig, axes = plt.subplots(<span class="hljs-number">1</span>, <span class="hljs-number">5</span>, figsize=(<span class="hljs-number">12</span>,<span class="hljs-number">4</span>))</span><br><span class="line"><span class="hljs-keyword">for</span> i, image <span class="hljs-keyword">in</span> enumerate(digits.images[:<span class="hljs-number">5</span>]):</span><br><span class="line">    axes[i].imshow(image, cmap=plt.cm.gray_r)</span><br></pre></td></tr></table></figure>
+<p><img src="output_117_0.png" alt="png"></p>
+<p>我们都知道，一个手写字符的数据是由 8x8 的矩阵表示。</p>
+<figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">digits.images[<span class="hljs-number">0</span>]</span><br></pre></td></tr></table></figure>
+<pre><code>array([[ 0.,  0.,  5., 13.,  9.,  1.,  0.,  0.],
+       [ 0.,  0., 13., 15., 10., 15.,  5.,  0.],
+       [ 0.,  3., 15.,  2.,  0., 11.,  8.,  0.],
+       [ 0.,  4., 12.,  0.,  0.,  8.,  8.,  0.],
+       [ 0.,  5.,  8.,  0.,  0.,  9.,  8.,  0.],
+       [ 0.,  4., 11.,  0.,  1., 12.,  7.,  0.],
+       [ 0.,  2., 14.,  5., 10., 12.,  0.,  0.],
+       [ 0.,  0.,  6., 13., 10.,  0.,  0.,  0.]])
+</code></pre><p>如果我们针对该矩阵进行扁平化处理，就能变为 1x64 的向量。对于这样一个高维向量，虽然可以在聚类时直接计算距离，但却无法很好地在二维平面中表示相应的数据点。因为，二维平面中的点只由横坐标和纵坐标组成。</p>
+<p>所以，为了尽可能还原聚类的过程，我们需要将 1x64 的行向量（64 维），处理成 1x2 的行向量（2 维），也就是降维的过程。</p>
+<p>既然是降低维度，那么应该怎样做呢？是直接取前面两位数，或者随机取出两位？当然不是。这里学习一种新方法，叫 PCA 主成分分析。</p>
+<h3 id="PCA-主成分分析（降维）"><a href="#PCA-主成分分析（降维）" class="headerlink" title="PCA 主成分分析（降维）"></a>PCA 主成分分析（降维）</h3><p>主成分分析是多元线性统计里面的概念，它的英文是：Principal Components Analysis，简称 PCA。主成分分析旨在降低数据的维数，通过保留数据集中的主要成分来简化数据集。</p>
+<p>主成分分析的数学原理非常简单，通过对协方差矩阵进行特征分解，从而得出主成分（特征向量）与对应的权值（特征值）。然后剔除那些较小特征值（较小权值）对应的特征，从而达到降低数据维数的目的。</p>
+<p>主成分分析通常有两个作用：</p>
+<ol>
+<li><p>参考本文的目的，方便将数据用于低维空间可视化。聚类过程中的可视化是很有必要的。</p>
+</li>
+<li><p>高维度数据集往往就意味着计算资源的大量消耗。通过对数据进行降维，我们就能在不较大影响结果的同时，减少模型学习时间。</p>
+</li>
+</ol>
+<p>现在，假定我们需要将特征维度从 `n` 维降到 `m` 维，PCA 的计算流程如下：</p>
+<p><strong>1.对各维度特征进行标准化处理：</strong></p>
+<p>$$<br>x_j^{(i)}=\frac{x_j^{(i)}-\mu_j}{s_j}<br>$$</p>
+<p>其中，\(\mu_j\) 为特征 `j` 的均值，`s_j` 为特征 `j` 的标准差。</p>
+<p><strong>2.计算对应的协方差矩阵：</strong><br>$$<br>\Sigma = \frac{1}{m}\sum\limits_{i=1}^{m}(x^{(i)})(x^{(i)})^T = \frac{1}{m} \cdot X^TX<br>$$</p>
+<p><strong>3.对协方差矩阵进行奇异值分解（SVD），得到特征向量：</strong><br>$$<br>(U,S,V^T) = SVD(\Sigma)<br>$$</p>
+<p><strong>4.从 `U` 中取出前 `m` 个左奇异向量，构成一个约减矩阵 \(U_{reduce}\) ：</strong><br>$$<br>U_{reduce} = (u^{(1)},u^{(2)},\cdots,u^{(k)})<br>$$</p>
+<p><strong>5.计算新的特征向量 \(z^{(i)}\)：</strong><br>$$<br>z^{(i)}=U_{reduce}^T \cdot x^{(i)}<br>$$</p>
+<p><strong>6.最后根据新的特征向量执行特征还原：</strong><br>$$<br>x_{new}=U_{reduce}z^{(i)}<br>$$</p>
+<p>PCA 的过程听起来简单，执行起来还是比较麻烦的。所以，我们这里直接使用 scikit-learn 中 <code>PCA</code> 方法完成：</p>
+<figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sklearn.decomposition.PCA(n_components=<span class="hljs-keyword">None</span>, copy=<span class="hljs-keyword">True</span>, whiten=<span class="hljs-keyword">False</span>, svd_solver=<span class="hljs-string">'auto'</span>)</span><br></pre></td></tr></table></figure>
+<p>其中：</p>
+<ul>
+<li><code>n_components=</code> 表示需要保留主成分（特征）的数量。</li>
+<li><code>copy=</code> 表示针对原始数据降维还是针对原始数据副本降维。当参数为 False 时，降维后的原始数据会发生改变，这里默认为 True。</li>
+<li><code>whiten=</code> 白化表示将特征之间的相关性降低，并使得每个特征具有相同的方差。</li>
+<li><code>svd_solver=</code> 表示奇异值分解 SVD 的方法。有 4 参数，分别是：<code>auto</code>, <code>full</code>, <code>arpack</code>, <code>randomized</code>。</li>
+</ul>
+<p>在使用 PCA 降维时，我们也会使用到 <code>PCA.fit()</code> 方法。<code>.fit()</code> 是 scikit-learn 训练模型的通用方法，但是该方法本身返回的是模型的参数。所以，通常我们会使用 <code>PCA.fit_transform()</code> 方法直接返回降维后的数据结果。</p>
+<p>下面，我们就针对 DIGITS 数据集进行特征降维。</p>
+<figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">from</span> sklearn.decomposition <span class="hljs-keyword">import</span> PCA</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># PCA 将数据降为 2 维</span></span><br><span class="line">pca = PCA(n_components=<span class="hljs-number">2</span>)</span><br><span class="line">pca_data = pca.fit_transform(digits.data)</span><br><span class="line">pca_data</span><br></pre></td></tr></table></figure>
+<pre><code>array([[ -1.25946556,  21.27488973],
+       [  7.95761389, -20.7686883 ],
+       [  6.99192015,  -9.95599952],
+       ...,
+       [ 10.80128328,  -6.96025693],
+       [ -4.87209994,  12.42397329],
+       [ -0.34439245,   6.36553344]])
+</code></pre><p>可以看到，每一行的特征已经由先前的 64 个缩减为 2 个了。</p>
+<p>接下来将降维后的数据绘制到二维平面中。</p>
+<figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">plt.figure(figsize=(<span class="hljs-number">10</span>, <span class="hljs-number">8</span>))</span><br><span class="line">plt.scatter(pca_data[:,<span class="hljs-number">0</span>], pca_data[:,<span class="hljs-number">1</span>])</span><br></pre></td></tr></table></figure>
+<p><img width="600px" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/Hierarchical%20clustering%20method/output_147_1.png"></p>
+<p>上图就是 DIGITS 数据集中 1797 个样本通过 PCA 降维后对应在二维平面的数据点。</p>
+<p>现在，我们可以直接使用 BIRCH 对降维后的数据进行聚类。由于我们提前知道这是手写数字字符，所以选择聚为 <code>10</code> 类。当然，在聚类时，我们只是知道大致要聚集的类别数量，而并不知道数据对应的标签值。</p>
+<p>BIRCH 在 scikit-learn 对应的主要类及参数如下：</p>
+<figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sklearn.cluster.Birch(threshold=<span class="hljs-number">0.5</span>, branching_factor=<span class="hljs-number">50</span>, n_clusters=<span class="hljs-number">3</span>, compute_labels=<span class="hljs-keyword">True</span>, copy=<span class="hljs-keyword">True</span>)</span><br></pre></td></tr></table></figure>
+<p>其中：</p>
+<ul>
+<li><code>threshold</code>: 每个 CF 的空间阈值 \(\tau\)。参数值越小，则 CF 特征树的规模会越大，学习时花费的时间和内存会越多。默认值是 0.5，但如果样本的方差较大，则一般需要增大这个默认值。</li>
+<li><code>branching_factor</code>: CF 树中所有节点的最大 CF 数。该参数默认为 50，如果样本量非常大，一般需要增大这个默认值。</li>
+<li><code>n_clusters</code>: 虽然层次聚类无需预先设定类别数量，但可以设定期望查询的类别数。</li>
+</ul>
+<p>接下来，使用 BIRCH 算法得到 PCA 降维后数据的聚类结果：</p>
+<figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">from</span> sklearn.cluster <span class="hljs-keyword">import</span> Birch</span><br><span class="line"></span><br><span class="line">birch = Birch(n_clusters=<span class="hljs-number">10</span>)</span><br><span class="line">cluster_pca = birch.fit_predict(pca_data)</span><br><span class="line">cluster_pca</span><br></pre></td></tr></table></figure>
+<pre><code>array([3, 0, 0, ..., 0, 5, 9])
+</code></pre><p>利用得到的聚类结果对散点图进行着色。</p>
+<figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">plt.figure(figsize=(<span class="hljs-number">10</span>, <span class="hljs-number">8</span>))</span><br><span class="line">plt.scatter(pca_data[:,<span class="hljs-number">0</span>], pca_data[:,<span class="hljs-number">1</span>],c=cluster_pca)</span><br></pre></td></tr></table></figure>
+<p><img width="600px" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/Hierarchical%20clustering%20method/output_156_1.png"></p>
+<figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment"># 计算聚类过程中的决策边界</span></span><br><span class="line">x_min, x_max = pca_data[:, <span class="hljs-number">0</span>].min() - <span class="hljs-number">1</span>, pca_data[:, <span class="hljs-number">0</span>].max() + <span class="hljs-number">1</span></span><br><span class="line">y_min, y_max = pca_data[:, <span class="hljs-number">1</span>].min() - <span class="hljs-number">1</span>, pca_data[:, <span class="hljs-number">1</span>].max() + <span class="hljs-number">1</span></span><br><span class="line"></span><br><span class="line">xx, yy = np.meshgrid(np.arange(x_min, x_max, <span class="hljs-number">.4</span>), np.arange(y_min, y_max, <span class="hljs-number">.4</span>))</span><br><span class="line">temp_cluster = birch.predict(np.c_[xx.ravel(), yy.ravel()])</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># 将决策边界绘制出来</span></span><br><span class="line">temp_cluster = temp_cluster.reshape(xx.shape)</span><br><span class="line">plt.figure(figsize=(<span class="hljs-number">10</span>, <span class="hljs-number">8</span>))</span><br><span class="line">plt.contourf(xx, yy, temp_cluster, cmap=plt.cm.bwr, alpha=<span class="hljs-number">.3</span>)</span><br><span class="line">plt.scatter(pca_data[:, <span class="hljs-number">0</span>], pca_data[:, <span class="hljs-number">1</span>], c=cluster_pca, s=<span class="hljs-number">15</span>)</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># 图像参数设置</span></span><br><span class="line">plt.xlim(x_min, x_max)</span><br><span class="line">plt.ylim(y_min, y_max)</span><br></pre></td></tr></table></figure>
+<p><img width="600px" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/Hierarchical%20clustering%20method/output_157_1.png"></p>
+<p>其实，我们可以利用预先知道的各字符对应的标签对散点图进行着色，对比上面的聚类结果。</p>
+<figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">plt.figure(figsize=(<span class="hljs-number">10</span>, <span class="hljs-number">8</span>))</span><br><span class="line">plt.scatter(pca_data[:,<span class="hljs-number">0</span>], pca_data[:,<span class="hljs-number">1</span>],c=digits.target)</span><br></pre></td></tr></table></figure>
+<p><img width="600px" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/Hierarchical%20clustering%20method/output_159_1.png"></p>
+<p>对照两幅图片，你会发现对 PCA 降维数据的聚类结果大致符合原数据的分布趋势。这里色块的颜色不对应没有关系，因为原标签和聚类标签的顺序不对应，只需要关注数据块的分布规律即可。</p>
+<p>不过，使用真实标签绘制出来的散点图明显凌乱很多，这其实是由于 PCA 降维造成的。</p>
+<p>一般情况下，我们输入到聚类模型中的数据不一定要是降维后的数据。下面输入原数据重新聚类试一试。</p>
+<figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cluster_ori = birch.fit_predict(digits.data)</span><br><span class="line">cluster_ori</span><br></pre></td></tr></table></figure>
+<pre><code>array([7, 9, 4, ..., 4, 1, 4])
+</code></pre><figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">plt.figure(figsize=(<span class="hljs-number">10</span>, <span class="hljs-number">8</span>))</span><br><span class="line">plt.scatter(pca_data[:,<span class="hljs-number">0</span>], pca_data[:,<span class="hljs-number">1</span>],c=cluster_ori)</span><br></pre></td></tr></table></figure>
+<p><img width="600px" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/Hierarchical%20clustering%20method/output_163_1.png"></p>
+<p>现在你会发现，实验得到的聚类结果更加符合原数据集的分布规律了。再次强调，这里颜色不分离其实是由于 PCA 降维后在二维平面可视化的效果，不代表真实的聚类效果。</p>
+<p>不过，最后我们再强调一下 PCA 的使用情形。一般情况下，我们不会拿到数据就进行 PCA 处理，只有当算法不尽如人意、训练时间太长、需要可视化等情形才考虑使用 PCA。其主要原因是，PCA 被看作是对数据的有损压缩，会造成数据集原始特征丢失。</p>
+<p>本次我们了解了层次聚类方法，特别地学习了向上、向下以及 BIRCH 算法。其中，比较常用的是自底向上或 BIRCH 方法，且 BIRCH 拥有计算高效的特点。不过，BIRCH 也有一些弊端，例如对高维数据的聚类效果往往不太好，有时候我们也会使用 Mini Batch K-Means 进行替代。最后，通过表格对比本次实验的 3 种层次聚类法的优缺点：</p>
+<p><img width="700px" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/Hierarchical%20clustering%20method/22.png"></p>
+<p><strong>拓展阅读：</strong></p>
+<ul>
+<li><a href="https://en.wikipedia.org/wiki/Hierarchical_clustering" target="_blank" rel="noopener">Hierarchical clustering - Wikipedia</a></li>
+<li><a href="https://en.wikipedia.org/wiki/BIRCH" target="_blank" rel="noopener">BIRCH - Wikipedia</a></li>
+</ul>
+
+        </div>
+        
+        <div class="level is-size-7 is-uppercase">
+            <div class="level-start">
+                <div class="level-item">
+                    <span class="is-size-6 has-text-grey has-mr-7">#</span>
+                    <a class="has-link-grey -link" href="/tags/HAC/">HAC</a>, <a class="has-link-grey -link" href="/tags/machine-learning/">machine learning</a>, <a class="has-link-grey -link" href="/tags/python/">python</a>
+                </div>
+            </div>
+        </div>
+        
+        
+        
+    </div>
+</div>
+
+
+
+<div class="card">
+    <div class="card-content">
+        <h3 class="menu-label has-text-centered">喜欢这篇文章？打赏一下作者吧</h3>
+        <div class="buttons is-centered">
+            
+                
+<a class="button is-info donate">
+    <span class="icon is-small">
+        <i class="fab fa-alipay"></i>
+    </span>
+    <span>支付宝</span>
+    <div class="qrcode"><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/reward/alipay-reward-image.jpg" alt="支付宝"></div>
+</a>
+
+                
+                
+<a class="button is-success donate">
+    <span class="icon is-small">
+        <i class="fab fa-weixin"></i>
+    </span>
+    <span>微信</span>
+    <div class="qrcode"><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/reward/wechat-reward-image.jpg" alt="微信"></div>
+</a>
+
+                
+        </div>
+    </div>
+</div>
+
+
+
+<div class="card card-transparent">
+    <div class="level post-navigation is-flex-wrap is-mobile">
+        
+        
+        <div class="level-end">
+            <a class="level level-item has-link-grey  article-nav-next" href="/2019/02/09/Cluster_Of_K-Means/">
+                <span class="level-item">机器学习|划分聚类之 K-Means 详解 (Python 语言描述)</span>
+                <i class="level-item fas fa-chevron-right"></i>
+            </a>
+        </div>
+        
+    </div>
+</div>
+
+
+
+<div class="card">
+    <div class="card-content">
+        <h3 class="title is-5 has-text-weight-normal">评论</h3>
+        
+<div id="valine-thread"></div>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+<script>
+    new Valine({
+        el: '#valine-thread' ,
+        notify: true,
+        verify: false,
+        app_id: 'zzN9t0v9tihDucYhBujOYJUJ-gzGzoHsz',
+        app_key: 'gngT5gD2rOh2hc7C62097Ql6',
+        placeholder: 'Say something...'
+    });
+</script>
+
+    </div>
+</div>
+</div>
+                
+
+
+
+
+<div class="column is-4-tablet is-4-desktop is-3-widescreen  has-order-1 column-left ">
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <nav class="level">
+            <div class="level-item has-text-centered">
+                <div>
+                    <img class="image is-128x128 has-mb-6" src="https://avatars0.githubusercontent.com/u/38065710?s=400&amp;u=80ee4d360562451484188e6f1677fa442720891b&amp;v=4" alt="Laugh">
+                    
+                    <p class="is-size-4 is-block">
+                        Laugh
+                    </p>
+                    
+                    
+                    <p class="is-size-6 is-block">
+                        The life I want, there is no shortcut.
+                    </p>
+                    
+                    
+                    <p class="is-size-6 is-flex is-flex-center has-text-grey">
+                        <i class="fas fa-map-marker-alt has-mr-7"></i>
+                        <span>Northern Hemisphere</span>
+                    </p>
+                    
+                </div>
+            </div>
+        </nav>
+        <nav class="level is-mobile">
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        文章
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        20
+                    </p>
+                </div>
+            </div>
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        分类
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        23
+                    </p>
+                </div>
+            </div>
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        标签
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        27
+                    </p>
+                </div>
+            </div>
+        </nav>
+        <div class="level">
+            <a class="level-item button is-link is-rounded" href="http://github.com/laugh12321">
+                follow</a>
+        </div>
+        
+        
+        <div class="level is-mobile">
+            
+            <a class="level-item button is-white is-marginless" target="_blank" title="Github" href="http://github.com/laugh12321">
+                
+                <i class="fab fa-github"></i>
+                
+            </a>
+            
+            <a class="level-item button is-white is-marginless" target="_blank" title="Steam" href="https://steamcommunity.com/profiles/76561198445204275/">
+                
+                <i class="fab fa-steam-square"></i>
+                
+            </a>
+            
+            <a class="level-item button is-white is-marginless" target="_blank" title="RSS" href="/">
+                
+                <i class="fas fa-rss"></i>
+                
+            </a>
+            
+        </div>
+        
+    </div>
+</div>
+    
+        
+    
+        
+
+<div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+        <h3 class="menu-label">
+            链接
+        </h3>
+        <ul class="menu-list">
+        
+            <li>
+                <a class="level is-mobile" href="https://styx11.github.io/" target="_blank">
+                    <span class="level-left">
+                        <span class="level-item">Styx</span>
+                    </span>
+                    <span class="level-right">
+                        <span class="level-item tag">styx11.github.io</span>
+                    </span>
+                </a>
+            </li>
+        
+            <li>
+                <a class="level is-mobile" href="http://luuuuyang.com/" target="_blank">
+                    <span class="level-left">
+                        <span class="level-item">Luuuuyang</span>
+                    </span>
+                    <span class="level-right">
+                        <span class="level-item tag">luuuuyang.com</span>
+                    </span>
+                </a>
+            </li>
+        
+            <li>
+                <a class="level is-mobile" href="https://www.vseu.com/" target="_blank">
+                    <span class="level-left">
+                        <span class="level-item">幸运草</span>
+                    </span>
+                    <span class="level-right">
+                        <span class="level-item tag">www.vseu.com</span>
+                    </span>
+                </a>
+            </li>
+        
+            <li>
+                <a class="level is-mobile" href="https://tea9.xyz/" target="_blank">
+                    <span class="level-left">
+                        <span class="level-item">tea9</span>
+                    </span>
+                    <span class="level-right">
+                        <span class="level-item tag">tea9.xyz</span>
+                    </span>
+                </a>
+            </li>
+        
+            <li>
+                <a class="level is-mobile" href="https://hongjay233.github.io/" target="_blank">
+                    <span class="level-left">
+                        <span class="level-item">HongJay</span>
+                    </span>
+                    <span class="level-right">
+                        <span class="level-item tag">hongjay233.github.io</span>
+                    </span>
+                </a>
+            </li>
+        
+            <li>
+                <a class="level is-mobile" href="https://www.itfire.cn/" target="_blank">
+                    <span class="level-left">
+                        <span class="level-item">仓鼠‘s blog</span>
+                    </span>
+                    <span class="level-right">
+                        <span class="level-item tag">www.itfire.cn</span>
+                    </span>
+                </a>
+            </li>
+        
+            <li>
+                <a class="level is-mobile" href="https://blog.wzy1999.wang/" target="_blank">
+                    <span class="level-left">
+                        <span class="level-item">执念</span>
+                    </span>
+                    <span class="level-right">
+                        <span class="level-item tag">blog.wzy1999.wang</span>
+                    </span>
+                </a>
+            </li>
+        
+        </ul>
+        </div>
+    </div>
+</div>
+
+
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                分类
+            </h3>
+            <ul class="menu-list">
+            <li>
+        <a class="level is-marginless" href="/categories/Python/">
+            <span class="level-start">
+                <span class="level-item">Python</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">2</span>
+            </span>
+        </a><ul><li>
+        <a class="level is-marginless" href="/categories/Python/排序算法/">
+            <span class="level-start">
+                <span class="level-item">排序算法</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">2</span>
+            </span>
+        </a></li></ul></li><li>
+        <a class="level is-marginless" href="/categories/Ubuntu/">
+            <span class="level-start">
+                <span class="level-item">Ubuntu</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">2</span>
+            </span>
+        </a><ul><li>
+        <a class="level is-marginless" href="/categories/Ubuntu/ECS/">
+            <span class="level-start">
+                <span class="level-item">ECS</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">2</span>
+            </span>
+        </a></li></ul></li><li>
+        <a class="level is-marginless" href="/categories/博客/">
+            <span class="level-start">
+                <span class="level-item">博客</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">2</span>
+            </span>
+        </a><ul><li>
+        <a class="level is-marginless" href="/categories/博客/GitHub-Pages/">
+            <span class="level-start">
+                <span class="level-item">GitHub Pages</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">1</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/博客/主题优化/">
+            <span class="level-start">
+                <span class="level-item">主题优化</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">1</span>
+            </span>
+        </a></li></ul></li><li>
+        <a class="level is-marginless" href="/categories/机器学习/">
+            <span class="level-start">
+                <span class="level-item">机器学习</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">13</span>
+            </span>
+        </a><ul><li>
+        <a class="level is-marginless" href="/categories/机器学习/K-Means/">
+            <span class="level-start">
+                <span class="level-item">K-Means</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">3</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/机器学习/K-近邻算法/">
+            <span class="level-start">
+                <span class="level-item">K-近邻算法</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">1</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/机器学习/决策树/">
+            <span class="level-start">
+                <span class="level-item">决策树</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">1</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/机器学习/多项式回归/">
+            <span class="level-start">
+                <span class="level-item">多项式回归</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">1</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/机器学习/感知机/">
+            <span class="level-start">
+                <span class="level-item">感知机</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">1</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/机器学习/支持向量机/">
+            <span class="level-start">
+                <span class="level-item">支持向量机</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">1</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/机器学习/朴素贝叶斯/">
+            <span class="level-start">
+                <span class="level-item">朴素贝叶斯</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">1</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/机器学习/线性回归/">
+            <span class="level-start">
+                <span class="level-item">线性回归</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">2</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/机器学习/装袋/">
+            <span class="level-start">
+                <span class="level-item">装袋</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">1</span>
+            </span>
+        </a></li></ul></li><li>
+        <a class="level is-marginless" href="/categories/深度学习/">
+            <span class="level-start">
+                <span class="level-item">深度学习</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">1</span>
+            </span>
+        </a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <h3 class="menu-label">
+            标签云
+        </h3>
+        <a href="/tags/ECS/" style="font-size: 13.33px;">ECS</a> <a href="/tags/HAC/" style="font-size: 10px;">HAC</a> <a href="/tags/MAE/" style="font-size: 10px;">MAE</a> <a href="/tags/MAPE/" style="font-size: 10px;">MAPE</a> <a href="/tags/MSE/" style="font-size: 10px;">MSE</a> <a href="/tags/Seafile/" style="font-size: 10px;">Seafile</a> <a href="/tags/Ubuntu/" style="font-size: 13.33px;">Ubuntu</a> <a href="/tags/artificial-neural-network/" style="font-size: 10px;">artificial neural network</a> <a href="/tags/bagging/" style="font-size: 10px;">bagging</a> <a href="/tags/blog/" style="font-size: 13.33px;">blog</a> <a href="/tags/boosting/" style="font-size: 10px;">boosting</a> <a href="/tags/cluster/" style="font-size: 10px;">cluster</a> <a href="/tags/decision-tree/" style="font-size: 10px;">decision tree</a> <a href="/tags/deep-learning/" style="font-size: 10px;">deep learning</a> <a href="/tags/github/" style="font-size: 13.33px;">github</a> <a href="/tags/jekyll/" style="font-size: 10px;">jekyll</a> <a href="/tags/k-means/" style="font-size: 13.33px;">k-means</a> <a href="/tags/k-nearest-neighbors/" style="font-size: 10px;">k-nearest neighbors</a> <a href="/tags/linear-regression/" style="font-size: 13.33px;">linear regression</a> <a href="/tags/machine-learning/" style="font-size: 16.67px;">machine learning</a> <a href="/tags/naive-bayes/" style="font-size: 10px;">naive bayes</a> <a href="/tags/next/" style="font-size: 10px;">next</a> <a href="/tags/perceptron/" style="font-size: 10px;">perceptron</a> <a href="/tags/polynomial-regression/" style="font-size: 10px;">polynomial regression</a> <a href="/tags/python/" style="font-size: 20px;">python</a> <a href="/tags/sort/" style="font-size: 13.33px;">sort</a> <a href="/tags/support-vector-machine/" style="font-size: 10px;">support vector machine</a>
+    </div>
+</div>
+
+    
+    
+        <div class="column-right-shadow is-hidden-widescreen ">
+        
+            
+<div class="card widget">
+    <div class="card-content">
+        <h3 class="menu-label">
+            最新文章
+        </h3>
+        
+        <article class="media">
+            
+            <a href="/2019/02/11/Hierarchical_clustering_method/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/photo/12.jpg" alt="机器学习|层次聚类方法 (Python 语言描述)">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-02-10T16:00:00.000Z">2019-02-11</time></div>
+                    <a href="/2019/02/11/Hierarchical_clustering_method/" class="has-link-black-ter is-size-6">机器学习|层次聚类方法 (Python 语言描述)</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/机器学习/">机器学习</a> / <a class="has-link-grey -link" href="/categories/机器学习/K-Means/">K-Means</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2019/02/09/Cluster_Of_K-Means/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/photo/10.jpg" alt="机器学习|划分聚类之 K-Means 详解 (Python 语言描述)">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-02-08T16:00:00.000Z">2019-02-09</time></div>
+                    <a href="/2019/02/09/Cluster_Of_K-Means/" class="has-link-black-ter is-size-6">机器学习|划分聚类之 K-Means 详解 (Python 语言描述)</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/机器学习/">机器学习</a> / <a class="has-link-grey -link" href="/categories/机器学习/K-Means/">K-Means</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2019/02/09/Image_compression_using_Mini_Batch_k-means/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/photo/11.jpg" alt="使用 Mini Batch K-Means 进行图像压缩 ">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-02-08T16:00:00.000Z">2019-02-09</time></div>
+                    <a href="/2019/02/09/Image_compression_using_Mini_Batch_k-means/" class="has-link-black-ter is-size-6">使用 Mini Batch K-Means 进行图像压缩 </a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/机器学习/">机器学习</a> / <a class="has-link-grey -link" href="/categories/机器学习/K-Means/">K-Means</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2019/02/07/Bagging_and_Boosting/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/photo/09.jpg" alt="机器学习|装袋和提升方法详解 (Python 语言描述)">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-02-06T16:00:00.000Z">2019-02-07</time></div>
+                    <a href="/2019/02/07/Bagging_and_Boosting/" class="has-link-black-ter is-size-6">机器学习|装袋和提升方法详解 (Python 语言描述)</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/机器学习/">机器学习</a> / <a class="has-link-grey -link" href="/categories/机器学习/装袋/">装袋</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2019/02/01/Decision_Tree/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/photo/08.jpg" alt="机器学习|决策树详解 (Python 语言描述)">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-01-31T16:00:00.000Z">2019-02-01</time></div>
+                    <a href="/2019/02/01/Decision_Tree/" class="has-link-black-ter is-size-6">机器学习|决策树详解 (Python 语言描述)</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/机器学习/">机器学习</a> / <a class="has-link-grey -link" href="/categories/机器学习/决策树/">决策树</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+    </div>
+</div>
+
+        
+            <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+        <h3 class="menu-label">
+            归档
+        </h3>
+        <ul class="menu-list">
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/02/">
+                <span class="level-start">
+                    <span class="level-item">二月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">9</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        </ul>
+        </div>
+    </div>
+</div>
+        
+            <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                标签
+            </h3>
+            <div class="field is-grouped is-grouped-multiline">
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/ECS/">
+                        <span class="tag">ECS</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/HAC/">
+                        <span class="tag">HAC</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/MAE/">
+                        <span class="tag">MAE</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/MAPE/">
+                        <span class="tag">MAPE</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/MSE/">
+                        <span class="tag">MSE</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Seafile/">
+                        <span class="tag">Seafile</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Ubuntu/">
+                        <span class="tag">Ubuntu</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/artificial-neural-network/">
+                        <span class="tag">artificial neural network</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/bagging/">
+                        <span class="tag">bagging</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/blog/">
+                        <span class="tag">blog</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/boosting/">
+                        <span class="tag">boosting</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/cluster/">
+                        <span class="tag">cluster</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/decision-tree/">
+                        <span class="tag">decision tree</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/deep-learning/">
+                        <span class="tag">deep learning</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/github/">
+                        <span class="tag">github</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/jekyll/">
+                        <span class="tag">jekyll</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/k-means/">
+                        <span class="tag">k-means</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/k-nearest-neighbors/">
+                        <span class="tag">k-nearest neighbors</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/linear-regression/">
+                        <span class="tag">linear regression</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/machine-learning/">
+                        <span class="tag">machine learning</span>
+                        <span class="tag is-grey">13</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/naive-bayes/">
+                        <span class="tag">naive bayes</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/next/">
+                        <span class="tag">next</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/perceptron/">
+                        <span class="tag">perceptron</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/polynomial-regression/">
+                        <span class="tag">polynomial regression</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/python/">
+                        <span class="tag">python</span>
+                        <span class="tag is-grey">14</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/sort/">
+                        <span class="tag">sort</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/support-vector-machine/">
+                        <span class="tag">support vector machine</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+        
+        </div>
+    
+</div>
+
+                
+
+
+
+
+<div class="column is-4-tablet is-4-desktop is-3-widescreen is-hidden-touch is-hidden-desktop-only has-order-3 column-right ">
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <h3 class="menu-label">
+            最新文章
+        </h3>
+        
+        <article class="media">
+            
+            <a href="/2019/02/11/Hierarchical_clustering_method/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/photo/12.jpg" alt="机器学习|层次聚类方法 (Python 语言描述)">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-02-10T16:00:00.000Z">2019-02-11</time></div>
+                    <a href="/2019/02/11/Hierarchical_clustering_method/" class="has-link-black-ter is-size-6">机器学习|层次聚类方法 (Python 语言描述)</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/机器学习/">机器学习</a> / <a class="has-link-grey -link" href="/categories/机器学习/K-Means/">K-Means</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2019/02/09/Cluster_Of_K-Means/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/photo/10.jpg" alt="机器学习|划分聚类之 K-Means 详解 (Python 语言描述)">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-02-08T16:00:00.000Z">2019-02-09</time></div>
+                    <a href="/2019/02/09/Cluster_Of_K-Means/" class="has-link-black-ter is-size-6">机器学习|划分聚类之 K-Means 详解 (Python 语言描述)</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/机器学习/">机器学习</a> / <a class="has-link-grey -link" href="/categories/机器学习/K-Means/">K-Means</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2019/02/09/Image_compression_using_Mini_Batch_k-means/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/photo/11.jpg" alt="使用 Mini Batch K-Means 进行图像压缩 ">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-02-08T16:00:00.000Z">2019-02-09</time></div>
+                    <a href="/2019/02/09/Image_compression_using_Mini_Batch_k-means/" class="has-link-black-ter is-size-6">使用 Mini Batch K-Means 进行图像压缩 </a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/机器学习/">机器学习</a> / <a class="has-link-grey -link" href="/categories/机器学习/K-Means/">K-Means</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2019/02/07/Bagging_and_Boosting/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/photo/09.jpg" alt="机器学习|装袋和提升方法详解 (Python 语言描述)">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-02-06T16:00:00.000Z">2019-02-07</time></div>
+                    <a href="/2019/02/07/Bagging_and_Boosting/" class="has-link-black-ter is-size-6">机器学习|装袋和提升方法详解 (Python 语言描述)</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/机器学习/">机器学习</a> / <a class="has-link-grey -link" href="/categories/机器学习/装袋/">装袋</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2019/02/01/Decision_Tree/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/photo/08.jpg" alt="机器学习|决策树详解 (Python 语言描述)">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-01-31T16:00:00.000Z">2019-02-01</time></div>
+                    <a href="/2019/02/01/Decision_Tree/" class="has-link-black-ter is-size-6">机器学习|决策树详解 (Python 语言描述)</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/机器学习/">机器学习</a> / <a class="has-link-grey -link" href="/categories/机器学习/决策树/">决策树</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+    </div>
+</div>
+
+    
+        <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+        <h3 class="menu-label">
+            归档
+        </h3>
+        <ul class="menu-list">
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/02/">
+                <span class="level-start">
+                    <span class="level-item">二月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">9</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        </ul>
+        </div>
+    </div>
+</div>
+    
+        <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                标签
+            </h3>
+            <div class="field is-grouped is-grouped-multiline">
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/ECS/">
+                        <span class="tag">ECS</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/HAC/">
+                        <span class="tag">HAC</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/MAE/">
+                        <span class="tag">MAE</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/MAPE/">
+                        <span class="tag">MAPE</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/MSE/">
+                        <span class="tag">MSE</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Seafile/">
+                        <span class="tag">Seafile</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Ubuntu/">
+                        <span class="tag">Ubuntu</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/artificial-neural-network/">
+                        <span class="tag">artificial neural network</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/bagging/">
+                        <span class="tag">bagging</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/blog/">
+                        <span class="tag">blog</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/boosting/">
+                        <span class="tag">boosting</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/cluster/">
+                        <span class="tag">cluster</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/decision-tree/">
+                        <span class="tag">decision tree</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/deep-learning/">
+                        <span class="tag">deep learning</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/github/">
+                        <span class="tag">github</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/jekyll/">
+                        <span class="tag">jekyll</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/k-means/">
+                        <span class="tag">k-means</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/k-nearest-neighbors/">
+                        <span class="tag">k-nearest neighbors</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/linear-regression/">
+                        <span class="tag">linear regression</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/machine-learning/">
+                        <span class="tag">machine learning</span>
+                        <span class="tag is-grey">13</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/naive-bayes/">
+                        <span class="tag">naive bayes</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/next/">
+                        <span class="tag">next</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/perceptron/">
+                        <span class="tag">perceptron</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/polynomial-regression/">
+                        <span class="tag">polynomial regression</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/python/">
+                        <span class="tag">python</span>
+                        <span class="tag is-grey">14</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/sort/">
+                        <span class="tag">sort</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/support-vector-machine/">
+                        <span class="tag">support vector machine</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+    
+    
+</div>
+
+            </div>
+        </div>
+    </section>
+    <footer class="footer">
+    <div class="container">
+        <div class="level">
+            <div class="level-start has-text-centered-mobile">
+                <a class="footer-logo is-block has-mb-6" href="/">
+                
+                    <img src="/images/logo.svg" alt="机器学习|层次聚类方法 (Python 语言描述)" height="28">
+                
+                </a>
+                <p class="is-size-7">
+                &copy; 2019 Laugh&nbsp;
+                Powered by <a href="http://hexo.io/" target="_blank">Hexo</a> & <a href="http://github.com/ppoffice/hexo-theme-icarus">Icarus</a>
+                </p>
+            </div>
+            <div class="level-end">
+            
+                <div class="field has-addons is-flex-center-mobile has-mt-5-mobile is-flex-wrap is-flex-middle">
+                
+                
+                <p class="control">
+                    <a class="button is-white is-large" target="_blank" title="Creative Commons" href="https://creativecommons.org/">
+                        
+                        <i class="fab fa-creative-commons"></i>
+                        
+                    </a>
+                </p>
+                
+                <p class="control">
+                    <a class="button is-white is-large" target="_blank" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/">
+                        
+                        <i class="fab fa-creative-commons-by"></i>
+                        
+                    </a>
+                </p>
+                
+                <p class="control">
+                    <a class="button is-white is-large" target="_blank" title="Download on GitHub" href="http://github.com/ppoffice/hexo-theme-icarus">
+                        
+                        <i class="fab fa-github"></i>
+                        
+                    </a>
+                </p>
+                
+                </div>
+            
+            </div>
+        </div>
+    </div>
+</footer>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script>
+<script>moment.locale("zh-CN");</script>
+
+
+    
+    
+    
+    <script src="/js/animation.js"></script>
+    
+
+    
+    
+    
+    <script src="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/js/lightgallery.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js" defer></script>
+    <script src="/js/gallery.js" defer></script>
+    
+
+    
+    
+
+<div id="outdated">
+    <h6>Your browser is out-of-date!</h6>
+    <p>Update your browser to view this website correctly. <a id="btnUpdateBrowser" href="http://outdatedbrowser.com/">Update
+            my browser now </a></p>
+    <p class="last"><a href="#" id="btnCloseUpdateBrowser" title="Close">&times;</a></p>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/outdatedbrowser@1.1.5/outdatedbrowser/outdatedbrowser.min.js" defer></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        outdatedBrowser({
+            bgColor: '#f25648',
+            color: '#ffffff',
+            lowerThan: 'flex'
+        });
+    });
+</script>
+
+
+    
+    
+<script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    MathJax.Hub.Config({
+        'HTML-CSS': {matchFontHeight: false},
+        SVG: {matchFontHeight: false},
+        CommonHTML: {matchFontHeight: false}
+    });
+});
+</script>
+
+    
+    
+
+<a id="back-to-top" title="回到顶端" href="javascript:;">
+    <i class="fas fa-chevron-up"></i>
+</a>
+<script src="/js/back-to-top.js" defer></script>
+
+
+    
+    
+
+    
+    
+    
+    
+
+    
+    
+    
+    
+    
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script>
+    <script src="/js/clipboard.js" defer></script>
+    
+
+    
+
+
+<script src="/js/main.js" defer></script>
+
+    
+    <div class="searchbox ins-search">
+    <div class="searchbox-container ins-search-container">
+        <div class="searchbox-input-wrapper">
+            <input type="text" class="searchbox-input ins-search-input" placeholder="想要查找什么...">
+            <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="searchbox-result-wrapper ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+    (function (window) {
+        var INSIGHT_CONFIG = {
+            TRANSLATION: {
+                POSTS: '文章',
+                PAGES: '页面',
+                CATEGORIES: '分类',
+                TAGS: '标签',
+                UNTITLED: '(无标题)',
+            },
+            CONTENT_URL: '/content.json',
+        };
+        window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+    })(window);
+</script>
+<script src="/js/insight.js" defer></script>
+<link rel="stylesheet" href="/css/search.css">
+<link rel="stylesheet" href="/css/insight.css"><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+    
+</body>
+</html>

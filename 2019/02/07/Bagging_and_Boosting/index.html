@@ -202,24 +202,21 @@ var _hmt = _hmt || [];
 <h3 id="结合策略"><a href="#结合策略" class="headerlink" title="结合策略"></a>结合策略</h3><p>集成学习中，当数据被多个个体学习器学习后，如何最终决定学习结果呢？假定集成包含 `T` 个个体学习器 \(\{ h_{1},h_{2},…,h_{T}\}\) 。常用的有三种方法：平均法，投票法，学习法。</p>
 <h4 id="平均法"><a href="#平均法" class="headerlink" title="平均法"></a>平均法</h4><p>在数值型输出中，最常用的结合策略为平均法（Averaging），在平均法中有两种方式：  </p>
 <p><strong>简单平均法：</strong></p>
-<script type="math/tex; mode=display">
-H(x)=\frac{1}{T}\sum_{i=1}^{T}h_{i}(x) \tag{1}</script><p>取每一个「个体学习器」学习后的平均值。</p>
+<p>$$<br>H(x)=\frac{1}{T}\sum_{i=1}^{T}h_{i}(x) \tag{1}<br>$$</p>
+<p>取每一个「个体学习器」学习后的平均值。</p>
 <p><strong>加权平均法：</strong></p>
-<script type="math/tex; mode=display">
-H(x)=\sum_{i=1}^{T}w_{i}h_{i}(x) \tag{2}</script><p>其中 `w_{i}` 是每一个「个体学习器」 `h_{i}` 的权重，通常为 \(w_{i}\geq 0, \sum^{T}_{i=1}w_{i}=1\)。</p>
+<p>$$<br>H(x)=\sum_{i=1}^{T}w_{i}h_{i}(x) \tag{2}<br>$$</p>
+<p>其中 `w_{i}` 是每一个「个体学习器」 `h_{i}` 的权重，通常为 \(w_{i}\geq 0, \sum^{T}_{i=1}w_{i}=1\)。</p>
 <h4 id="投票法"><a href="#投票法" class="headerlink" title="投票法"></a>投票法</h4><p>对于分类输出而言，平均法显然效果不太好，最常用的结合策略为投票法(Voting)，在投票法中主要有三种方式：</p>
 <p><strong>绝对多数投票法：</strong></p>
-<script type="math/tex; mode=display">
-H(X)=\left\{\begin{matrix}c_{j}, if  \sum_{i=1}^{T}h_{i}^{j}> 0.5\sum_{k=1}^{N}\sum_{i=1}^{T}h_{i}^{k}(x);
-\\\ 
-None, if  \sum_{i=1}^{T}h_{i}^{j} < =  0.5\sum_{k=1}^{N}\sum_{i=1}^{T}h_{i}^{k}(x);
-\end{matrix}\right. \tag{3}</script><p>简单而言，当某一个输出的分类超过了半数则输出该分类，若未超过半数则不输出分类。</p>
+<p>$$<br>H(X)=\left\{\begin{matrix}c_{j}, if  \sum_{i=1}^{T}h_{i}^{j}&gt; 0.5\sum_{k=1}^{N}\sum_{i=1}^{T}h_{i}^{k}(x);<br>\\ <br>None, if  \sum_{i=1}^{T}h_{i}^{j} &lt; =  0.5\sum_{k=1}^{N}\sum_{i=1}^{T}h_{i}^{k}(x);<br>\end{matrix}\right. \tag{3}<br>$$</p>
+<p>简单而言，当某一个输出的分类超过了半数则输出该分类，若未超过半数则不输出分类。</p>
 <p><strong>相对多数投票法：</strong></p>
-<script type="math/tex; mode=display">
-H(X)=c_{\underset{j}{argmax}\sum_{i=1}^{T}h_{i}^{j}(x)} \tag{4}</script><p>即在「个体学习器」分类完成后，通过投票选出分类最多的标签作为此次分类的结果。</p>
+<p>$$<br>H(X)=c_{\underset{j}{argmax}\sum_{i=1}^{T}h_{i}^{j}(x)} \tag{4}<br>$$</p>
+<p>即在「个体学习器」分类完成后，通过投票选出分类最多的标签作为此次分类的结果。</p>
 <p><strong>加权投票法：</strong></p>
-<script type="math/tex; mode=display">
-H(X)=c_{\underset{j}{argmax}\sum_{i=1}^{T}w_{i}h_{i}^{j}(x)} \tag{5}</script><p>同加权平均法类似，`w_{i}` 是每一个「个体学习器」 `h_{i}` 的权重，通常为 \(w_{i}\geq 0, \sum^{T}_{i=1}w_{i}=1\)。</p>
+<p>$$<br>H(X)=c_{\underset{j}{argmax}\sum_{i=1}^{T}w_{i}h_{i}^{j}(x)} \tag{5}<br>$$</p>
+<p>同加权平均法类似，`w_{i}` 是每一个「个体学习器」 `h_{i}` 的权重，通常为 \(w_{i}\geq 0, \sum^{T}_{i=1}w_{i}=1\)。</p>
 <h4 id="学习法"><a href="#学习法" class="headerlink" title="学习法"></a>学习法</h4><p>以上两种方法（平均法和投票法）相对比较简单，但是可能学习误差较大，为了解决这种情况，还有一种方法为学习法，其代表方法是 <code>stacking</code> ，当使用<code>stacking</code> 的结合策略时， 不是对弱学习器的结果做简单的逻辑处理，而是再加上一层学习器，即把训练集弱学习器的学习结果作为输入，把训练集的输出作为输出，重新训练一个学习器来得到最终结果。</p>
 <p>在这种情况下，我们将弱学习器称为初级学习器，将用于结合的学习器称为次级学习器。对于测试集，首先用初级学习器预测一次，得到次级学习器的输入样本，再用次级学习器预测一次，得到最终的预测结果。</p>
 <h2 id="装袋算法-Bagging"><a href="#装袋算法-Bagging" class="headerlink" title="装袋算法 Bagging"></a>装袋算法 Bagging</h2><p>在大致了解集成学习相关概念之后，接下来就是对集成学习中常用算法思想之一的装袋算法进行详细的讲解。</p>
@@ -451,9 +448,9 @@ H(X)=c_{\underset{j}{argmax}\sum_{i=1}^{T}w_{i}h_{i}^{j}(x)} \tag{5}</script><p>
     <div class="level post-navigation is-flex-wrap is-mobile">
         
         <div class="level-start">
-            <a class="level level-item has-link-grey  article-nav-prev" href="/2019/02/09/Cluster_Of_K-Means/">
+            <a class="level level-item has-link-grey  article-nav-prev" href="/2019/02/09/Image_compression_using_Mini_Batch_k-means/">
                 <i class="level-item fas fa-chevron-left"></i>
-                <span class="level-item">机器学习|划分聚类之 K-Means 详解 (Python 语言描述)</span>
+                <span class="level-item">使用 Mini Batch K-Means 进行图像压缩 </span>
             </a>
         </div>
         
@@ -531,7 +528,7 @@ H(X)=c_{\underset{j}{argmax}\sum_{i=1}^{T}w_{i}h_{i}^{j}(x)} \tag{5}</script><p>
                         文章
                     </p>
                     <p class="title has-text-weight-normal">
-                        19
+                        20
                     </p>
                 </div>
             </div>
@@ -541,7 +538,7 @@ H(X)=c_{\underset{j}{argmax}\sum_{i=1}^{T}w_{i}h_{i}^{j}(x)} \tag{5}</script><p>
                         分类
                     </p>
                     <p class="title has-text-weight-normal">
-                        22
+                        23
                     </p>
                 </div>
             </div>
@@ -551,7 +548,7 @@ H(X)=c_{\underset{j}{argmax}\sum_{i=1}^{T}w_{i}h_{i}^{j}(x)} \tag{5}</script><p>
                         标签
                     </p>
                     <p class="title has-text-weight-normal">
-                        26
+                        27
                     </p>
                 </div>
             </div>
@@ -753,7 +750,7 @@ H(X)=c_{\underset{j}{argmax}\sum_{i=1}^{T}w_{i}h_{i}^{j}(x)} \tag{5}</script><p>
                 <span class="level-item">机器学习</span>
             </span>
             <span class="level-end">
-                <span class="level-item tag">12</span>
+                <span class="level-item tag">13</span>
             </span>
         </a><ul><li>
         <a class="level is-marginless" href="/categories/机器学习/K-Means/">
@@ -761,7 +758,7 @@ H(X)=c_{\underset{j}{argmax}\sum_{i=1}^{T}w_{i}h_{i}^{j}(x)} \tag{5}</script><p>
                 <span class="level-item">K-Means</span>
             </span>
             <span class="level-end">
-                <span class="level-item tag">2</span>
+                <span class="level-item tag">3</span>
             </span>
         </a></li><li>
         <a class="level is-marginless" href="/categories/机器学习/K-近邻算法/">
@@ -847,7 +844,7 @@ H(X)=c_{\underset{j}{argmax}\sum_{i=1}^{T}w_{i}h_{i}^{j}(x)} \tag{5}</script><p>
         <h3 class="menu-label">
             标签云
         </h3>
-        <a href="/tags/ECS/" style="font-size: 13.33px;">ECS</a> <a href="/tags/MAE/" style="font-size: 10px;">MAE</a> <a href="/tags/MAPE/" style="font-size: 10px;">MAPE</a> <a href="/tags/MSE/" style="font-size: 10px;">MSE</a> <a href="/tags/Seafile/" style="font-size: 10px;">Seafile</a> <a href="/tags/Ubuntu/" style="font-size: 13.33px;">Ubuntu</a> <a href="/tags/artificial-neural-network/" style="font-size: 10px;">artificial neural network</a> <a href="/tags/bagging/" style="font-size: 10px;">bagging</a> <a href="/tags/blog/" style="font-size: 13.33px;">blog</a> <a href="/tags/boosting/" style="font-size: 10px;">boosting</a> <a href="/tags/cluster/" style="font-size: 10px;">cluster</a> <a href="/tags/decision-tree/" style="font-size: 10px;">decision tree</a> <a href="/tags/deep-learning/" style="font-size: 10px;">deep learning</a> <a href="/tags/github/" style="font-size: 13.33px;">github</a> <a href="/tags/jekyll/" style="font-size: 10px;">jekyll</a> <a href="/tags/k-means/" style="font-size: 13.33px;">k-means</a> <a href="/tags/k-nearest-neighbors/" style="font-size: 10px;">k-nearest neighbors</a> <a href="/tags/linear-regression/" style="font-size: 13.33px;">linear regression</a> <a href="/tags/machine-learning/" style="font-size: 16.67px;">machine learning</a> <a href="/tags/naive-bayes/" style="font-size: 10px;">naive bayes</a> <a href="/tags/next/" style="font-size: 10px;">next</a> <a href="/tags/perceptron/" style="font-size: 10px;">perceptron</a> <a href="/tags/polynomial-regression/" style="font-size: 10px;">polynomial regression</a> <a href="/tags/python/" style="font-size: 20px;">python</a> <a href="/tags/sort/" style="font-size: 13.33px;">sort</a> <a href="/tags/support-vector-machine/" style="font-size: 10px;">support vector machine</a>
+        <a href="/tags/ECS/" style="font-size: 13.33px;">ECS</a> <a href="/tags/HAC/" style="font-size: 10px;">HAC</a> <a href="/tags/MAE/" style="font-size: 10px;">MAE</a> <a href="/tags/MAPE/" style="font-size: 10px;">MAPE</a> <a href="/tags/MSE/" style="font-size: 10px;">MSE</a> <a href="/tags/Seafile/" style="font-size: 10px;">Seafile</a> <a href="/tags/Ubuntu/" style="font-size: 13.33px;">Ubuntu</a> <a href="/tags/artificial-neural-network/" style="font-size: 10px;">artificial neural network</a> <a href="/tags/bagging/" style="font-size: 10px;">bagging</a> <a href="/tags/blog/" style="font-size: 13.33px;">blog</a> <a href="/tags/boosting/" style="font-size: 10px;">boosting</a> <a href="/tags/cluster/" style="font-size: 10px;">cluster</a> <a href="/tags/decision-tree/" style="font-size: 10px;">decision tree</a> <a href="/tags/deep-learning/" style="font-size: 10px;">deep learning</a> <a href="/tags/github/" style="font-size: 13.33px;">github</a> <a href="/tags/jekyll/" style="font-size: 10px;">jekyll</a> <a href="/tags/k-means/" style="font-size: 13.33px;">k-means</a> <a href="/tags/k-nearest-neighbors/" style="font-size: 10px;">k-nearest neighbors</a> <a href="/tags/linear-regression/" style="font-size: 13.33px;">linear regression</a> <a href="/tags/machine-learning/" style="font-size: 16.67px;">machine learning</a> <a href="/tags/naive-bayes/" style="font-size: 10px;">naive bayes</a> <a href="/tags/next/" style="font-size: 10px;">next</a> <a href="/tags/perceptron/" style="font-size: 10px;">perceptron</a> <a href="/tags/polynomial-regression/" style="font-size: 10px;">polynomial regression</a> <a href="/tags/python/" style="font-size: 20px;">python</a> <a href="/tags/sort/" style="font-size: 13.33px;">sort</a> <a href="/tags/support-vector-machine/" style="font-size: 10px;">support vector machine</a>
     </div>
 </div>
 
@@ -864,16 +861,16 @@ H(X)=c_{\underset{j}{argmax}\sum_{i=1}^{T}w_{i}h_{i}^{j}(x)} \tag{5}</script><p>
         
         <article class="media">
             
-            <a href="/2019/02/09/Image_compression_using_Mini_Batch_k-means/" class="media-left">
+            <a href="/2019/02/11/Hierarchical_clustering_method/" class="media-left">
                 <p class="image is-64x64">
-                    <img class="thumbnail" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/photo/11.jpg" alt="使用 Mini Batch K-Means 进行图像压缩 ">
+                    <img class="thumbnail" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/photo/12.jpg" alt="机器学习|层次聚类方法 (Python 语言描述)">
                 </p>
             </a>
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-02-08T16:00:00.000Z">2019-02-09</time></div>
-                    <a href="/2019/02/09/Image_compression_using_Mini_Batch_k-means/" class="has-link-black-ter is-size-6">使用 Mini Batch K-Means 进行图像压缩 </a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-02-10T16:00:00.000Z">2019-02-11</time></div>
+                    <a href="/2019/02/11/Hierarchical_clustering_method/" class="has-link-black-ter is-size-6">机器学习|层次聚类方法 (Python 语言描述)</a>
                     <p class="is-size-7 is-uppercase">
                         <a class="has-link-grey -link" href="/categories/机器学习/">机器学习</a> / <a class="has-link-grey -link" href="/categories/机器学习/K-Means/">K-Means</a>
                     </p>
@@ -893,6 +890,25 @@ H(X)=c_{\underset{j}{argmax}\sum_{i=1}^{T}w_{i}h_{i}^{j}(x)} \tag{5}</script><p>
                 <div class="content">
                     <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-02-08T16:00:00.000Z">2019-02-09</time></div>
                     <a href="/2019/02/09/Cluster_Of_K-Means/" class="has-link-black-ter is-size-6">机器学习|划分聚类之 K-Means 详解 (Python 语言描述)</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/机器学习/">机器学习</a> / <a class="has-link-grey -link" href="/categories/机器学习/K-Means/">K-Means</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2019/02/09/Image_compression_using_Mini_Batch_k-means/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/photo/11.jpg" alt="使用 Mini Batch K-Means 进行图像压缩 ">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-02-08T16:00:00.000Z">2019-02-09</time></div>
+                    <a href="/2019/02/09/Image_compression_using_Mini_Batch_k-means/" class="has-link-black-ter is-size-6">使用 Mini Batch K-Means 进行图像压缩 </a>
                     <p class="is-size-7 is-uppercase">
                         <a class="has-link-grey -link" href="/categories/机器学习/">机器学习</a> / <a class="has-link-grey -link" href="/categories/机器学习/K-Means/">K-Means</a>
                     </p>
@@ -938,25 +954,6 @@ H(X)=c_{\underset{j}{argmax}\sum_{i=1}^{T}w_{i}h_{i}^{j}(x)} \tag{5}</script><p>
             </div>
         </article>
         
-        <article class="media">
-            
-            <a href="/2019/01/31/Neural_Network/" class="media-left">
-                <p class="image is-64x64">
-                    <img class="thumbnail" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/photo/07.jpg" alt="机器学习|感知机和人工神经网络详解 (Python 语言描述)">
-                </p>
-            </a>
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-01-30T16:00:00.000Z">2019-01-31</time></div>
-                    <a href="/2019/01/31/Neural_Network/" class="has-link-black-ter is-size-6">机器学习|感知机和人工神经网络详解 (Python 语言描述)</a>
-                    <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/机器学习/">机器学习</a> / <a class="has-link-grey -link" href="/categories/机器学习/感知机/">感知机</a>
-                    </p>
-                </div>
-            </div>
-        </article>
-        
     </div>
 </div>
 
@@ -975,7 +972,7 @@ H(X)=c_{\underset{j}{argmax}\sum_{i=1}^{T}w_{i}h_{i}^{j}(x)} \tag{5}</script><p>
                     <span class="level-item">二月 2019</span>
                 </span>
                 <span class="level-end">
-                    <span class="level-item tag">4</span>
+                    <span class="level-item tag">5</span>
                 </span>
             </a>
         </li>
@@ -1030,6 +1027,13 @@ H(X)=c_{\underset{j}{argmax}\sum_{i=1}^{T}w_{i}h_{i}^{j}(x)} \tag{5}</script><p>
                     <a class="tags has-addons" href="/tags/ECS/">
                         <span class="tag">ECS</span>
                         <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/HAC/">
+                        <span class="tag">HAC</span>
+                        <span class="tag is-grey">1</span>
                     </a>
                 </div>
                 
@@ -1155,7 +1159,7 @@ H(X)=c_{\underset{j}{argmax}\sum_{i=1}^{T}w_{i}h_{i}^{j}(x)} \tag{5}</script><p>
                 <div class="control">
                     <a class="tags has-addons" href="/tags/machine-learning/">
                         <span class="tag">machine learning</span>
-                        <span class="tag is-grey">12</span>
+                        <span class="tag is-grey">13</span>
                     </a>
                 </div>
                 
@@ -1190,7 +1194,7 @@ H(X)=c_{\underset{j}{argmax}\sum_{i=1}^{T}w_{i}h_{i}^{j}(x)} \tag{5}</script><p>
                 <div class="control">
                     <a class="tags has-addons" href="/tags/python/">
                         <span class="tag">python</span>
-                        <span class="tag is-grey">13</span>
+                        <span class="tag is-grey">14</span>
                     </a>
                 </div>
                 
@@ -1233,16 +1237,16 @@ H(X)=c_{\underset{j}{argmax}\sum_{i=1}^{T}w_{i}h_{i}^{j}(x)} \tag{5}</script><p>
         
         <article class="media">
             
-            <a href="/2019/02/09/Image_compression_using_Mini_Batch_k-means/" class="media-left">
+            <a href="/2019/02/11/Hierarchical_clustering_method/" class="media-left">
                 <p class="image is-64x64">
-                    <img class="thumbnail" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/photo/11.jpg" alt="使用 Mini Batch K-Means 进行图像压缩 ">
+                    <img class="thumbnail" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/photo/12.jpg" alt="机器学习|层次聚类方法 (Python 语言描述)">
                 </p>
             </a>
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-02-08T16:00:00.000Z">2019-02-09</time></div>
-                    <a href="/2019/02/09/Image_compression_using_Mini_Batch_k-means/" class="has-link-black-ter is-size-6">使用 Mini Batch K-Means 进行图像压缩 </a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-02-10T16:00:00.000Z">2019-02-11</time></div>
+                    <a href="/2019/02/11/Hierarchical_clustering_method/" class="has-link-black-ter is-size-6">机器学习|层次聚类方法 (Python 语言描述)</a>
                     <p class="is-size-7 is-uppercase">
                         <a class="has-link-grey -link" href="/categories/机器学习/">机器学习</a> / <a class="has-link-grey -link" href="/categories/机器学习/K-Means/">K-Means</a>
                     </p>
@@ -1262,6 +1266,25 @@ H(X)=c_{\underset{j}{argmax}\sum_{i=1}^{T}w_{i}h_{i}^{j}(x)} \tag{5}</script><p>
                 <div class="content">
                     <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-02-08T16:00:00.000Z">2019-02-09</time></div>
                     <a href="/2019/02/09/Cluster_Of_K-Means/" class="has-link-black-ter is-size-6">机器学习|划分聚类之 K-Means 详解 (Python 语言描述)</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/机器学习/">机器学习</a> / <a class="has-link-grey -link" href="/categories/机器学习/K-Means/">K-Means</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2019/02/09/Image_compression_using_Mini_Batch_k-means/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/photo/11.jpg" alt="使用 Mini Batch K-Means 进行图像压缩 ">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-02-08T16:00:00.000Z">2019-02-09</time></div>
+                    <a href="/2019/02/09/Image_compression_using_Mini_Batch_k-means/" class="has-link-black-ter is-size-6">使用 Mini Batch K-Means 进行图像压缩 </a>
                     <p class="is-size-7 is-uppercase">
                         <a class="has-link-grey -link" href="/categories/机器学习/">机器学习</a> / <a class="has-link-grey -link" href="/categories/机器学习/K-Means/">K-Means</a>
                     </p>
@@ -1307,25 +1330,6 @@ H(X)=c_{\underset{j}{argmax}\sum_{i=1}^{T}w_{i}h_{i}^{j}(x)} \tag{5}</script><p>
             </div>
         </article>
         
-        <article class="media">
-            
-            <a href="/2019/01/31/Neural_Network/" class="media-left">
-                <p class="image is-64x64">
-                    <img class="thumbnail" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/photo/07.jpg" alt="机器学习|感知机和人工神经网络详解 (Python 语言描述)">
-                </p>
-            </a>
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-01-30T16:00:00.000Z">2019-01-31</time></div>
-                    <a href="/2019/01/31/Neural_Network/" class="has-link-black-ter is-size-6">机器学习|感知机和人工神经网络详解 (Python 语言描述)</a>
-                    <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/机器学习/">机器学习</a> / <a class="has-link-grey -link" href="/categories/机器学习/感知机/">感知机</a>
-                    </p>
-                </div>
-            </div>
-        </article>
-        
     </div>
 </div>
 
@@ -1344,7 +1348,7 @@ H(X)=c_{\underset{j}{argmax}\sum_{i=1}^{T}w_{i}h_{i}^{j}(x)} \tag{5}</script><p>
                     <span class="level-item">二月 2019</span>
                 </span>
                 <span class="level-end">
-                    <span class="level-item tag">4</span>
+                    <span class="level-item tag">5</span>
                 </span>
             </a>
         </li>
@@ -1399,6 +1403,13 @@ H(X)=c_{\underset{j}{argmax}\sum_{i=1}^{T}w_{i}h_{i}^{j}(x)} \tag{5}</script><p>
                     <a class="tags has-addons" href="/tags/ECS/">
                         <span class="tag">ECS</span>
                         <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/HAC/">
+                        <span class="tag">HAC</span>
+                        <span class="tag is-grey">1</span>
                     </a>
                 </div>
                 
@@ -1524,7 +1535,7 @@ H(X)=c_{\underset{j}{argmax}\sum_{i=1}^{T}w_{i}h_{i}^{j}(x)} \tag{5}</script><p>
                 <div class="control">
                     <a class="tags has-addons" href="/tags/machine-learning/">
                         <span class="tag">machine learning</span>
-                        <span class="tag is-grey">12</span>
+                        <span class="tag is-grey">13</span>
                     </a>
                 </div>
                 
@@ -1559,7 +1570,7 @@ H(X)=c_{\underset{j}{argmax}\sum_{i=1}^{T}w_{i}h_{i}^{j}(x)} \tag{5}</script><p>
                 <div class="control">
                     <a class="tags has-addons" href="/tags/python/">
                         <span class="tag">python</span>
-                        <span class="tag is-grey">13</span>
+                        <span class="tag is-grey">14</span>
                     </a>
                 </div>
                 

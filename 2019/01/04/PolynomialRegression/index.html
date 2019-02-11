@@ -200,12 +200,10 @@ var _hmt = _hmt || [];
 <figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">%matplotlib inline</span><br><span class="line"><span class="hljs-keyword">from</span> matplotlib <span class="hljs-keyword">import</span> pyplot <span class="hljs-keyword">as</span> plt</span><br><span class="line"></span><br><span class="line">plt.scatter(x, y)</span><br></pre></td></tr></table></figure>
 <p><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/polynomial%20regression/2.png" alt=""></p>
 <h3 id="实现-2-次多项式拟合"><a href="#实现-2-次多项式拟合" class="headerlink" title="实现 2 次多项式拟合"></a>实现 2 次多项式拟合</h3><p>接下来，通过多项式来拟合上面的散点数据。首先，一个标准的一元高阶多项式函数如下所示：</p>
-<script type="math/tex; mode=display">
-y(x, w) = w_0 + w_1x + w_2x^2 +...+w_mx^m = \sum\limits_{j=0}^{m}w_jx^j \tag{1}</script><p>其中，`m` 表示多项式的阶数，`x^j` 表示 `x` 的 `j` 次幂，`w` 则代表该多项式的系数。</p>
+<p>$$<br>y(x, w) = w_0 + w_1x + w_2x^2 +…+w_mx^m = \sum\limits_{j=0}^{m}w_jx^j \tag{1}<br>$$</p>
+<p>其中，`m` 表示多项式的阶数，`x^j` 表示 `x` 的 `j` 次幂，`w` 则代表该多项式的系数。</p>
 <p>当我们使用上面的多项式去拟合散点时，需要确定两个要素，分别是：多项式系数 `w` 以及多项式阶数 `m`，这也是多项式的两个基本要素。</p>
-<p>如果通过手动指定多项式阶数 `m` 的大小，那么就只需要确定多项式系数 `w` 的值是多少。例如，这里首先指定 `m=2`，多项式就变成了：</p>
-<script type="math/tex; mode=display">
-y(x, w) = w_0 + w_1x + w_2x^2= \sum\limits_{j=0}^{2}w_jx^j \tag{2}</script><p>当我们确定 `w` 的值的大小时，就回到了前面线性回归中学习到的内容。</p>
+<p>如果通过手动指定多项式阶数 `m` 的大小，那么就只需要确定多项式系数 `w` 的值是多少。例如，这里首先指定 `m=2`，多项式就变成了：<br>$$<br>y(x, w) = w_0 + w_1x + w_2x^2= \sum\limits_{j=0}^{2}w_jx^j \tag{2}<br>$$<br>当我们确定 `w` 的值的大小时，就回到了前面线性回归中学习到的内容。</p>
 <p>首先，我们构造两个函数，分别是用于拟合的多项式函数，以及误差函数。</p>
 <figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-string">"""实现 2 次多项式函数及误差函数</span></span><br><span class="line"><span class="hljs-string">"""</span></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">func</span><span class="hljs-params">(p, x)</span>:</span></span><br><span class="line">    <span class="hljs-string">"""根据公式，定义 2 次多项式函数</span></span><br><span class="line"><span class="hljs-string">    """</span></span><br><span class="line">    w0, w1, w2 = p</span><br><span class="line">    f = w0 + w1*x + w2*x*x</span><br><span class="line">    <span class="hljs-keyword">return</span> f</span><br><span class="line"></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">err_func</span><span class="hljs-params">(p, x, y)</span>:</span></span><br><span class="line">    <span class="hljs-string">"""残差函数（观测值与拟合值之间的差距）</span></span><br><span class="line"><span class="hljs-string">    """</span></span><br><span class="line">    ret = func(p, x) - y</span><br><span class="line">    <span class="hljs-keyword">return</span> ret</span><br></pre></td></tr></table></figure>
 <p>接下来，使用 NumPy 提供的随机数方法初始化 3 个 `w` 参数</p>
@@ -218,8 +216,8 @@ y(x, w) = w_0 + w_1x + w_2x^2= \sum\limits_{j=0}^{2}w_jx^j \tag{2}</script><p>�
 </blockquote>
 <figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Fitting Parameters:  [ <span class="hljs-number">3.76893126e+01</span> <span class="hljs-number">-2.60474221e-01</span>  <span class="hljs-number">8.00078171e-03</span>]</span><br></pre></td></tr></table></figure>
 <p>我们这里得到的最佳拟合参数 `w_0`, `w_1`, `w_2` 依次为 <code>3.76893117e+01</code>, <code>-2.60474147e-01</code> 和 <code>8.00078082e-03</code>。也就是说，我们拟合后的函数（保留两位有效数字）为：</p>
-<script type="math/tex; mode=display">
-y(x) = 37 - 0.26x + 0.0080x^2 \tag{3}</script><p>然后，我们尝试绘制出拟合后的图像。</p>
+<p>$$<br>y(x) = 37 - 0.26x + 0.0080x^2 \tag{3}<br>$$</p>
+<p>然后，我们尝试绘制出拟合后的图像。</p>
 <figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-string">"""绘制 2 次多项式拟合图像</span></span><br><span class="line"><span class="hljs-string">"""</span></span><br><span class="line"><span class="hljs-comment"># 绘制拟合图像时需要的临时点</span></span><br><span class="line">x_temp = np.linspace(<span class="hljs-number">0</span>, <span class="hljs-number">80</span>, <span class="hljs-number">10000</span>)</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># 绘制拟合函数曲线</span></span><br><span class="line">plt.plot(x_temp, func(parameters[<span class="hljs-number">0</span>], x_temp), <span class="hljs-string">'r'</span>)</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># 绘制原数据点</span></span><br><span class="line">plt.scatter(x, y)</span><br></pre></td></tr></table></figure>
 <p><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/polynomial%20regression/3.png" alt=""></p>
 <h3 id="实现-N-次多项式拟合"><a href="#实现-N-次多项式拟合" class="headerlink" title="实现 N 次多项式拟合"></a>实现 N 次多项式拟合</h3><p>你会发现，上面采用 <code>2</code> 次多项式拟合的结果也不能恰当地反映散点的变化趋势。此时，我们可以尝试 <code>3</code> 次及更高次多项式拟合。接下来的代码中，我们将针对上面 <code>2</code> 次多项式拟合的代码稍作修改，实现一个 <code>N</code> 次多项式拟合的方法。</p>
@@ -228,8 +226,8 @@ y(x) = 37 - 0.26x + 0.0080x^2 \tag{3}</script><p>然后，我们尝试绘制出�
 <figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">n_poly(<span class="hljs-number">3</span>)</span><br></pre></td></tr></table></figure>
 <figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">array([ <span class="hljs-number">8.00077828e-03</span>, <span class="hljs-number">-2.60473932e-01</span>,  <span class="hljs-number">3.76893089e+01</span>])</span><br></pre></td></tr></table></figure>
 <p>此时得到的参数结果和公式（3）的结果一致，只是顺序有出入。这是因为 NumPy 中的多项式函数 <code>np.poly1d(3)</code> 默认的样式是：</p>
-<script type="math/tex; mode=display">
-y(x) = 0.0080x^2 - 0.26x + 37\tag{4}</script><p>接下来，我们绘制出 <code>4，5，6，7, 8, 9</code> 次多项式的拟合结果。</p>
+<p>$$<br>y(x) = 0.0080x^2 - 0.26x + 37\tag{4}<br>$$</p>
+<p>接下来，我们绘制出 <code>4，5，6，7, 8, 9</code> 次多项式的拟合结果。</p>
 <figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-string">"""绘制出 4，5，6，7, 8, 9 次多项式的拟合图像</span></span><br><span class="line"><span class="hljs-string">"""</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># 绘制拟合图像时需要的临时点</span></span><br><span class="line">x_temp = np.linspace(<span class="hljs-number">0</span>, <span class="hljs-number">80</span>, <span class="hljs-number">10000</span>)</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># 绘制子图</span></span><br><span class="line">fig, axes = plt.subplots(<span class="hljs-number">2</span>, <span class="hljs-number">3</span>, figsize=(<span class="hljs-number">15</span>,<span class="hljs-number">10</span>))</span><br><span class="line"></span><br><span class="line">axes[<span class="hljs-number">0</span>,<span class="hljs-number">0</span>].plot(x_temp, fit_func(n_poly(<span class="hljs-number">4</span>), x_temp), <span class="hljs-string">'r'</span>)</span><br><span class="line">axes[<span class="hljs-number">0</span>,<span class="hljs-number">0</span>].scatter(x, y)</span><br><span class="line">axes[<span class="hljs-number">0</span>,<span class="hljs-number">0</span>].set_title(<span class="hljs-string">"m = 4"</span>)</span><br><span class="line"></span><br><span class="line">axes[<span class="hljs-number">0</span>,<span class="hljs-number">1</span>].plot(x_temp, fit_func(n_poly(<span class="hljs-number">5</span>), x_temp), <span class="hljs-string">'r'</span>)</span><br><span class="line">axes[<span class="hljs-number">0</span>,<span class="hljs-number">1</span>].scatter(x, y)</span><br><span class="line">axes[<span class="hljs-number">0</span>,<span class="hljs-number">1</span>].set_title(<span class="hljs-string">"m = 5"</span>)</span><br><span class="line"></span><br><span class="line">axes[<span class="hljs-number">0</span>,<span class="hljs-number">2</span>].plot(x_temp, fit_func(n_poly(<span class="hljs-number">6</span>), x_temp), <span class="hljs-string">'r'</span>)</span><br><span class="line">axes[<span class="hljs-number">0</span>,<span class="hljs-number">2</span>].scatter(x, y)</span><br><span class="line">axes[<span class="hljs-number">0</span>,<span class="hljs-number">2</span>].set_title(<span class="hljs-string">"m = 6"</span>)</span><br><span class="line"></span><br><span class="line">axes[<span class="hljs-number">1</span>,<span class="hljs-number">0</span>].plot(x_temp, fit_func(n_poly(<span class="hljs-number">7</span>), x_temp), <span class="hljs-string">'r'</span>)</span><br><span class="line">axes[<span class="hljs-number">1</span>,<span class="hljs-number">0</span>].scatter(x, y)</span><br><span class="line">axes[<span class="hljs-number">1</span>,<span class="hljs-number">0</span>].set_title(<span class="hljs-string">"m = 7"</span>)</span><br><span class="line"></span><br><span class="line">axes[<span class="hljs-number">1</span>,<span class="hljs-number">1</span>].plot(x_temp, fit_func(n_poly(<span class="hljs-number">8</span>), x_temp), <span class="hljs-string">'r'</span>)</span><br><span class="line">axes[<span class="hljs-number">1</span>,<span class="hljs-number">1</span>].scatter(x, y)</span><br><span class="line">axes[<span class="hljs-number">1</span>,<span class="hljs-number">1</span>].set_title(<span class="hljs-string">"m = 8"</span>)</span><br><span class="line"></span><br><span class="line">axes[<span class="hljs-number">1</span>,<span class="hljs-number">2</span>].plot(x_temp, fit_func(n_poly(<span class="hljs-number">9</span>), x_temp), <span class="hljs-string">'r'</span>)</span><br><span class="line">axes[<span class="hljs-number">1</span>,<span class="hljs-number">2</span>].scatter(x, y)</span><br><span class="line">axes[<span class="hljs-number">1</span>,<span class="hljs-number">2</span>].set_title(<span class="hljs-string">"m = 9"</span>)</span><br></pre></td></tr></table></figure>
 <p><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/polynomial%20regression/4.png" alt=""></p>
 <p>从上面的 <code>6</code> 张图可以看出，当 <code>m=4</code>（4 次多项式） 时，图像拟合的效果已经明显优于 <code>m=3</code> 的结果。但是随着 m 次数的增加，当 m=8 时，曲线呈现出明显的震荡，这也就是线性回归实验中所讲到的过拟和（Overfitting）现象。</p>
@@ -243,9 +241,7 @@ y(x) = 0.0080x^2 - 0.26x + 37\tag{4}</script><p>接下来，我们绘制出 <cod
 <p><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/polynomial%20regression/add_01.png" alt=""></p>
 <p>那么也就可以通过线性回归进行拟合了。</p>
 <p>你可以手动计算上面的结果，但是<strong>当多项式为一元高次或者多元高次时，特征矩阵的表达和计算过程就变得比较复杂了</strong>。例如，下面是二元二次多项式的特征矩阵表达式。</p>
-<script type="math/tex; mode=display">
-\mathbf{X} = \left [ X_{1}, X_{2}, X_{1}^2, X_{1}X_{2}, X_{2}^2 \right ]
-\tag{5c}</script><p>还好，在 scikit-learn 中，我们可以通过 <code>PolynomialFeatures()</code> 类自动产生多项式特征矩阵，<code>PolynomialFeatures()</code> 类的默认参数及常用参数定义如下：</p>
+<p>$$<br>\mathbf{X} = \left [ X_{1}, X_{2}, X_{1}^2, X_{1}X_{2}, X_{2}^2 \right ]<br>\tag{5c}<br>$$<br>还好，在 scikit-learn 中，我们可以通过 <code>PolynomialFeatures()</code> 类自动产生多项式特征矩阵，<code>PolynomialFeatures()</code> 类的默认参数及常用参数定义如下：</p>
 <figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sklearn.preprocessing.PolynomialFeatures(degree=<span class="hljs-number">2</span>, interaction_only=<span class="hljs-keyword">False</span>, include_bias=<span class="hljs-keyword">True</span>)</span><br></pre></td></tr></table></figure>
 <ul>
 <li><code>degree</code>: 多项式次数，默认为 2 次多项式</li>
@@ -411,7 +407,7 @@ y(x) = 0.0080x^2 - 0.26x + 37\tag{4}</script><p>接下来，我们绘制出 <cod
                         文章
                     </p>
                     <p class="title has-text-weight-normal">
-                        19
+                        20
                     </p>
                 </div>
             </div>
@@ -421,7 +417,7 @@ y(x) = 0.0080x^2 - 0.26x + 37\tag{4}</script><p>接下来，我们绘制出 <cod
                         分类
                     </p>
                     <p class="title has-text-weight-normal">
-                        22
+                        23
                     </p>
                 </div>
             </div>
@@ -431,7 +427,7 @@ y(x) = 0.0080x^2 - 0.26x + 37\tag{4}</script><p>接下来，我们绘制出 <cod
                         标签
                     </p>
                     <p class="title has-text-weight-normal">
-                        26
+                        27
                     </p>
                 </div>
             </div>
@@ -633,7 +629,7 @@ y(x) = 0.0080x^2 - 0.26x + 37\tag{4}</script><p>接下来，我们绘制出 <cod
                 <span class="level-item">机器学习</span>
             </span>
             <span class="level-end">
-                <span class="level-item tag">12</span>
+                <span class="level-item tag">13</span>
             </span>
         </a><ul><li>
         <a class="level is-marginless" href="/categories/机器学习/K-Means/">
@@ -641,7 +637,7 @@ y(x) = 0.0080x^2 - 0.26x + 37\tag{4}</script><p>接下来，我们绘制出 <cod
                 <span class="level-item">K-Means</span>
             </span>
             <span class="level-end">
-                <span class="level-item tag">2</span>
+                <span class="level-item tag">3</span>
             </span>
         </a></li><li>
         <a class="level is-marginless" href="/categories/机器学习/K-近邻算法/">
@@ -727,7 +723,7 @@ y(x) = 0.0080x^2 - 0.26x + 37\tag{4}</script><p>接下来，我们绘制出 <cod
         <h3 class="menu-label">
             标签云
         </h3>
-        <a href="/tags/ECS/" style="font-size: 13.33px;">ECS</a> <a href="/tags/MAE/" style="font-size: 10px;">MAE</a> <a href="/tags/MAPE/" style="font-size: 10px;">MAPE</a> <a href="/tags/MSE/" style="font-size: 10px;">MSE</a> <a href="/tags/Seafile/" style="font-size: 10px;">Seafile</a> <a href="/tags/Ubuntu/" style="font-size: 13.33px;">Ubuntu</a> <a href="/tags/artificial-neural-network/" style="font-size: 10px;">artificial neural network</a> <a href="/tags/bagging/" style="font-size: 10px;">bagging</a> <a href="/tags/blog/" style="font-size: 13.33px;">blog</a> <a href="/tags/boosting/" style="font-size: 10px;">boosting</a> <a href="/tags/cluster/" style="font-size: 10px;">cluster</a> <a href="/tags/decision-tree/" style="font-size: 10px;">decision tree</a> <a href="/tags/deep-learning/" style="font-size: 10px;">deep learning</a> <a href="/tags/github/" style="font-size: 13.33px;">github</a> <a href="/tags/jekyll/" style="font-size: 10px;">jekyll</a> <a href="/tags/k-means/" style="font-size: 13.33px;">k-means</a> <a href="/tags/k-nearest-neighbors/" style="font-size: 10px;">k-nearest neighbors</a> <a href="/tags/linear-regression/" style="font-size: 13.33px;">linear regression</a> <a href="/tags/machine-learning/" style="font-size: 16.67px;">machine learning</a> <a href="/tags/naive-bayes/" style="font-size: 10px;">naive bayes</a> <a href="/tags/next/" style="font-size: 10px;">next</a> <a href="/tags/perceptron/" style="font-size: 10px;">perceptron</a> <a href="/tags/polynomial-regression/" style="font-size: 10px;">polynomial regression</a> <a href="/tags/python/" style="font-size: 20px;">python</a> <a href="/tags/sort/" style="font-size: 13.33px;">sort</a> <a href="/tags/support-vector-machine/" style="font-size: 10px;">support vector machine</a>
+        <a href="/tags/ECS/" style="font-size: 13.33px;">ECS</a> <a href="/tags/HAC/" style="font-size: 10px;">HAC</a> <a href="/tags/MAE/" style="font-size: 10px;">MAE</a> <a href="/tags/MAPE/" style="font-size: 10px;">MAPE</a> <a href="/tags/MSE/" style="font-size: 10px;">MSE</a> <a href="/tags/Seafile/" style="font-size: 10px;">Seafile</a> <a href="/tags/Ubuntu/" style="font-size: 13.33px;">Ubuntu</a> <a href="/tags/artificial-neural-network/" style="font-size: 10px;">artificial neural network</a> <a href="/tags/bagging/" style="font-size: 10px;">bagging</a> <a href="/tags/blog/" style="font-size: 13.33px;">blog</a> <a href="/tags/boosting/" style="font-size: 10px;">boosting</a> <a href="/tags/cluster/" style="font-size: 10px;">cluster</a> <a href="/tags/decision-tree/" style="font-size: 10px;">decision tree</a> <a href="/tags/deep-learning/" style="font-size: 10px;">deep learning</a> <a href="/tags/github/" style="font-size: 13.33px;">github</a> <a href="/tags/jekyll/" style="font-size: 10px;">jekyll</a> <a href="/tags/k-means/" style="font-size: 13.33px;">k-means</a> <a href="/tags/k-nearest-neighbors/" style="font-size: 10px;">k-nearest neighbors</a> <a href="/tags/linear-regression/" style="font-size: 13.33px;">linear regression</a> <a href="/tags/machine-learning/" style="font-size: 16.67px;">machine learning</a> <a href="/tags/naive-bayes/" style="font-size: 10px;">naive bayes</a> <a href="/tags/next/" style="font-size: 10px;">next</a> <a href="/tags/perceptron/" style="font-size: 10px;">perceptron</a> <a href="/tags/polynomial-regression/" style="font-size: 10px;">polynomial regression</a> <a href="/tags/python/" style="font-size: 20px;">python</a> <a href="/tags/sort/" style="font-size: 13.33px;">sort</a> <a href="/tags/support-vector-machine/" style="font-size: 10px;">support vector machine</a>
     </div>
 </div>
 
@@ -744,16 +740,16 @@ y(x) = 0.0080x^2 - 0.26x + 37\tag{4}</script><p>接下来，我们绘制出 <cod
         
         <article class="media">
             
-            <a href="/2019/02/09/Image_compression_using_Mini_Batch_k-means/" class="media-left">
+            <a href="/2019/02/11/Hierarchical_clustering_method/" class="media-left">
                 <p class="image is-64x64">
-                    <img class="thumbnail" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/photo/11.jpg" alt="使用 Mini Batch K-Means 进行图像压缩 ">
+                    <img class="thumbnail" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/photo/12.jpg" alt="机器学习|层次聚类方法 (Python 语言描述)">
                 </p>
             </a>
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-02-08T16:00:00.000Z">2019-02-09</time></div>
-                    <a href="/2019/02/09/Image_compression_using_Mini_Batch_k-means/" class="has-link-black-ter is-size-6">使用 Mini Batch K-Means 进行图像压缩 </a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-02-10T16:00:00.000Z">2019-02-11</time></div>
+                    <a href="/2019/02/11/Hierarchical_clustering_method/" class="has-link-black-ter is-size-6">机器学习|层次聚类方法 (Python 语言描述)</a>
                     <p class="is-size-7 is-uppercase">
                         <a class="has-link-grey -link" href="/categories/机器学习/">机器学习</a> / <a class="has-link-grey -link" href="/categories/机器学习/K-Means/">K-Means</a>
                     </p>
@@ -773,6 +769,25 @@ y(x) = 0.0080x^2 - 0.26x + 37\tag{4}</script><p>接下来，我们绘制出 <cod
                 <div class="content">
                     <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-02-08T16:00:00.000Z">2019-02-09</time></div>
                     <a href="/2019/02/09/Cluster_Of_K-Means/" class="has-link-black-ter is-size-6">机器学习|划分聚类之 K-Means 详解 (Python 语言描述)</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/机器学习/">机器学习</a> / <a class="has-link-grey -link" href="/categories/机器学习/K-Means/">K-Means</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2019/02/09/Image_compression_using_Mini_Batch_k-means/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/photo/11.jpg" alt="使用 Mini Batch K-Means 进行图像压缩 ">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-02-08T16:00:00.000Z">2019-02-09</time></div>
+                    <a href="/2019/02/09/Image_compression_using_Mini_Batch_k-means/" class="has-link-black-ter is-size-6">使用 Mini Batch K-Means 进行图像压缩 </a>
                     <p class="is-size-7 is-uppercase">
                         <a class="has-link-grey -link" href="/categories/机器学习/">机器学习</a> / <a class="has-link-grey -link" href="/categories/机器学习/K-Means/">K-Means</a>
                     </p>
@@ -818,25 +833,6 @@ y(x) = 0.0080x^2 - 0.26x + 37\tag{4}</script><p>接下来，我们绘制出 <cod
             </div>
         </article>
         
-        <article class="media">
-            
-            <a href="/2019/01/31/Neural_Network/" class="media-left">
-                <p class="image is-64x64">
-                    <img class="thumbnail" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/photo/07.jpg" alt="机器学习|感知机和人工神经网络详解 (Python 语言描述)">
-                </p>
-            </a>
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-01-30T16:00:00.000Z">2019-01-31</time></div>
-                    <a href="/2019/01/31/Neural_Network/" class="has-link-black-ter is-size-6">机器学习|感知机和人工神经网络详解 (Python 语言描述)</a>
-                    <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/机器学习/">机器学习</a> / <a class="has-link-grey -link" href="/categories/机器学习/感知机/">感知机</a>
-                    </p>
-                </div>
-            </div>
-        </article>
-        
     </div>
 </div>
 
@@ -855,7 +851,7 @@ y(x) = 0.0080x^2 - 0.26x + 37\tag{4}</script><p>接下来，我们绘制出 <cod
                     <span class="level-item">二月 2019</span>
                 </span>
                 <span class="level-end">
-                    <span class="level-item tag">4</span>
+                    <span class="level-item tag">5</span>
                 </span>
             </a>
         </li>
@@ -910,6 +906,13 @@ y(x) = 0.0080x^2 - 0.26x + 37\tag{4}</script><p>接下来，我们绘制出 <cod
                     <a class="tags has-addons" href="/tags/ECS/">
                         <span class="tag">ECS</span>
                         <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/HAC/">
+                        <span class="tag">HAC</span>
+                        <span class="tag is-grey">1</span>
                     </a>
                 </div>
                 
@@ -1035,7 +1038,7 @@ y(x) = 0.0080x^2 - 0.26x + 37\tag{4}</script><p>接下来，我们绘制出 <cod
                 <div class="control">
                     <a class="tags has-addons" href="/tags/machine-learning/">
                         <span class="tag">machine learning</span>
-                        <span class="tag is-grey">12</span>
+                        <span class="tag is-grey">13</span>
                     </a>
                 </div>
                 
@@ -1070,7 +1073,7 @@ y(x) = 0.0080x^2 - 0.26x + 37\tag{4}</script><p>接下来，我们绘制出 <cod
                 <div class="control">
                     <a class="tags has-addons" href="/tags/python/">
                         <span class="tag">python</span>
-                        <span class="tag is-grey">13</span>
+                        <span class="tag is-grey">14</span>
                     </a>
                 </div>
                 
@@ -1113,16 +1116,16 @@ y(x) = 0.0080x^2 - 0.26x + 37\tag{4}</script><p>接下来，我们绘制出 <cod
         
         <article class="media">
             
-            <a href="/2019/02/09/Image_compression_using_Mini_Batch_k-means/" class="media-left">
+            <a href="/2019/02/11/Hierarchical_clustering_method/" class="media-left">
                 <p class="image is-64x64">
-                    <img class="thumbnail" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/photo/11.jpg" alt="使用 Mini Batch K-Means 进行图像压缩 ">
+                    <img class="thumbnail" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/photo/12.jpg" alt="机器学习|层次聚类方法 (Python 语言描述)">
                 </p>
             </a>
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-02-08T16:00:00.000Z">2019-02-09</time></div>
-                    <a href="/2019/02/09/Image_compression_using_Mini_Batch_k-means/" class="has-link-black-ter is-size-6">使用 Mini Batch K-Means 进行图像压缩 </a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-02-10T16:00:00.000Z">2019-02-11</time></div>
+                    <a href="/2019/02/11/Hierarchical_clustering_method/" class="has-link-black-ter is-size-6">机器学习|层次聚类方法 (Python 语言描述)</a>
                     <p class="is-size-7 is-uppercase">
                         <a class="has-link-grey -link" href="/categories/机器学习/">机器学习</a> / <a class="has-link-grey -link" href="/categories/机器学习/K-Means/">K-Means</a>
                     </p>
@@ -1142,6 +1145,25 @@ y(x) = 0.0080x^2 - 0.26x + 37\tag{4}</script><p>接下来，我们绘制出 <cod
                 <div class="content">
                     <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-02-08T16:00:00.000Z">2019-02-09</time></div>
                     <a href="/2019/02/09/Cluster_Of_K-Means/" class="has-link-black-ter is-size-6">机器学习|划分聚类之 K-Means 详解 (Python 语言描述)</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/机器学习/">机器学习</a> / <a class="has-link-grey -link" href="/categories/机器学习/K-Means/">K-Means</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2019/02/09/Image_compression_using_Mini_Batch_k-means/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/photo/11.jpg" alt="使用 Mini Batch K-Means 进行图像压缩 ">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-02-08T16:00:00.000Z">2019-02-09</time></div>
+                    <a href="/2019/02/09/Image_compression_using_Mini_Batch_k-means/" class="has-link-black-ter is-size-6">使用 Mini Batch K-Means 进行图像压缩 </a>
                     <p class="is-size-7 is-uppercase">
                         <a class="has-link-grey -link" href="/categories/机器学习/">机器学习</a> / <a class="has-link-grey -link" href="/categories/机器学习/K-Means/">K-Means</a>
                     </p>
@@ -1187,25 +1209,6 @@ y(x) = 0.0080x^2 - 0.26x + 37\tag{4}</script><p>接下来，我们绘制出 <cod
             </div>
         </article>
         
-        <article class="media">
-            
-            <a href="/2019/01/31/Neural_Network/" class="media-left">
-                <p class="image is-64x64">
-                    <img class="thumbnail" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/photo/07.jpg" alt="机器学习|感知机和人工神经网络详解 (Python 语言描述)">
-                </p>
-            </a>
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-01-30T16:00:00.000Z">2019-01-31</time></div>
-                    <a href="/2019/01/31/Neural_Network/" class="has-link-black-ter is-size-6">机器学习|感知机和人工神经网络详解 (Python 语言描述)</a>
-                    <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/机器学习/">机器学习</a> / <a class="has-link-grey -link" href="/categories/机器学习/感知机/">感知机</a>
-                    </p>
-                </div>
-            </div>
-        </article>
-        
     </div>
 </div>
 
@@ -1224,7 +1227,7 @@ y(x) = 0.0080x^2 - 0.26x + 37\tag{4}</script><p>接下来，我们绘制出 <cod
                     <span class="level-item">二月 2019</span>
                 </span>
                 <span class="level-end">
-                    <span class="level-item tag">4</span>
+                    <span class="level-item tag">5</span>
                 </span>
             </a>
         </li>
@@ -1279,6 +1282,13 @@ y(x) = 0.0080x^2 - 0.26x + 37\tag{4}</script><p>接下来，我们绘制出 <cod
                     <a class="tags has-addons" href="/tags/ECS/">
                         <span class="tag">ECS</span>
                         <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/HAC/">
+                        <span class="tag">HAC</span>
+                        <span class="tag is-grey">1</span>
                     </a>
                 </div>
                 
@@ -1404,7 +1414,7 @@ y(x) = 0.0080x^2 - 0.26x + 37\tag{4}</script><p>接下来，我们绘制出 <cod
                 <div class="control">
                     <a class="tags has-addons" href="/tags/machine-learning/">
                         <span class="tag">machine learning</span>
-                        <span class="tag is-grey">12</span>
+                        <span class="tag is-grey">13</span>
                     </a>
                 </div>
                 
@@ -1439,7 +1449,7 @@ y(x) = 0.0080x^2 - 0.26x + 37\tag{4}</script><p>接下来，我们绘制出 <cod
                 <div class="control">
                     <a class="tags has-addons" href="/tags/python/">
                         <span class="tag">python</span>
-                        <span class="tag is-grey">13</span>
+                        <span class="tag is-grey">14</span>
                     </a>
                 </div>
                 
