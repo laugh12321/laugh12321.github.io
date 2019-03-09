@@ -8,7 +8,7 @@
 
 
     <meta name="description" content="最近邻算法介绍 K-近邻算法之前，首先说一说最近邻算法。最近邻算法（Nearest Neighbor，简称：NN），其针对未知类别数据 `x`，在训练集中找到与 `x` 最相似的训练样本 `y`，用 `y` 的样本对应的类别作为未知类别数据 `x` 的类别，从而达到分类的效果。">
-<meta name="keywords" content="machine learning,python,k-nearest neighbors">
+<meta name="keywords" content="python,machine learning,k-nearest neighbors">
 <meta property="og:type" content="article">
 <meta property="og:title" content="机器学习| K-近邻算法详解 (Python 语言描述)">
 <meta property="og:url" content="https://www.laugh12321.cn/2019/01/07/K-Nearest Neighbors/index.html">
@@ -213,8 +213,7 @@ var _hmt = _hmt || [];
 <p>计算距离的方法有很多，本实验介绍两个最为常用的距离公式：<strong>曼哈顿距离</strong>和<strong>欧式距离</strong>。这两个距离的计算图示如下：</p>
 <p><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/K-Nearest%20Neighbors/4.png" alt=""></p>
 <h4 id="曼哈顿距离"><a href="#曼哈顿距离" class="headerlink" title="曼哈顿距离"></a>曼哈顿距离</h4><p>曼哈顿距离又称马氏距离，出租车距离，是计算距离最简单的方式之一。公式如下：</p>
-<script type="math/tex; mode=display">
-d_{man}=\sum_{i=1}^{N}\left | X_{i}-Y_{i} \right |</script><p>其中： </p>
+<p>$$<br>d_{man}=\sum_{i=1}^{N}\left | X_{i}-Y_{i} \right |<br>$$<br>其中： </p>
 <ul>
 <li>`X`,`Y`：两个数据点</li>
 <li>`N`：每个数据中有 `N` 个特征值</li>
@@ -224,8 +223,7 @@ d_{man}=\sum_{i=1}^{N}\left | X_{i}-Y_{i} \right |</script><p>其中： </p>
 <figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-string">"""曼哈顿距离计算</span></span><br><span class="line"><span class="hljs-string">"""</span></span><br><span class="line"><span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">d_man</span><span class="hljs-params">(x, y)</span>:</span></span><br><span class="line">    d = np.sum(np.abs(x - y))</span><br><span class="line">    <span class="hljs-keyword">return</span> d</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">x = np.array([<span class="hljs-number">3.1</span>, <span class="hljs-number">3.2</span>])</span><br><span class="line">print(<span class="hljs-string">"x:"</span>, x)</span><br><span class="line">y = np.array([<span class="hljs-number">2.5</span>, <span class="hljs-number">2.8</span>])</span><br><span class="line">print(<span class="hljs-string">"y:"</span>, y)</span><br><span class="line">d_man = d_man(x, y)</span><br><span class="line">print(d_man)</span><br></pre></td></tr></table></figure>
 <figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">x: [<span class="hljs-number">3.1</span> <span class="hljs-number">3.2</span>]</span><br><span class="line">y: [<span class="hljs-number">2.5</span> <span class="hljs-number">2.8</span>]</span><br><span class="line"><span class="hljs-number">1.0000000000000004</span></span><br></pre></td></tr></table></figure>
 <h4 id="欧式距离"><a href="#欧式距离" class="headerlink" title="欧式距离"></a>欧式距离</h4><p>欧式距离源自 `N` 维欧氏空间中两点之间的距离公式。表达式如下:</p>
-<script type="math/tex; mode=display">
-d_{euc}= \sqrt{\sum_{i=1}^{N}(X_{i}-Y_{i})^{2}}</script><p>其中：</p>
+<p>$$<br>d_{euc}= \sqrt{\sum_{i=1}^{N}(X_{i}-Y_{i})^{2}}<br>$$<br>其中：</p>
 <ul>
 <li>`X`, `Y` ：两个数据点</li>
 <li>`N`：每个数据中有 `N` 个特征值</li>
@@ -393,7 +391,7 @@ d_{euc}= \sqrt{\sum_{i=1}^{N}(X_{i}-Y_{i})^{2}}</script><p>其中：</p>
                         文章
                     </p>
                     <p class="title has-text-weight-normal">
-                        20
+                        21
                     </p>
                 </div>
             </div>
@@ -403,7 +401,7 @@ d_{euc}= \sqrt{\sum_{i=1}^{N}(X_{i}-Y_{i})^{2}}</script><p>其中：</p>
                         分类
                     </p>
                     <p class="title has-text-weight-normal">
-                        23
+                        24
                     </p>
                 </div>
             </div>
@@ -413,7 +411,7 @@ d_{euc}= \sqrt{\sum_{i=1}^{N}(X_{i}-Y_{i})^{2}}</script><p>其中：</p>
                         标签
                     </p>
                     <p class="title has-text-weight-normal">
-                        27
+                        28
                     </p>
                 </div>
             </div>
@@ -615,7 +613,7 @@ d_{euc}= \sqrt{\sum_{i=1}^{N}(X_{i}-Y_{i})^{2}}</script><p>其中：</p>
                 <span class="level-item">机器学习</span>
             </span>
             <span class="level-end">
-                <span class="level-item tag">13</span>
+                <span class="level-item tag">14</span>
             </span>
         </a><ul><li>
         <a class="level is-marginless" href="/categories/机器学习/K-Means/">
@@ -674,6 +672,14 @@ d_{euc}= \sqrt{\sum_{i=1}^{N}(X_{i}-Y_{i})^{2}}</script><p>其中：</p>
                 <span class="level-item tag">1</span>
             </span>
         </a></li><li>
+        <a class="level is-marginless" href="/categories/机器学习/梯度下降/">
+            <span class="level-start">
+                <span class="level-item">梯度下降</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">1</span>
+            </span>
+        </a></li><li>
         <a class="level is-marginless" href="/categories/机器学习/线性回归/">
             <span class="level-start">
                 <span class="level-item">线性回归</span>
@@ -709,7 +715,7 @@ d_{euc}= \sqrt{\sum_{i=1}^{N}(X_{i}-Y_{i})^{2}}</script><p>其中：</p>
         <h3 class="menu-label">
             标签云
         </h3>
-        <a href="/tags/ECS/" style="font-size: 13.33px;">ECS</a> <a href="/tags/HAC/" style="font-size: 10px;">HAC</a> <a href="/tags/MAE/" style="font-size: 10px;">MAE</a> <a href="/tags/MAPE/" style="font-size: 10px;">MAPE</a> <a href="/tags/MSE/" style="font-size: 10px;">MSE</a> <a href="/tags/Seafile/" style="font-size: 10px;">Seafile</a> <a href="/tags/Ubuntu/" style="font-size: 13.33px;">Ubuntu</a> <a href="/tags/artificial-neural-network/" style="font-size: 10px;">artificial neural network</a> <a href="/tags/bagging/" style="font-size: 10px;">bagging</a> <a href="/tags/blog/" style="font-size: 13.33px;">blog</a> <a href="/tags/boosting/" style="font-size: 10px;">boosting</a> <a href="/tags/cluster/" style="font-size: 10px;">cluster</a> <a href="/tags/decision-tree/" style="font-size: 10px;">decision tree</a> <a href="/tags/deep-learning/" style="font-size: 10px;">deep learning</a> <a href="/tags/github/" style="font-size: 13.33px;">github</a> <a href="/tags/jekyll/" style="font-size: 10px;">jekyll</a> <a href="/tags/k-means/" style="font-size: 13.33px;">k-means</a> <a href="/tags/k-nearest-neighbors/" style="font-size: 10px;">k-nearest neighbors</a> <a href="/tags/linear-regression/" style="font-size: 13.33px;">linear regression</a> <a href="/tags/machine-learning/" style="font-size: 16.67px;">machine learning</a> <a href="/tags/naive-bayes/" style="font-size: 10px;">naive bayes</a> <a href="/tags/next/" style="font-size: 10px;">next</a> <a href="/tags/perceptron/" style="font-size: 10px;">perceptron</a> <a href="/tags/polynomial-regression/" style="font-size: 10px;">polynomial regression</a> <a href="/tags/python/" style="font-size: 20px;">python</a> <a href="/tags/sort/" style="font-size: 13.33px;">sort</a> <a href="/tags/support-vector-machine/" style="font-size: 10px;">support vector machine</a>
+        <a href="/tags/ECS/" style="font-size: 13.33px;">ECS</a> <a href="/tags/Gradient-Descent/" style="font-size: 10px;">Gradient Descent</a> <a href="/tags/HAC/" style="font-size: 10px;">HAC</a> <a href="/tags/MAE/" style="font-size: 10px;">MAE</a> <a href="/tags/MAPE/" style="font-size: 10px;">MAPE</a> <a href="/tags/MSE/" style="font-size: 10px;">MSE</a> <a href="/tags/Seafile/" style="font-size: 10px;">Seafile</a> <a href="/tags/Ubuntu/" style="font-size: 13.33px;">Ubuntu</a> <a href="/tags/artificial-neural-network/" style="font-size: 10px;">artificial neural network</a> <a href="/tags/bagging/" style="font-size: 10px;">bagging</a> <a href="/tags/blog/" style="font-size: 13.33px;">blog</a> <a href="/tags/boosting/" style="font-size: 10px;">boosting</a> <a href="/tags/cluster/" style="font-size: 10px;">cluster</a> <a href="/tags/decision-tree/" style="font-size: 10px;">decision tree</a> <a href="/tags/deep-learning/" style="font-size: 10px;">deep learning</a> <a href="/tags/github/" style="font-size: 13.33px;">github</a> <a href="/tags/jekyll/" style="font-size: 10px;">jekyll</a> <a href="/tags/k-means/" style="font-size: 13.33px;">k-means</a> <a href="/tags/k-nearest-neighbors/" style="font-size: 10px;">k-nearest neighbors</a> <a href="/tags/linear-regression/" style="font-size: 13.33px;">linear regression</a> <a href="/tags/machine-learning/" style="font-size: 16.67px;">machine learning</a> <a href="/tags/naive-bayes/" style="font-size: 10px;">naive bayes</a> <a href="/tags/next/" style="font-size: 10px;">next</a> <a href="/tags/perceptron/" style="font-size: 10px;">perceptron</a> <a href="/tags/polynomial-regression/" style="font-size: 10px;">polynomial regression</a> <a href="/tags/python/" style="font-size: 20px;">python</a> <a href="/tags/sort/" style="font-size: 13.33px;">sort</a> <a href="/tags/support-vector-machine/" style="font-size: 10px;">support vector machine</a>
     </div>
 </div>
 
@@ -723,6 +729,25 @@ d_{euc}= \sqrt{\sum_{i=1}^{N}(X_{i}-Y_{i})^{2}}</script><p>其中：</p>
         <h3 class="menu-label">
             最新文章
         </h3>
+        
+        <article class="media">
+            
+            <a href="/2019/03/09/Gradient_Descent/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/photo/13.jpg" alt="翻译|Gradient Descent in Python">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-03-09T06:46:00.000Z">2019-03-09</time></div>
+                    <a href="/2019/03/09/Gradient_Descent/" class="has-link-black-ter is-size-6">翻译|Gradient Descent in Python</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/机器学习/">机器学习</a> / <a class="has-link-grey -link" href="/categories/机器学习/梯度下降/">梯度下降</a>
+                    </p>
+                </div>
+            </div>
+        </article>
         
         <article class="media">
             
@@ -800,25 +825,6 @@ d_{euc}= \sqrt{\sum_{i=1}^{N}(X_{i}-Y_{i})^{2}}</script><p>其中：</p>
             </div>
         </article>
         
-        <article class="media">
-            
-            <a href="/2019/02/01/Decision_Tree/" class="media-left">
-                <p class="image is-64x64">
-                    <img class="thumbnail" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/photo/08.jpg" alt="机器学习|决策树详解 (Python 语言描述)">
-                </p>
-            </a>
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-01-31T16:00:00.000Z">2019-02-01</time></div>
-                    <a href="/2019/02/01/Decision_Tree/" class="has-link-black-ter is-size-6">机器学习|决策树详解 (Python 语言描述)</a>
-                    <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/机器学习/">机器学习</a> / <a class="has-link-grey -link" href="/categories/机器学习/决策树/">决策树</a>
-                    </p>
-                </div>
-            </div>
-        </article>
-        
     </div>
 </div>
 
@@ -830,6 +836,17 @@ d_{euc}= \sqrt{\sum_{i=1}^{N}(X_{i}-Y_{i})^{2}}</script><p>其中：</p>
             归档
         </h3>
         <ul class="menu-list">
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
         
         <li>
             <a class="level is-marginless" href="/archives/2019/02/">
@@ -892,6 +909,13 @@ d_{euc}= \sqrt{\sum_{i=1}^{N}(X_{i}-Y_{i})^{2}}</script><p>其中：</p>
                     <a class="tags has-addons" href="/tags/ECS/">
                         <span class="tag">ECS</span>
                         <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Gradient-Descent/">
+                        <span class="tag">Gradient Descent</span>
+                        <span class="tag is-grey">1</span>
                     </a>
                 </div>
                 
@@ -1024,7 +1048,7 @@ d_{euc}= \sqrt{\sum_{i=1}^{N}(X_{i}-Y_{i})^{2}}</script><p>其中：</p>
                 <div class="control">
                     <a class="tags has-addons" href="/tags/machine-learning/">
                         <span class="tag">machine learning</span>
-                        <span class="tag is-grey">13</span>
+                        <span class="tag is-grey">14</span>
                     </a>
                 </div>
                 
@@ -1059,7 +1083,7 @@ d_{euc}= \sqrt{\sum_{i=1}^{N}(X_{i}-Y_{i})^{2}}</script><p>其中：</p>
                 <div class="control">
                     <a class="tags has-addons" href="/tags/python/">
                         <span class="tag">python</span>
-                        <span class="tag is-grey">14</span>
+                        <span class="tag is-grey">15</span>
                     </a>
                 </div>
                 
@@ -1102,6 +1126,25 @@ d_{euc}= \sqrt{\sum_{i=1}^{N}(X_{i}-Y_{i})^{2}}</script><p>其中：</p>
         
         <article class="media">
             
+            <a href="/2019/03/09/Gradient_Descent/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/photo/13.jpg" alt="翻译|Gradient Descent in Python">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-03-09T06:46:00.000Z">2019-03-09</time></div>
+                    <a href="/2019/03/09/Gradient_Descent/" class="has-link-black-ter is-size-6">翻译|Gradient Descent in Python</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/机器学习/">机器学习</a> / <a class="has-link-grey -link" href="/categories/机器学习/梯度下降/">梯度下降</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
             <a href="/2019/02/11/Hierarchical_clustering_method/" class="media-left">
                 <p class="image is-64x64">
                     <img class="thumbnail" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/photo/12.jpg" alt="机器学习|层次聚类方法 (Python 语言描述)">
@@ -1176,25 +1219,6 @@ d_{euc}= \sqrt{\sum_{i=1}^{N}(X_{i}-Y_{i})^{2}}</script><p>其中：</p>
             </div>
         </article>
         
-        <article class="media">
-            
-            <a href="/2019/02/01/Decision_Tree/" class="media-left">
-                <p class="image is-64x64">
-                    <img class="thumbnail" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/photo/08.jpg" alt="机器学习|决策树详解 (Python 语言描述)">
-                </p>
-            </a>
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-01-31T16:00:00.000Z">2019-02-01</time></div>
-                    <a href="/2019/02/01/Decision_Tree/" class="has-link-black-ter is-size-6">机器学习|决策树详解 (Python 语言描述)</a>
-                    <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/机器学习/">机器学习</a> / <a class="has-link-grey -link" href="/categories/机器学习/决策树/">决策树</a>
-                    </p>
-                </div>
-            </div>
-        </article>
-        
     </div>
 </div>
 
@@ -1206,6 +1230,17 @@ d_{euc}= \sqrt{\sum_{i=1}^{N}(X_{i}-Y_{i})^{2}}</script><p>其中：</p>
             归档
         </h3>
         <ul class="menu-list">
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
         
         <li>
             <a class="level is-marginless" href="/archives/2019/02/">
@@ -1268,6 +1303,13 @@ d_{euc}= \sqrt{\sum_{i=1}^{N}(X_{i}-Y_{i})^{2}}</script><p>其中：</p>
                     <a class="tags has-addons" href="/tags/ECS/">
                         <span class="tag">ECS</span>
                         <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Gradient-Descent/">
+                        <span class="tag">Gradient Descent</span>
+                        <span class="tag is-grey">1</span>
                     </a>
                 </div>
                 
@@ -1400,7 +1442,7 @@ d_{euc}= \sqrt{\sum_{i=1}^{N}(X_{i}-Y_{i})^{2}}</script><p>其中：</p>
                 <div class="control">
                     <a class="tags has-addons" href="/tags/machine-learning/">
                         <span class="tag">machine learning</span>
-                        <span class="tag is-grey">13</span>
+                        <span class="tag is-grey">14</span>
                     </a>
                 </div>
                 
@@ -1435,7 +1477,7 @@ d_{euc}= \sqrt{\sum_{i=1}^{N}(X_{i}-Y_{i})^{2}}</script><p>其中：</p>
                 <div class="control">
                     <a class="tags has-addons" href="/tags/python/">
                         <span class="tag">python</span>
-                        <span class="tag is-grey">14</span>
+                        <span class="tag is-grey">15</span>
                     </a>
                 </div>
                 

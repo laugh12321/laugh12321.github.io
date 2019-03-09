@@ -1,0 +1,1673 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head><meta name="generator" content="Hexo 3.8.0">
+    <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="utf-8">
+<title>翻译|Gradient Descent in Python - Laugh&#39;s blog</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+    <meta name="description" content="123import numpy as npimport matplotlib.pyplot as plt%matplotlib inline 1plt.style.use([&apos;ggplot&apos;]) 当你初次涉足机器学习时，你学习的第一个基本算法就是 梯度下降 (Gradient Descent), 可以说梯度下降法是机器学习算法的支柱。 在这篇文章中，我尝试使用 `python` 解释梯度下降法的基">
+<meta name="keywords" content="python,machine learning,Gradient Descent">
+<meta property="og:type" content="article">
+<meta property="og:title" content="翻译|Gradient Descent in Python">
+<meta property="og:url" content="https://www.laugh12321.cn/2019/03/09/Gradient_Descent/index.html">
+<meta property="og:site_name" content="Laugh&#39;s blog">
+<meta property="og:description" content="123import numpy as npimport matplotlib.pyplot as plt%matplotlib inline 1plt.style.use([&apos;ggplot&apos;]) 当你初次涉足机器学习时，你学习的第一个基本算法就是 梯度下降 (Gradient Descent), 可以说梯度下降法是机器学习算法的支柱。 在这篇文章中，我尝试使用 `python` 解释梯度下降法的基">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/Gradient%20Descent/output_7_1.png">
+<meta property="og:image" content="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/Gradient%20Descent/output_27_1.png">
+<meta property="og:image" content="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/Gradient%20Descent/output_29_1.png">
+<meta property="og:image" content="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/Gradient%20Descent/output_32_0.png">
+<meta property="og:image" content="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/Gradient%20Descent/output_34_0.png">
+<meta property="og:image" content="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/Gradient%20Descent/output_39_1.png">
+<meta property="og:image" content="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/Gradient%20Descent/output_44_1.png">
+<meta property="og:updated_time" content="2019-03-09T07:03:19.511Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="翻译|Gradient Descent in Python">
+<meta name="twitter:description" content="123import numpy as npimport matplotlib.pyplot as plt%matplotlib inline 1plt.style.use([&apos;ggplot&apos;]) 当你初次涉足机器学习时，你学习的第一个基本算法就是 梯度下降 (Gradient Descent), 可以说梯度下降法是机器学习算法的支柱。 在这篇文章中，我尝试使用 `python` 解释梯度下降法的基">
+<meta name="twitter:image" content="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/Gradient%20Descent/output_7_1.png">
+
+
+
+
+
+<link rel="icon" href="https://avatars0.githubusercontent.com/u/38065710?s=400&u=80ee4d360562451484188e6f1677fa442720891b&v=4">
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.7.2/css/bulma.css">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Ubuntu:400,600|Source+Code+Pro">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/atelier-sulphurpool-dark.css">
+
+
+    
+    
+    
+    <style>body>.footer,body>.navbar,body>.section{opacity:0}</style>
+    
+
+    
+    
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/css/lightgallery.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/css/justifiedGallery.min.css">
+    
+
+    
+    
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/outdatedbrowser@1.1.5/outdatedbrowser/outdatedbrowser.min.css">
+
+
+    
+    
+    
+    
+
+<link rel="stylesheet" href="/css/back-to-top.css">
+
+
+    
+    
+
+    
+    
+<script>
+var _hmt = _hmt || [];
+(function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?b159f3ddbb6d9197633e49de94480102";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+    
+    
+
+    
+    
+<link rel="stylesheet" href="/css/progressbar.css">
+<script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script>
+
+    
+    
+    
+
+    
+
+
+<link rel="stylesheet" href="/css/style.css"><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</head>
+<body class="is-3-column">
+    <!-- hexo-inject:begin --><!-- hexo-inject:end --><nav class="navbar navbar-main">
+    <div class="container">
+        <div class="navbar-brand is-flex-center">
+            <a class="navbar-item navbar-logo" href="/">
+            
+                <img src="/images/logo.svg" alt="翻译|Gradient Descent in Python" height="28">
+            
+            </a>
+        </div>
+        <div class="navbar-menu">
+            
+            <div class="navbar-start">
+                
+                <a class="navbar-item" href="/">Home</a>
+                
+                <a class="navbar-item" href="/archives">Archives</a>
+                
+                <a class="navbar-item" href="/categories">Categories</a>
+                
+                <a class="navbar-item" href="/tags">Tags</a>
+                
+                <a class="navbar-item" href="/about">About</a>
+                
+            </div>
+            
+            <div class="navbar-end">
+                
+                    
+                    
+                    <a class="navbar-item" target="_blank" title="Download on GitHub" href="http://github.com/laugh12321">
+                        
+                        <i class="fab fa-github"></i>
+                        
+                    </a>
+                    
+                
+                
+                
+                <a class="navbar-item search" title="搜索" href="javascript:;">
+                    <i class="fas fa-search"></i>
+                </a>
+                
+            </div>
+        </div>
+    </div>
+</nav>
+    
+
+    <section class="section">
+        <div class="container">
+            <div class="columns">
+                <div class="column is-8-tablet is-8-desktop is-6-widescreen has-order-2 column-main"><div class="card">
+    
+    <div class="card-image">
+        <span class="image is-7by1">
+            <img class="thumbnail" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/photo/13.jpg" alt="翻译|Gradient Descent in Python">
+        </span>
+    </div>
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2019-03-09T06:46:00.000Z">2019-03-09</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/机器学习/">机器学习</a>&nbsp;/&nbsp;<a class="has-link-grey -link" href="/categories/机器学习/梯度下降/">梯度下降</a>
+                </div>
+                
+                
+                <span class="level-item has-text-grey">
+                    
+                    
+                    14 分钟 读完 (大约 2138 个字)
+                </span>
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                翻译|Gradient Descent in Python
+            
+        </h1>
+        <div class="content">
+            <figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np</span><br><span class="line"><span class="hljs-keyword">import</span> matplotlib.pyplot <span class="hljs-keyword">as</span> plt</span><br><span class="line">%matplotlib inline</span><br></pre></td></tr></table></figure>
+<figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">plt.style.use([<span class="hljs-string">'ggplot'</span>])</span><br></pre></td></tr></table></figure>
+<p>当你初次涉足机器学习时，你学习的第一个基本算法就是 <strong>梯度下降 (Gradient Descent)</strong>, 可以说<strong>梯度下降法</strong>是机器学习算法的支柱。 在这篇文章中，我尝试使用 `python` 解释<strong>梯度下降法</strong>的基本原理。一旦掌握了<strong>梯度下降法</strong>，很多问题就会变得容易理解，并且利于理解不同的算法。</p>
+<p>如果你想尝试自己实现<strong>梯度下降法</strong>， 你需要加载基本的 \(python\) \(packages\) —— \(numpy\) and \(matplotlib\)<br><a id="more"></a><br>首先， 我们将创建包含着噪声的线性数据</p>
+<figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment"># 随机创建一些噪声</span></span><br><span class="line">X = <span class="hljs-number">2</span> * np.random.rand(<span class="hljs-number">100</span>, <span class="hljs-number">1</span>)</span><br><span class="line">y = <span class="hljs-number">4</span> + <span class="hljs-number">3</span> * X + np.random.randn(<span class="hljs-number">100</span>, <span class="hljs-number">1</span>)</span><br></pre></td></tr></table></figure>
+<p>接下来通过 <code>matplotlib</code> 可视化数据</p>
+<figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment"># 可视化数据</span></span><br><span class="line">plt.plot(X, y, <span class="hljs-string">'b.'</span>)</span><br><span class="line">plt.xlabel(<span class="hljs-string">"$x$"</span>, fontsize=<span class="hljs-number">18</span>)</span><br><span class="line">plt.ylabel(<span class="hljs-string">"$y$"</span>, rotation=<span class="hljs-number">0</span>, fontsize=<span class="hljs-number">18</span>)</span><br><span class="line">plt.axis([<span class="hljs-number">0</span>, <span class="hljs-number">2</span>, <span class="hljs-number">0</span>, <span class="hljs-number">15</span>])</span><br></pre></td></tr></table></figure>
+<p><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/Gradient%20Descent/output_7_1.png" alt=""></p>
+<p>显然， `y` 与 `x` 具有良好的线性关系，这个数据非常简单，只有一个自变量 `x`.</p>
+<p>我们可以将其表示为简单的线性关系：</p>
+<p>$$<br>y = b + mx<br>$$</p>
+<p>并求出 `b` , `m`。</p>
+<p>这种被称为解方程的分析方法并没有什么不妥，但机器学习是涉及矩阵计算的，因此我们使用矩阵法（向量法）进行分析。</p>
+<p>我们将 `y` 替换成 \(J(\theta)\)， `b` 替换成 \(\theta_0\)， `m` 替换成 \(\theta_1\)。<br>得到如下表达式：</p>
+<p>$$<br>J(\theta) = \theta_0 + \theta_1 x<br>$$</p>
+<p><strong><font color="red">注意：</font></strong> 本例中 \(\theta_0 = 4\)， \(\theta_1 = 3\)</p>
+<p>求解 \(\theta_0\) 和 \(\theta_1\) 的分析方法，代码如下：</p>
+<figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">X_b = np.c_[np.ones((<span class="hljs-number">100</span>, <span class="hljs-number">1</span>)), X] <span class="hljs-comment"># 为X添加了一个偏置单位，对于X中的每个向量都是1</span></span><br><span class="line">theta_best = np.linalg.inv(X_b.T.dot(X_b)).dot(X_b.T).dot(y)</span><br><span class="line">theta_best</span><br></pre></td></tr></table></figure>
+<pre><code>array([[3.86687149],
+       [3.12408839]])
+</code></pre><p>不难发现这个值接近真实的 \(\theta_0\)，\(\theta_1\)，由于我在数据中引入了噪声，所以存在误差。</p>
+<figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">X_new = np.array([[<span class="hljs-number">0</span>], [<span class="hljs-number">2</span>]])</span><br><span class="line">X_new_b = np.c_[np.ones((<span class="hljs-number">2</span>, <span class="hljs-number">1</span>)), X_new]</span><br><span class="line">y_predict = X_new_b.dot(theta_best)</span><br><span class="line">y_predict</span><br></pre></td></tr></table></figure>
+<pre><code>array([[ 3.86687149],
+       [10.11504826]])
+</code></pre><h2 id="梯度下降法-（Gradient-Descent）"><a href="#梯度下降法-（Gradient-Descent）" class="headerlink" title="梯度下降法 （Gradient Descent）"></a>梯度下降法 （Gradient Descent）</h2><h3 id="Cost-Function-amp-Gradients"><a href="#Cost-Function-amp-Gradients" class="headerlink" title="Cost Function &amp; Gradients"></a>Cost Function &amp; Gradients</h3><p>计算代价函数和梯度的公式如下所示。</p>
+<p><strong><font color="red">注意：</font></strong>代价函数用于线性回归，对于其他算法，代价函数是不同的，梯度必须从代价函数中推导出来。</p>
+<p><b>Cost</b></p>
+<p>$$<br>\begin{equation}<br>J(\theta) = 1/2m \sum_{i=1}^{m} (h(\theta)^{(i)} - y^{(i)})^2<br>\end{equation}<br>$$</p>
+<p><b>Gradient</b></p>
+<p>$$<br>\begin{equation}<br>\frac{\partial J(\theta)}{\partial \theta_j} = 1/m\sum_{i=1}^{m}(h(\theta^{(i)} - y^{(i)}).X_j^{(i)}<br>\end{equation}<br>$$</p>
+<p><b>Gradients</b></p>
+<p>\begin{equation}<br>\theta_0: = \theta_0 -\alpha . (1/m .\sum_{i=1}^{m}(h(\theta^{(i)} - y^{(i)}).X_0^{(i)})<br>\end{equation}</p>
+<p>\begin{equation}<br>\theta_1: = \theta_1 -\alpha . (1/m .\sum_{i=1}^{m}(h(\theta^{(i)} - y^{(i)}).X_1^{(i)})<br>\end{equation}</p>
+<p>\begin{equation}<br>\theta_2: = \theta_2 -\alpha . (1/m .\sum_{i=1}^{m}(h(\theta^{(i)} - y^{(i)}).X_2^{(i)})<br>\end{equation}</p>
+<p>\begin{equation}<br>\theta_j: = \theta_j -\alpha . (1/m .\sum_{i=1}^{m}(h(\theta^{(i)} - y^{(i)}).X_0^{(i)})<br>\end{equation}</p>
+<figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">cal_cost</span><span class="hljs-params">(theta, X, y)</span>:</span></span><br><span class="line">    <span class="hljs-string">'''</span></span><br><span class="line"><span class="hljs-string">    Calculates the cost for given X and Y. The following shows and example of a single dimensional X</span></span><br><span class="line"><span class="hljs-string">    theta = Vector of thetas </span></span><br><span class="line"><span class="hljs-string">    X     = Row of X's np.zeros((2,j))</span></span><br><span class="line"><span class="hljs-string">    y     = Actual y's np.zeros((2,1))</span></span><br><span class="line"><span class="hljs-string">    </span></span><br><span class="line"><span class="hljs-string">    where:</span></span><br><span class="line"><span class="hljs-string">        j is the no of features</span></span><br><span class="line"><span class="hljs-string">    '''</span></span><br><span class="line">    </span><br><span class="line">    m = len(y)</span><br><span class="line">    </span><br><span class="line">    predictions = X.dot(theta)</span><br><span class="line">    cost = (<span class="hljs-number">1</span>/<span class="hljs-number">2</span>*m) * np.sum(np.square(predictions - y))</span><br><span class="line">    </span><br><span class="line">    <span class="hljs-keyword">return</span> cost</span><br></pre></td></tr></table></figure>
+<figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">gradient_descent</span><span class="hljs-params">(X, y, theta, learning_rate = <span class="hljs-number">0.01</span>, iterations = <span class="hljs-number">100</span>)</span>:</span></span><br><span class="line">    <span class="hljs-string">'''</span></span><br><span class="line"><span class="hljs-string">    X    = Matrix of X with added bias units</span></span><br><span class="line"><span class="hljs-string">    y    = Vector of Y</span></span><br><span class="line"><span class="hljs-string">    theta=Vector of thetas np.random.randn(j,1)</span></span><br><span class="line"><span class="hljs-string">    learning_rate </span></span><br><span class="line"><span class="hljs-string">    iterations = no of iterations</span></span><br><span class="line"><span class="hljs-string">    </span></span><br><span class="line"><span class="hljs-string">    Returns the final theta vector and array of cost history over no of iterations    </span></span><br><span class="line"><span class="hljs-string">    '''</span></span><br><span class="line">    </span><br><span class="line">    m = len(y)</span><br><span class="line">    <span class="hljs-comment"># learning_rate = 0.01</span></span><br><span class="line">    <span class="hljs-comment"># iterations = 100</span></span><br><span class="line">    </span><br><span class="line">    cost_history = np.zeros(iterations)</span><br><span class="line">    theta_history = np.zeros((iterations, <span class="hljs-number">2</span>))</span><br><span class="line">    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> range(iterations):</span><br><span class="line">        prediction = np.dot(X, theta)</span><br><span class="line">        </span><br><span class="line">        theta = theta - (<span class="hljs-number">1</span>/m) * learning_rate * (X.T.dot((prediction - y)))</span><br><span class="line">        theta_history[i, :] = theta.T</span><br><span class="line">        cost_history[i] = cal_cost(theta, X, y)</span><br><span class="line">        </span><br><span class="line">    <span class="hljs-keyword">return</span> theta, cost_history, theta_history</span><br></pre></td></tr></table></figure>
+<figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment"># 从1000次迭代开始，学习率为0.01。从高斯分布的θ开始</span></span><br><span class="line">lr =<span class="hljs-number">0.01</span></span><br><span class="line">n_iter = <span class="hljs-number">1000</span></span><br><span class="line">theta = np.random.randn(<span class="hljs-number">2</span>, <span class="hljs-number">1</span>)</span><br><span class="line">X_b = np.c_[np.ones((len(X), <span class="hljs-number">1</span>)), X]</span><br><span class="line">theta, cost_history, theta_history = gradient_descent(X_b, y, theta, lr, n_iter)</span><br><span class="line"></span><br><span class="line">print(<span class="hljs-string">'Theta0:          &#123;:0.3f&#125;,\nTheta1:          &#123;:0.3f&#125;'</span>.format(theta[<span class="hljs-number">0</span>][<span class="hljs-number">0</span>],theta[<span class="hljs-number">1</span>][<span class="hljs-number">0</span>]))</span><br><span class="line">print(<span class="hljs-string">'Final cost/MSE:  &#123;:0.3f&#125;'</span>.format(cost_history[<span class="hljs-number">-1</span>]))</span><br></pre></td></tr></table></figure>
+<pre><code>Theta0:          3.867,
+Theta1:          3.124
+Final cost/MSE:  5457.747
+</code></pre><figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment"># 绘制迭代的成本图</span></span><br><span class="line">fig, ax = plt.subplots(figsize=(<span class="hljs-number">12</span>,<span class="hljs-number">8</span>))</span><br><span class="line"></span><br><span class="line">ax.set_ylabel(<span class="hljs-string">'J(Theta)'</span>)</span><br><span class="line">ax.set_xlabel(<span class="hljs-string">'Iterations'</span>)</span><br><span class="line">ax.plot(range(<span class="hljs-number">1000</span>), cost_history, <span class="hljs-string">'b.'</span>)</span><br></pre></td></tr></table></figure>
+<p><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/Gradient%20Descent/output_27_1.png" alt=""></p>
+<p>在大约 <code>150</code> 次迭代之后代价函数趋于稳定，因此放大到迭代200，看看曲线</p>
+<figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">fig, ax = plt.subplots(figsize=(<span class="hljs-number">10</span>,<span class="hljs-number">8</span>))</span><br><span class="line">ax.plot(range(<span class="hljs-number">200</span>), cost_history[:<span class="hljs-number">200</span>], <span class="hljs-string">'b.'</span>)</span><br></pre></td></tr></table></figure>
+<p><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/Gradient%20Descent/output_29_1.png" alt=""></p>
+<p>值得注意的是，最初成本下降得更快，然后成本降低的收益就不那么多了。 我们可以尝试使用不同的学习速率和迭代组合，并得到不同学习率和迭代的效果会如何。</p>
+<p>让我们建立一个函数，它可以显示效果，也可以显示梯度下降实际上是如何工作的。</p>
+<figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">plot_GD</span><span class="hljs-params">(n_iter, lr, ax, ax1=None)</span>:</span></span><br><span class="line">    <span class="hljs-string">'''</span></span><br><span class="line"><span class="hljs-string">    n_iter = no of iterations</span></span><br><span class="line"><span class="hljs-string">    lr = Learning Rate</span></span><br><span class="line"><span class="hljs-string">    ax = Axis to plot the Gradient Descent</span></span><br><span class="line"><span class="hljs-string">    ax1 = Axis to plot cost_history vs Iterations plot</span></span><br><span class="line"><span class="hljs-string">    '''</span></span><br><span class="line">    </span><br><span class="line">    ax.plot(X, y, <span class="hljs-string">'b.'</span>)</span><br><span class="line">    theta = np.random.randn(<span class="hljs-number">2</span>, <span class="hljs-number">1</span>)</span><br><span class="line">    </span><br><span class="line">    tr = <span class="hljs-number">0.1</span></span><br><span class="line">    cost_history = np.zeros(n_iter)</span><br><span class="line">    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> range(n_iter):</span><br><span class="line">        pred_prev = X_b.dot(theta)</span><br><span class="line">        theta, h, _ = gradient_descent(X_b, y, theta, lr, <span class="hljs-number">1</span>)</span><br><span class="line">        pred = X_b.dot(theta)</span><br><span class="line">        </span><br><span class="line">        cost_history[i] = h[<span class="hljs-number">0</span>]</span><br><span class="line">        </span><br><span class="line">        <span class="hljs-keyword">if</span> ((i % <span class="hljs-number">25</span> == <span class="hljs-number">0</span>)):</span><br><span class="line">            ax.plot(X, pred, <span class="hljs-string">'r-'</span>, alpha=tr)</span><br><span class="line">            <span class="hljs-keyword">if</span> tr &lt; <span class="hljs-number">0.8</span>:</span><br><span class="line">                tr += <span class="hljs-number">0.2</span></span><br><span class="line">    </span><br><span class="line">    <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> ax1 == <span class="hljs-keyword">None</span>:</span><br><span class="line">        ax1.plot(range(n_iter), cost_history, <span class="hljs-string">'b.'</span>)</span><br></pre></td></tr></table></figure>
+<figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment"># 绘制不同迭代和学习率组合的图</span></span><br><span class="line">fig = plt.figure(figsize=(<span class="hljs-number">30</span>,<span class="hljs-number">25</span>), dpi=<span class="hljs-number">200</span>)</span><br><span class="line">fig.subplots_adjust(hspace=<span class="hljs-number">0.4</span>, wspace=<span class="hljs-number">0.4</span>)</span><br><span class="line"></span><br><span class="line">it_lr = [(<span class="hljs-number">2000</span>, <span class="hljs-number">0.001</span>), (<span class="hljs-number">500</span>, <span class="hljs-number">0.01</span>), (<span class="hljs-number">200</span>, <span class="hljs-number">0.05</span>), (<span class="hljs-number">100</span>, <span class="hljs-number">0.1</span>)]</span><br><span class="line">count = <span class="hljs-number">0</span></span><br><span class="line"><span class="hljs-keyword">for</span> n_iter, lr <span class="hljs-keyword">in</span> it_lr:</span><br><span class="line">    count += <span class="hljs-number">1</span></span><br><span class="line">    </span><br><span class="line">    ax = fig.add_subplot(<span class="hljs-number">4</span>, <span class="hljs-number">2</span>, count)</span><br><span class="line">    count += <span class="hljs-number">1</span></span><br><span class="line">   </span><br><span class="line">    ax1 = fig.add_subplot(<span class="hljs-number">4</span>, <span class="hljs-number">2</span>, count)</span><br><span class="line">    </span><br><span class="line">    ax.set_title(<span class="hljs-string">"lr:&#123;&#125;"</span> .format(lr))</span><br><span class="line">    ax1.set_title(<span class="hljs-string">"Iterations:&#123;&#125;"</span> .format(n_iter))</span><br><span class="line">    plot_GD(n_iter, lr, ax, ax1)</span><br></pre></td></tr></table></figure>
+<p><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/Gradient%20Descent/output_32_0.png" alt=""></p>
+<p>通过观察发现，以较小的学习速率收集解决方案需要很长时间，而学习速度越大，学习速度越快。</p>
+<figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">_, ax = plt.subplots(figsize=(<span class="hljs-number">14</span>, <span class="hljs-number">10</span>))</span><br><span class="line">plot_GD(<span class="hljs-number">100</span>, <span class="hljs-number">0.1</span>, ax)</span><br></pre></td></tr></table></figure>
+<p><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/Gradient%20Descent/output_34_0.png" alt=""></p>
+<h2 id="随机梯度下降法（Stochastic-Gradient-Descent）"><a href="#随机梯度下降法（Stochastic-Gradient-Descent）" class="headerlink" title="随机梯度下降法（Stochastic Gradient Descent）"></a>随机梯度下降法（Stochastic Gradient Descent）</h2><p>随机梯度下降法，其实和批量梯度下降法原理类似，区别在与求梯度时没有用所有的 `m` 个样本的数据，而是仅仅选取一个样本 `j` 来求梯度。对应的更新公式是：</p>
+<p>$$<br>\theta_i = \theta_i - \alpha (h_\theta(x_0^{(j)}, x_1^{(j)}, …x_n^{(j)}) - y_j)x_i^{(j)}<br>$$</p>
+<figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">stocashtic_gradient_descent</span><span class="hljs-params">(X, y, theta, learning_rate=<span class="hljs-number">0.01</span>, iterations=<span class="hljs-number">10</span>)</span>:</span></span><br><span class="line">    <span class="hljs-string">'''</span></span><br><span class="line"><span class="hljs-string">    X    = Matrix of X with added bias units</span></span><br><span class="line"><span class="hljs-string">    y    = Vector of Y</span></span><br><span class="line"><span class="hljs-string">    theta=Vector of thetas np.random.randn(j,1)</span></span><br><span class="line"><span class="hljs-string">    learning_rate </span></span><br><span class="line"><span class="hljs-string">    iterations = no of iterations</span></span><br><span class="line"><span class="hljs-string">    </span></span><br><span class="line"><span class="hljs-string">    Returns the final theta vector and array of cost history over no of iterations</span></span><br><span class="line"><span class="hljs-string">    '''</span></span><br><span class="line">    </span><br><span class="line">    m = len(y)</span><br><span class="line">    cost_history = np.zeros(iterations)</span><br><span class="line">    </span><br><span class="line">    <span class="hljs-keyword">for</span> it <span class="hljs-keyword">in</span> range(iterations):</span><br><span class="line">        cost = <span class="hljs-number">0.0</span></span><br><span class="line">        <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> range(m):</span><br><span class="line">            rand_ind = np.random.randint(<span class="hljs-number">0</span>, m)</span><br><span class="line">            X_i = X[rand_ind, :].reshape(<span class="hljs-number">1</span>, X.shape[<span class="hljs-number">1</span>])</span><br><span class="line">            y_i = y[rand_ind, :].reshape(<span class="hljs-number">1</span>, <span class="hljs-number">1</span>)</span><br><span class="line">            prediction = np.dot(X_i, theta)</span><br><span class="line">            </span><br><span class="line">            theta -= (<span class="hljs-number">1</span>/m) * learning_rate * (X_i.T.dot((prediction - y_i)))</span><br><span class="line">            cost += cal_cost(theta, X_i, y_i)</span><br><span class="line">        cost_history[it] = cost</span><br><span class="line">        </span><br><span class="line">    <span class="hljs-keyword">return</span> theta, cost_history</span><br></pre></td></tr></table></figure>
+<figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">lr = <span class="hljs-number">0.5</span></span><br><span class="line">n_iter = <span class="hljs-number">50</span></span><br><span class="line">theta = np.random.randn(<span class="hljs-number">2</span>,<span class="hljs-number">1</span>)</span><br><span class="line">X_b = np.c_[np.ones((len(X),<span class="hljs-number">1</span>)), X]</span><br><span class="line">theta, cost_history = stocashtic_gradient_descent(X_b, y, theta, lr, n_iter)</span><br><span class="line"></span><br><span class="line">print(<span class="hljs-string">'Theta0:          &#123;:0.3f&#125;,\nTheta1:          &#123;:0.3f&#125;'</span> .format(theta[<span class="hljs-number">0</span>][<span class="hljs-number">0</span>],theta[<span class="hljs-number">1</span>][<span class="hljs-number">0</span>]))</span><br><span class="line">print(<span class="hljs-string">'Final cost/MSE:  &#123;:0.3f&#125;'</span> .format(cost_history[<span class="hljs-number">-1</span>]))</span><br></pre></td></tr></table></figure>
+<pre><code>Theta0:          3.762,
+Theta1:          3.159
+Final cost/MSE:  46.964
+</code></pre><figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">fig, ax = plt.subplots(figsize=(<span class="hljs-number">10</span>,<span class="hljs-number">8</span>))</span><br><span class="line"></span><br><span class="line">ax.set_ylabel(<span class="hljs-string">'$J(\Theta)$'</span> ,rotation=<span class="hljs-number">0</span>)</span><br><span class="line">ax.set_xlabel(<span class="hljs-string">'$Iterations$'</span>)</span><br><span class="line">theta = np.random.randn(<span class="hljs-number">2</span>,<span class="hljs-number">1</span>)</span><br><span class="line"></span><br><span class="line">ax.plot(range(n_iter), cost_history, <span class="hljs-string">'b.'</span>)</span><br></pre></td></tr></table></figure>
+<p><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/Gradient%20Descent/output_39_1.png" alt=""></p>
+<h2 id="小批量梯度下降法（Mini-batch-Gradient-Descent）"><a href="#小批量梯度下降法（Mini-batch-Gradient-Descent）" class="headerlink" title="小批量梯度下降法（Mini-batch Gradient Descent）"></a>小批量梯度下降法（Mini-batch Gradient Descent）</h2><p>小批量梯度下降法是批量梯度下降法和随机梯度下降法的折衷，也就是对于 `m` 个样本，我们采用 `x` 个样子来迭代，\(1&lt;x&lt;m\)。一般可以取 `x=10`，当然根据样本的数据，可以调整这个 `x` 的值。对应的更新公式是：</p>
+<p>$$<br>\theta_i = \theta_i - \alpha \sum\limits_{j=t}^{t+x-1}(h_\theta(x_0^{(j)}, x_1^{(j)}, …x_n^{(j)}) - y_j)x_i^{(j)}<br>$$</p>
+<figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">minibatch_gradient_descent</span><span class="hljs-params">(X, y, theta, learning_rate=<span class="hljs-number">0.01</span>, iterations=<span class="hljs-number">10</span>, batch_size=<span class="hljs-number">20</span>)</span>:</span></span><br><span class="line">    <span class="hljs-string">'''</span></span><br><span class="line"><span class="hljs-string">    X    = Matrix of X without added bias units</span></span><br><span class="line"><span class="hljs-string">    y    = Vector of Y</span></span><br><span class="line"><span class="hljs-string">    theta=Vector of thetas np.random.randn(j,1)</span></span><br><span class="line"><span class="hljs-string">    learning_rate </span></span><br><span class="line"><span class="hljs-string">    iterations = no of iterations</span></span><br><span class="line"><span class="hljs-string">    </span></span><br><span class="line"><span class="hljs-string">    Returns the final theta vector and array of cost history over no of iterations</span></span><br><span class="line"><span class="hljs-string">    '''</span></span><br><span class="line">    </span><br><span class="line">    m = len(y)</span><br><span class="line">    cost_history = np.zeros(iterations)</span><br><span class="line">    n_batches = int(m / batch_size)</span><br><span class="line">    </span><br><span class="line">    <span class="hljs-keyword">for</span> it <span class="hljs-keyword">in</span> range(iterations):</span><br><span class="line">        cost = <span class="hljs-number">0.0</span></span><br><span class="line">        indices = np.random.permutation(m)</span><br><span class="line">        X = X[indices]</span><br><span class="line">        y = y[indices]</span><br><span class="line">        <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> range(<span class="hljs-number">0</span>, m, batch_size):</span><br><span class="line">            X_i = X[i: i+batch_size]</span><br><span class="line">            y_i = y[i: i+batch_size]</span><br><span class="line">            </span><br><span class="line">            X_i = np.c_[np.ones(len(X_i)), X_i]</span><br><span class="line">            prediction = np.dot(X_i, theta)</span><br><span class="line">            </span><br><span class="line">            theta -= (<span class="hljs-number">1</span>/m) * learning_rate * (X_i.T.dot((prediction - y_i)))</span><br><span class="line">            cost += cal_cost(theta, X_i, y_i)</span><br><span class="line">        cost_history[it] = cost</span><br><span class="line">    </span><br><span class="line">    <span class="hljs-keyword">return</span> theta, cost_history</span><br></pre></td></tr></table></figure>
+<figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">lr = <span class="hljs-number">0.1</span></span><br><span class="line">n_iter = <span class="hljs-number">200</span></span><br><span class="line">theta = np.random.randn(<span class="hljs-number">2</span>, <span class="hljs-number">1</span>)</span><br><span class="line">theta, cost_history = minibatch_gradient_descent(X, y, theta, lr, n_iter)</span><br><span class="line"></span><br><span class="line">print(<span class="hljs-string">'Theta0:          &#123;:0.3f&#125;,\nTheta1:          &#123;:0.3f&#125;'</span> .format(theta[<span class="hljs-number">0</span>][<span class="hljs-number">0</span>], theta[<span class="hljs-number">1</span>][<span class="hljs-number">0</span>]))</span><br><span class="line">print(<span class="hljs-string">'Final cost/MSE:  &#123;:0.3f&#125;'</span> .format(cost_history[<span class="hljs-number">-1</span>]))</span><br></pre></td></tr></table></figure>
+<pre><code>Theta0:          3.842,
+Theta1:          3.146
+Final cost/MSE:  1090.518
+</code></pre><figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">fig, ax = plt.subplots(figsize=(<span class="hljs-number">10</span>,<span class="hljs-number">8</span>))</span><br><span class="line"></span><br><span class="line">ax.set_ylabel(<span class="hljs-string">'$J(\Theta)$'</span>, rotation=<span class="hljs-number">0</span>)</span><br><span class="line">ax.set_xlabel(<span class="hljs-string">'$Iterations$'</span>)</span><br><span class="line">theta = np.random.randn(<span class="hljs-number">2</span>, <span class="hljs-number">1</span>)</span><br><span class="line"></span><br><span class="line">ax.plot(range(n_iter), cost_history, <span class="hljs-string">'b.'</span>)</span><br></pre></td></tr></table></figure>
+<p><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/Gradient%20Descent/output_44_1.png" alt=""></p>
+<p><em>参考</em>：</p>
+<ul>
+<li><a href="https://towardsdatascience.com/gradient-descent-in-python-a0d07285742f" target="_blank" rel="noopener">Gradient Descent in Python</a></li>
+<li><a href="https://www.cnblogs.com/pinard/p/5970503.html" target="_blank" rel="noopener">梯度下降（Gradient Descent）小结</a></li>
+</ul>
+
+        </div>
+        
+        <div class="level is-size-7 is-uppercase">
+            <div class="level-start">
+                <div class="level-item">
+                    <span class="is-size-6 has-text-grey has-mr-7">#</span>
+                    <a class="has-link-grey -link" href="/tags/Gradient-Descent/">Gradient Descent</a>, <a class="has-link-grey -link" href="/tags/machine-learning/">machine learning</a>, <a class="has-link-grey -link" href="/tags/python/">python</a>
+                </div>
+            </div>
+        </div>
+        
+        
+        
+    </div>
+</div>
+
+
+
+<div class="card">
+    <div class="card-content">
+        <h3 class="menu-label has-text-centered">喜欢这篇文章？打赏一下作者吧</h3>
+        <div class="buttons is-centered">
+            
+                
+<a class="button is-info donate">
+    <span class="icon is-small">
+        <i class="fab fa-alipay"></i>
+    </span>
+    <span>支付宝</span>
+    <div class="qrcode"><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/reward/alipay-reward-image.jpg" alt="支付宝"></div>
+</a>
+
+                
+                
+<a class="button is-success donate">
+    <span class="icon is-small">
+        <i class="fab fa-weixin"></i>
+    </span>
+    <span>微信</span>
+    <div class="qrcode"><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/reward/wechat-reward-image.jpg" alt="微信"></div>
+</a>
+
+                
+        </div>
+    </div>
+</div>
+
+
+
+<div class="card card-transparent">
+    <div class="level post-navigation is-flex-wrap is-mobile">
+        
+        
+        <div class="level-end">
+            <a class="level level-item has-link-grey  article-nav-next" href="/2019/02/11/Hierarchical_clustering_method/">
+                <span class="level-item">机器学习|层次聚类方法 (Python 语言描述)</span>
+                <i class="level-item fas fa-chevron-right"></i>
+            </a>
+        </div>
+        
+    </div>
+</div>
+
+
+
+<div class="card">
+    <div class="card-content">
+        <h3 class="title is-5 has-text-weight-normal">评论</h3>
+        
+<div id="valine-thread"></div>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+<script>
+    new Valine({
+        el: '#valine-thread' ,
+        notify: true,
+        verify: false,
+        app_id: 'zzN9t0v9tihDucYhBujOYJUJ-gzGzoHsz',
+        app_key: 'gngT5gD2rOh2hc7C62097Ql6',
+        placeholder: 'Say something...'
+    });
+</script>
+
+    </div>
+</div>
+</div>
+                
+
+
+
+
+<div class="column is-4-tablet is-4-desktop is-3-widescreen  has-order-1 column-left ">
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <nav class="level">
+            <div class="level-item has-text-centered">
+                <div>
+                    <img class="image is-128x128 has-mb-6" src="https://avatars0.githubusercontent.com/u/38065710?s=400&amp;u=80ee4d360562451484188e6f1677fa442720891b&amp;v=4" alt="Laugh">
+                    
+                    <p class="is-size-4 is-block">
+                        Laugh
+                    </p>
+                    
+                    
+                    <p class="is-size-6 is-block">
+                        The life I want, there is no shortcut.
+                    </p>
+                    
+                    
+                    <p class="is-size-6 is-flex is-flex-center has-text-grey">
+                        <i class="fas fa-map-marker-alt has-mr-7"></i>
+                        <span>Northern Hemisphere</span>
+                    </p>
+                    
+                </div>
+            </div>
+        </nav>
+        <nav class="level is-mobile">
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        文章
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        21
+                    </p>
+                </div>
+            </div>
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        分类
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        24
+                    </p>
+                </div>
+            </div>
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        标签
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        28
+                    </p>
+                </div>
+            </div>
+        </nav>
+        <div class="level">
+            <a class="level-item button is-link is-rounded" href="http://github.com/laugh12321">
+                follow</a>
+        </div>
+        
+        
+        <div class="level is-mobile">
+            
+            <a class="level-item button is-white is-marginless" target="_blank" title="Github" href="http://github.com/laugh12321">
+                
+                <i class="fab fa-github"></i>
+                
+            </a>
+            
+            <a class="level-item button is-white is-marginless" target="_blank" title="Steam" href="https://steamcommunity.com/profiles/76561198445204275/">
+                
+                <i class="fab fa-steam-square"></i>
+                
+            </a>
+            
+            <a class="level-item button is-white is-marginless" target="_blank" title="RSS" href="/">
+                
+                <i class="fas fa-rss"></i>
+                
+            </a>
+            
+        </div>
+        
+    </div>
+</div>
+    
+        
+    
+        
+
+<div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+        <h3 class="menu-label">
+            链接
+        </h3>
+        <ul class="menu-list">
+        
+            <li>
+                <a class="level is-mobile" href="https://styx11.github.io/" target="_blank">
+                    <span class="level-left">
+                        <span class="level-item">Styx</span>
+                    </span>
+                    <span class="level-right">
+                        <span class="level-item tag">styx11.github.io</span>
+                    </span>
+                </a>
+            </li>
+        
+            <li>
+                <a class="level is-mobile" href="http://luuuuyang.com/" target="_blank">
+                    <span class="level-left">
+                        <span class="level-item">Luuuuyang</span>
+                    </span>
+                    <span class="level-right">
+                        <span class="level-item tag">luuuuyang.com</span>
+                    </span>
+                </a>
+            </li>
+        
+            <li>
+                <a class="level is-mobile" href="https://www.vseu.com/" target="_blank">
+                    <span class="level-left">
+                        <span class="level-item">幸运草</span>
+                    </span>
+                    <span class="level-right">
+                        <span class="level-item tag">www.vseu.com</span>
+                    </span>
+                </a>
+            </li>
+        
+            <li>
+                <a class="level is-mobile" href="https://tea9.xyz/" target="_blank">
+                    <span class="level-left">
+                        <span class="level-item">tea9</span>
+                    </span>
+                    <span class="level-right">
+                        <span class="level-item tag">tea9.xyz</span>
+                    </span>
+                </a>
+            </li>
+        
+            <li>
+                <a class="level is-mobile" href="https://hongjay233.github.io/" target="_blank">
+                    <span class="level-left">
+                        <span class="level-item">HongJay</span>
+                    </span>
+                    <span class="level-right">
+                        <span class="level-item tag">hongjay233.github.io</span>
+                    </span>
+                </a>
+            </li>
+        
+            <li>
+                <a class="level is-mobile" href="https://www.itfire.cn/" target="_blank">
+                    <span class="level-left">
+                        <span class="level-item">仓鼠‘s blog</span>
+                    </span>
+                    <span class="level-right">
+                        <span class="level-item tag">www.itfire.cn</span>
+                    </span>
+                </a>
+            </li>
+        
+            <li>
+                <a class="level is-mobile" href="https://blog.wzy1999.wang/" target="_blank">
+                    <span class="level-left">
+                        <span class="level-item">执念</span>
+                    </span>
+                    <span class="level-right">
+                        <span class="level-item tag">blog.wzy1999.wang</span>
+                    </span>
+                </a>
+            </li>
+        
+        </ul>
+        </div>
+    </div>
+</div>
+
+
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                分类
+            </h3>
+            <ul class="menu-list">
+            <li>
+        <a class="level is-marginless" href="/categories/Python/">
+            <span class="level-start">
+                <span class="level-item">Python</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">2</span>
+            </span>
+        </a><ul><li>
+        <a class="level is-marginless" href="/categories/Python/排序算法/">
+            <span class="level-start">
+                <span class="level-item">排序算法</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">2</span>
+            </span>
+        </a></li></ul></li><li>
+        <a class="level is-marginless" href="/categories/Ubuntu/">
+            <span class="level-start">
+                <span class="level-item">Ubuntu</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">2</span>
+            </span>
+        </a><ul><li>
+        <a class="level is-marginless" href="/categories/Ubuntu/ECS/">
+            <span class="level-start">
+                <span class="level-item">ECS</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">2</span>
+            </span>
+        </a></li></ul></li><li>
+        <a class="level is-marginless" href="/categories/博客/">
+            <span class="level-start">
+                <span class="level-item">博客</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">2</span>
+            </span>
+        </a><ul><li>
+        <a class="level is-marginless" href="/categories/博客/GitHub-Pages/">
+            <span class="level-start">
+                <span class="level-item">GitHub Pages</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">1</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/博客/主题优化/">
+            <span class="level-start">
+                <span class="level-item">主题优化</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">1</span>
+            </span>
+        </a></li></ul></li><li>
+        <a class="level is-marginless" href="/categories/机器学习/">
+            <span class="level-start">
+                <span class="level-item">机器学习</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">14</span>
+            </span>
+        </a><ul><li>
+        <a class="level is-marginless" href="/categories/机器学习/K-Means/">
+            <span class="level-start">
+                <span class="level-item">K-Means</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">3</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/机器学习/K-近邻算法/">
+            <span class="level-start">
+                <span class="level-item">K-近邻算法</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">1</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/机器学习/决策树/">
+            <span class="level-start">
+                <span class="level-item">决策树</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">1</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/机器学习/多项式回归/">
+            <span class="level-start">
+                <span class="level-item">多项式回归</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">1</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/机器学习/感知机/">
+            <span class="level-start">
+                <span class="level-item">感知机</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">1</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/机器学习/支持向量机/">
+            <span class="level-start">
+                <span class="level-item">支持向量机</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">1</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/机器学习/朴素贝叶斯/">
+            <span class="level-start">
+                <span class="level-item">朴素贝叶斯</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">1</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/机器学习/梯度下降/">
+            <span class="level-start">
+                <span class="level-item">梯度下降</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">1</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/机器学习/线性回归/">
+            <span class="level-start">
+                <span class="level-item">线性回归</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">2</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/机器学习/装袋/">
+            <span class="level-start">
+                <span class="level-item">装袋</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">1</span>
+            </span>
+        </a></li></ul></li><li>
+        <a class="level is-marginless" href="/categories/深度学习/">
+            <span class="level-start">
+                <span class="level-item">深度学习</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">1</span>
+            </span>
+        </a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <h3 class="menu-label">
+            标签云
+        </h3>
+        <a href="/tags/ECS/" style="font-size: 13.33px;">ECS</a> <a href="/tags/Gradient-Descent/" style="font-size: 10px;">Gradient Descent</a> <a href="/tags/HAC/" style="font-size: 10px;">HAC</a> <a href="/tags/MAE/" style="font-size: 10px;">MAE</a> <a href="/tags/MAPE/" style="font-size: 10px;">MAPE</a> <a href="/tags/MSE/" style="font-size: 10px;">MSE</a> <a href="/tags/Seafile/" style="font-size: 10px;">Seafile</a> <a href="/tags/Ubuntu/" style="font-size: 13.33px;">Ubuntu</a> <a href="/tags/artificial-neural-network/" style="font-size: 10px;">artificial neural network</a> <a href="/tags/bagging/" style="font-size: 10px;">bagging</a> <a href="/tags/blog/" style="font-size: 13.33px;">blog</a> <a href="/tags/boosting/" style="font-size: 10px;">boosting</a> <a href="/tags/cluster/" style="font-size: 10px;">cluster</a> <a href="/tags/decision-tree/" style="font-size: 10px;">decision tree</a> <a href="/tags/deep-learning/" style="font-size: 10px;">deep learning</a> <a href="/tags/github/" style="font-size: 13.33px;">github</a> <a href="/tags/jekyll/" style="font-size: 10px;">jekyll</a> <a href="/tags/k-means/" style="font-size: 13.33px;">k-means</a> <a href="/tags/k-nearest-neighbors/" style="font-size: 10px;">k-nearest neighbors</a> <a href="/tags/linear-regression/" style="font-size: 13.33px;">linear regression</a> <a href="/tags/machine-learning/" style="font-size: 16.67px;">machine learning</a> <a href="/tags/naive-bayes/" style="font-size: 10px;">naive bayes</a> <a href="/tags/next/" style="font-size: 10px;">next</a> <a href="/tags/perceptron/" style="font-size: 10px;">perceptron</a> <a href="/tags/polynomial-regression/" style="font-size: 10px;">polynomial regression</a> <a href="/tags/python/" style="font-size: 20px;">python</a> <a href="/tags/sort/" style="font-size: 13.33px;">sort</a> <a href="/tags/support-vector-machine/" style="font-size: 10px;">support vector machine</a>
+    </div>
+</div>
+
+    
+    
+        <div class="column-right-shadow is-hidden-widescreen ">
+        
+            
+<div class="card widget">
+    <div class="card-content">
+        <h3 class="menu-label">
+            最新文章
+        </h3>
+        
+        <article class="media">
+            
+            <a href="/2019/03/09/Gradient_Descent/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/photo/13.jpg" alt="翻译|Gradient Descent in Python">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-03-09T06:46:00.000Z">2019-03-09</time></div>
+                    <a href="/2019/03/09/Gradient_Descent/" class="has-link-black-ter is-size-6">翻译|Gradient Descent in Python</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/机器学习/">机器学习</a> / <a class="has-link-grey -link" href="/categories/机器学习/梯度下降/">梯度下降</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2019/02/11/Hierarchical_clustering_method/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/photo/12.jpg" alt="机器学习|层次聚类方法 (Python 语言描述)">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-02-11T14:16:00.000Z">2019-02-11</time></div>
+                    <a href="/2019/02/11/Hierarchical_clustering_method/" class="has-link-black-ter is-size-6">机器学习|层次聚类方法 (Python 语言描述)</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/机器学习/">机器学习</a> / <a class="has-link-grey -link" href="/categories/机器学习/K-Means/">K-Means</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2019/02/09/Image_compression_using_Mini_Batch_k-means/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/photo/11.jpg" alt="使用 Mini Batch K-Means 进行图像压缩 ">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-02-09T15:25:00.000Z">2019-02-09</time></div>
+                    <a href="/2019/02/09/Image_compression_using_Mini_Batch_k-means/" class="has-link-black-ter is-size-6">使用 Mini Batch K-Means 进行图像压缩 </a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/机器学习/">机器学习</a> / <a class="has-link-grey -link" href="/categories/机器学习/K-Means/">K-Means</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2019/02/09/Cluster_Of_K-Means/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/photo/10.jpg" alt="机器学习|划分聚类之 K-Means 详解 (Python 语言描述)">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-02-09T14:25:00.000Z">2019-02-09</time></div>
+                    <a href="/2019/02/09/Cluster_Of_K-Means/" class="has-link-black-ter is-size-6">机器学习|划分聚类之 K-Means 详解 (Python 语言描述)</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/机器学习/">机器学习</a> / <a class="has-link-grey -link" href="/categories/机器学习/K-Means/">K-Means</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2019/02/07/Bagging_and_Boosting/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/photo/09.jpg" alt="机器学习|装袋和提升方法详解 (Python 语言描述)">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-02-06T16:00:00.000Z">2019-02-07</time></div>
+                    <a href="/2019/02/07/Bagging_and_Boosting/" class="has-link-black-ter is-size-6">机器学习|装袋和提升方法详解 (Python 语言描述)</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/机器学习/">机器学习</a> / <a class="has-link-grey -link" href="/categories/机器学习/装袋/">装袋</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+    </div>
+</div>
+
+        
+            <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+        <h3 class="menu-label">
+            归档
+        </h3>
+        <ul class="menu-list">
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/02/">
+                <span class="level-start">
+                    <span class="level-item">二月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">9</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        </ul>
+        </div>
+    </div>
+</div>
+        
+            <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                标签
+            </h3>
+            <div class="field is-grouped is-grouped-multiline">
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/ECS/">
+                        <span class="tag">ECS</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Gradient-Descent/">
+                        <span class="tag">Gradient Descent</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/HAC/">
+                        <span class="tag">HAC</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/MAE/">
+                        <span class="tag">MAE</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/MAPE/">
+                        <span class="tag">MAPE</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/MSE/">
+                        <span class="tag">MSE</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Seafile/">
+                        <span class="tag">Seafile</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Ubuntu/">
+                        <span class="tag">Ubuntu</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/artificial-neural-network/">
+                        <span class="tag">artificial neural network</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/bagging/">
+                        <span class="tag">bagging</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/blog/">
+                        <span class="tag">blog</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/boosting/">
+                        <span class="tag">boosting</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/cluster/">
+                        <span class="tag">cluster</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/decision-tree/">
+                        <span class="tag">decision tree</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/deep-learning/">
+                        <span class="tag">deep learning</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/github/">
+                        <span class="tag">github</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/jekyll/">
+                        <span class="tag">jekyll</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/k-means/">
+                        <span class="tag">k-means</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/k-nearest-neighbors/">
+                        <span class="tag">k-nearest neighbors</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/linear-regression/">
+                        <span class="tag">linear regression</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/machine-learning/">
+                        <span class="tag">machine learning</span>
+                        <span class="tag is-grey">14</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/naive-bayes/">
+                        <span class="tag">naive bayes</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/next/">
+                        <span class="tag">next</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/perceptron/">
+                        <span class="tag">perceptron</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/polynomial-regression/">
+                        <span class="tag">polynomial regression</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/python/">
+                        <span class="tag">python</span>
+                        <span class="tag is-grey">15</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/sort/">
+                        <span class="tag">sort</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/support-vector-machine/">
+                        <span class="tag">support vector machine</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+        
+        </div>
+    
+</div>
+
+                
+
+
+
+
+<div class="column is-4-tablet is-4-desktop is-3-widescreen is-hidden-touch is-hidden-desktop-only has-order-3 column-right ">
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <h3 class="menu-label">
+            最新文章
+        </h3>
+        
+        <article class="media">
+            
+            <a href="/2019/03/09/Gradient_Descent/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/photo/13.jpg" alt="翻译|Gradient Descent in Python">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-03-09T06:46:00.000Z">2019-03-09</time></div>
+                    <a href="/2019/03/09/Gradient_Descent/" class="has-link-black-ter is-size-6">翻译|Gradient Descent in Python</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/机器学习/">机器学习</a> / <a class="has-link-grey -link" href="/categories/机器学习/梯度下降/">梯度下降</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2019/02/11/Hierarchical_clustering_method/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/photo/12.jpg" alt="机器学习|层次聚类方法 (Python 语言描述)">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-02-11T14:16:00.000Z">2019-02-11</time></div>
+                    <a href="/2019/02/11/Hierarchical_clustering_method/" class="has-link-black-ter is-size-6">机器学习|层次聚类方法 (Python 语言描述)</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/机器学习/">机器学习</a> / <a class="has-link-grey -link" href="/categories/机器学习/K-Means/">K-Means</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2019/02/09/Image_compression_using_Mini_Batch_k-means/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/photo/11.jpg" alt="使用 Mini Batch K-Means 进行图像压缩 ">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-02-09T15:25:00.000Z">2019-02-09</time></div>
+                    <a href="/2019/02/09/Image_compression_using_Mini_Batch_k-means/" class="has-link-black-ter is-size-6">使用 Mini Batch K-Means 进行图像压缩 </a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/机器学习/">机器学习</a> / <a class="has-link-grey -link" href="/categories/机器学习/K-Means/">K-Means</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2019/02/09/Cluster_Of_K-Means/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/photo/10.jpg" alt="机器学习|划分聚类之 K-Means 详解 (Python 语言描述)">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-02-09T14:25:00.000Z">2019-02-09</time></div>
+                    <a href="/2019/02/09/Cluster_Of_K-Means/" class="has-link-black-ter is-size-6">机器学习|划分聚类之 K-Means 详解 (Python 语言描述)</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/机器学习/">机器学习</a> / <a class="has-link-grey -link" href="/categories/机器学习/K-Means/">K-Means</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2019/02/07/Bagging_and_Boosting/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/photo/09.jpg" alt="机器学习|装袋和提升方法详解 (Python 语言描述)">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-02-06T16:00:00.000Z">2019-02-07</time></div>
+                    <a href="/2019/02/07/Bagging_and_Boosting/" class="has-link-black-ter is-size-6">机器学习|装袋和提升方法详解 (Python 语言描述)</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/机器学习/">机器学习</a> / <a class="has-link-grey -link" href="/categories/机器学习/装袋/">装袋</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+    </div>
+</div>
+
+    
+        <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+        <h3 class="menu-label">
+            归档
+        </h3>
+        <ul class="menu-list">
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/02/">
+                <span class="level-start">
+                    <span class="level-item">二月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">9</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        </ul>
+        </div>
+    </div>
+</div>
+    
+        <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                标签
+            </h3>
+            <div class="field is-grouped is-grouped-multiline">
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/ECS/">
+                        <span class="tag">ECS</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Gradient-Descent/">
+                        <span class="tag">Gradient Descent</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/HAC/">
+                        <span class="tag">HAC</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/MAE/">
+                        <span class="tag">MAE</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/MAPE/">
+                        <span class="tag">MAPE</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/MSE/">
+                        <span class="tag">MSE</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Seafile/">
+                        <span class="tag">Seafile</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Ubuntu/">
+                        <span class="tag">Ubuntu</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/artificial-neural-network/">
+                        <span class="tag">artificial neural network</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/bagging/">
+                        <span class="tag">bagging</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/blog/">
+                        <span class="tag">blog</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/boosting/">
+                        <span class="tag">boosting</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/cluster/">
+                        <span class="tag">cluster</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/decision-tree/">
+                        <span class="tag">decision tree</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/deep-learning/">
+                        <span class="tag">deep learning</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/github/">
+                        <span class="tag">github</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/jekyll/">
+                        <span class="tag">jekyll</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/k-means/">
+                        <span class="tag">k-means</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/k-nearest-neighbors/">
+                        <span class="tag">k-nearest neighbors</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/linear-regression/">
+                        <span class="tag">linear regression</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/machine-learning/">
+                        <span class="tag">machine learning</span>
+                        <span class="tag is-grey">14</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/naive-bayes/">
+                        <span class="tag">naive bayes</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/next/">
+                        <span class="tag">next</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/perceptron/">
+                        <span class="tag">perceptron</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/polynomial-regression/">
+                        <span class="tag">polynomial regression</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/python/">
+                        <span class="tag">python</span>
+                        <span class="tag is-grey">15</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/sort/">
+                        <span class="tag">sort</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/support-vector-machine/">
+                        <span class="tag">support vector machine</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+    
+    
+</div>
+
+            </div>
+        </div>
+    </section>
+    <footer class="footer">
+    <div class="container">
+        <div class="level">
+            <div class="level-start has-text-centered-mobile">
+                <a class="footer-logo is-block has-mb-6" href="/">
+                
+                    <img src="/images/logo.svg" alt="翻译|Gradient Descent in Python" height="28">
+                
+                </a>
+                <p class="is-size-7">
+                &copy; 2019 Laugh&nbsp;
+                Powered by <a href="http://hexo.io/" target="_blank">Hexo</a> & <a href="http://github.com/ppoffice/hexo-theme-icarus">Icarus</a>
+                </p>
+            </div>
+            <div class="level-end">
+            
+                <div class="field has-addons is-flex-center-mobile has-mt-5-mobile is-flex-wrap is-flex-middle">
+                
+                
+                <p class="control">
+                    <a class="button is-white is-large" target="_blank" title="Creative Commons" href="https://creativecommons.org/">
+                        
+                        <i class="fab fa-creative-commons"></i>
+                        
+                    </a>
+                </p>
+                
+                <p class="control">
+                    <a class="button is-white is-large" target="_blank" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/">
+                        
+                        <i class="fab fa-creative-commons-by"></i>
+                        
+                    </a>
+                </p>
+                
+                <p class="control">
+                    <a class="button is-white is-large" target="_blank" title="Download on GitHub" href="http://github.com/ppoffice/hexo-theme-icarus">
+                        
+                        <i class="fab fa-github"></i>
+                        
+                    </a>
+                </p>
+                
+                </div>
+            
+            </div>
+        </div>
+    </div>
+</footer>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script>
+<script>moment.locale("zh-CN");</script>
+
+
+    
+    
+    
+    <script src="/js/animation.js"></script>
+    
+
+    
+    
+    
+    <script src="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/js/lightgallery.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js" defer></script>
+    <script src="/js/gallery.js" defer></script>
+    
+
+    
+    
+
+<div id="outdated">
+    <h6>Your browser is out-of-date!</h6>
+    <p>Update your browser to view this website correctly. <a id="btnUpdateBrowser" href="http://outdatedbrowser.com/">Update
+            my browser now </a></p>
+    <p class="last"><a href="#" id="btnCloseUpdateBrowser" title="Close">&times;</a></p>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/outdatedbrowser@1.1.5/outdatedbrowser/outdatedbrowser.min.js" defer></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        outdatedBrowser({
+            bgColor: '#f25648',
+            color: '#ffffff',
+            lowerThan: 'flex'
+        });
+    });
+</script>
+
+
+    
+    
+<script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    MathJax.Hub.Config({
+        'HTML-CSS': {matchFontHeight: false},
+        SVG: {matchFontHeight: false},
+        CommonHTML: {matchFontHeight: false}
+    });
+});
+</script>
+
+    
+    
+
+<a id="back-to-top" title="回到顶端" href="javascript:;">
+    <i class="fas fa-chevron-up"></i>
+</a>
+<script src="/js/back-to-top.js" defer></script>
+
+
+    
+    
+
+    
+    
+    
+    
+
+    
+    
+    
+    
+    
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script>
+    <script src="/js/clipboard.js" defer></script>
+    
+
+    
+
+
+<script src="/js/main.js" defer></script>
+
+    
+    <div class="searchbox ins-search">
+    <div class="searchbox-container ins-search-container">
+        <div class="searchbox-input-wrapper">
+            <input type="text" class="searchbox-input ins-search-input" placeholder="想要查找什么...">
+            <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="searchbox-result-wrapper ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+    (function (window) {
+        var INSIGHT_CONFIG = {
+            TRANSLATION: {
+                POSTS: '文章',
+                PAGES: '页面',
+                CATEGORIES: '分类',
+                TAGS: '标签',
+                UNTITLED: '(无标题)',
+            },
+            CONTENT_URL: '/content.json',
+        };
+        window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+    })(window);
+</script>
+<script src="/js/insight.js" defer></script>
+<link rel="stylesheet" href="/css/search.css">
+<link rel="stylesheet" href="/css/insight.css"><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+    
+</body>
+</html>
