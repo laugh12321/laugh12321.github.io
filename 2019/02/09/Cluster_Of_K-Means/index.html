@@ -250,8 +250,8 @@ var _hmt = _hmt || [];
 <p><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/K-means/output_26_1.png" alt="&lt;matplotlib.collections.PathCollection at 0x2dbd849b128&gt;"></p>
 <h3 id="计算样本与中心点的距离"><a href="#计算样本与中心点的距离" class="headerlink" title="计算样本与中心点的距离"></a>计算样本与中心点的距离</h3><p>为了找到最合适的中心点位置，需要计算每一个样本和中心点的距离，从而根据距离更新中心点位置。常见的距离计算方法有欧几里得距离和余弦相似度，本实验采用更常见且更易于理解的欧几里得距离（欧式距离）。  </p>
 <p>欧式距离源自 `N` 维欧氏空间中两点之间的距离公式。表达式如下:</p>
-<p>$$<br>d_{euc}= \sqrt{\sum_{i=1}^{N}(X_{i}-Y_{i})^{2}} \tag{1}<br>$$</p>
-<p>其中：</p>
+<script type="math/tex; mode=display">
+d_{euc}= \sqrt{\sum_{i=1}^{N}(X_{i}-Y_{i})^{2}} \tag{1}</script><p>其中：</p>
 <ul>
 <li>`X`, `Y` ：两个数据点</li>
 <li>`N`：每个数据中有 `N` 个特征值，</li>
@@ -260,10 +260,10 @@ var _hmt = _hmt || [];
 <p>将两个数据 `X` 和 `Y` 中的每一个对应的特征值之间差值的平方，再求和，最后开平方，便是欧式距离。</p>
 <figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-string">"""计算欧氏距离</span></span><br><span class="line"><span class="hljs-string">"""</span></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">d_euc</span><span class="hljs-params">(x, y)</span>:</span></span><br><span class="line">    <span class="hljs-string">"""</span></span><br><span class="line"><span class="hljs-string">    参数:</span></span><br><span class="line"><span class="hljs-string">    x -- 数据 a</span></span><br><span class="line"><span class="hljs-string">    y -- 数据 b</span></span><br><span class="line"><span class="hljs-string"></span></span><br><span class="line"><span class="hljs-string">    返回:</span></span><br><span class="line"><span class="hljs-string">    d -- 数据 a 和 b 的欧氏距离</span></span><br><span class="line"><span class="hljs-string">    """</span></span><br><span class="line">    d = np.sqrt(np.sum(np.square(x - y)))</span><br><span class="line">    <span class="hljs-keyword">return</span> d</span><br></pre></td></tr></table></figure>
 <h3 id="最小化-SSE，更新聚类中心"><a href="#最小化-SSE，更新聚类中心" class="headerlink" title="最小化 SSE，更新聚类中心"></a>最小化 SSE，更新聚类中心</h3><p>和第一章的回归算法通过减小目标函数（如：损失函数）的值拟合数据集一样，聚类算法通常也是优化一个目标函数，从而提高聚类的质量。在聚类算法中，常常使用误差的平方和 SSE（Sum of squared errors）作为度量聚类效果的标准，当 SSE 越小表示聚类效果越好。其中 SSE 表示为：</p>
-<p>$$<br>SSE(C)=\sum_{k=1}^{K}\sum_{x_{i}\in C_{k}}\left | x_{i}-c_{k} \right |^{2}  \tag{2}<br>$$</p>
-<p>其中数据集 \(D=\{ x_{1},x_{2},…,x_{n} \}\)，\(x_{i}\)表示每一个样本值，`C` 表示通过 K-Means 聚类分析后的产生类别集合 \(C=\{ C_{1},C_{2},…,C_{K} \}\) ，\(c_{k}\) 是类别 \(C_{k}\) 的中心点，其中 \(c_{k}\) 计算方式为：</p>
-<p>$$<br>c_{k}=\frac{\sum_{x_{i} \in C_{k}}x_{i}}{I(C_{k})}  \tag{3}<br>$$</p>
-<p>\(I(C_{k})\) 表示在第 `k` 个集合 \(C_{k}\) 中数据的个数。</p>
+<script type="math/tex; mode=display">
+SSE(C)=\sum_{k=1}^{K}\sum_{x_{i}\in C_{k}}\left \| x_{i}-c_{k} \right \|^{2}  \tag{2}</script><p>其中数据集 \(D=\{ x_{1},x_{2},…,x_{n} \}\)，\(x_{i}\)表示每一个样本值，`C` 表示通过 K-Means 聚类分析后的产生类别集合 \(C=\{ C_{1},C_{2},…,C_{K} \}\) ，\(c_{k}\) 是类别 \(C_{k}\) 的中心点，其中 \(c_{k}\) 计算方式为：</p>
+<script type="math/tex; mode=display">
+c_{k}=\frac{\sum_{x_{i} \in C_{k}}x_{i}}{I(C_{k})}  \tag{3}</script><p>\(I(C_{k})\) 表示在第 `k` 个集合 \(C_{k}\) 中数据的个数。</p>
 <p>当然，我们希望同最小化损失函数一样，最小化 SSE 函数，从而找出最优化的聚类模型，但是求其最小值并不容易，是一个 NP 难（非确定性多项式）的问题，其中 NP 难问题是一个经典图论问题，至今也没有找到一个完美且有效的算法。</p>
 <p>下面我们对中心点的更新用代码的方式进行实现：</p>
 <figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-string">"""中心点的更新</span></span><br><span class="line"><span class="hljs-string">"""</span></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">update_center</span><span class="hljs-params">(clusters, data, centers)</span>:</span></span><br><span class="line">    <span class="hljs-string">"""</span></span><br><span class="line"><span class="hljs-string">    参数:</span></span><br><span class="line"><span class="hljs-string">    clusters -- 每一点分好的类别</span></span><br><span class="line"><span class="hljs-string">    data -- 数据集</span></span><br><span class="line"><span class="hljs-string">    centers -- 中心点集合</span></span><br><span class="line"><span class="hljs-string"></span></span><br><span class="line"><span class="hljs-string">    返回:</span></span><br><span class="line"><span class="hljs-string">    new_centers.reshape(num_centers,num_features) -- 新中心点集合</span></span><br><span class="line"><span class="hljs-string">    """</span></span><br><span class="line"></span><br><span class="line">    num_centers = np.shape(centers)[<span class="hljs-number">0</span>]  <span class="hljs-comment"># 中心点的个数</span></span><br><span class="line">    num_features = np.shape(centers)[<span class="hljs-number">1</span>]  <span class="hljs-comment"># 每一个中心点的特征数</span></span><br><span class="line">    container = []</span><br><span class="line">    <span class="hljs-keyword">for</span> x <span class="hljs-keyword">in</span> range(num_centers):</span><br><span class="line">        each_container = []</span><br><span class="line">        container.append(each_container)  <span class="hljs-comment"># 首先创建一个容器,将相同类别数据存放到一起</span></span><br><span class="line"></span><br><span class="line">    <span class="hljs-keyword">for</span> i, cluster <span class="hljs-keyword">in</span> enumerate(clusters):</span><br><span class="line">        container[cluster].append(data[i])</span><br><span class="line"></span><br><span class="line">    <span class="hljs-comment"># 为方便计算，将 list 类型转换为 np.array 类型</span></span><br><span class="line">    container = np.array(list(map(<span class="hljs-keyword">lambda</span> x: np.array(x), container)))</span><br><span class="line"></span><br><span class="line">    new_centers = np.array([])  <span class="hljs-comment"># 创建一个容器，存放中心点的坐标</span></span><br><span class="line">    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> range(len(container)):</span><br><span class="line">        each_center = np.mean(container[i], axis=<span class="hljs-number">0</span>)  <span class="hljs-comment"># 计算每一子集中数据均值作为中心点</span></span><br><span class="line">        new_centers = np.append(new_centers, each_center)</span><br><span class="line"></span><br><span class="line">    <span class="hljs-keyword">return</span> new_centers.reshape(num_centers, num_features)  <span class="hljs-comment"># 以矩阵的方式返回中心点坐标</span></span><br></pre></td></tr></table></figure>
@@ -518,7 +518,7 @@ var _hmt = _hmt || [];
                         文章
                     </p>
                     <p class="title has-text-weight-normal">
-                        21
+                        22
                     </p>
                 </div>
             </div>
@@ -740,7 +740,7 @@ var _hmt = _hmt || [];
                 <span class="level-item">机器学习</span>
             </span>
             <span class="level-end">
-                <span class="level-item tag">14</span>
+                <span class="level-item tag">15</span>
             </span>
         </a><ul><li>
         <a class="level is-marginless" href="/categories/机器学习/K-Means/">
@@ -804,7 +804,7 @@ var _hmt = _hmt || [];
                 <span class="level-item">梯度下降</span>
             </span>
             <span class="level-end">
-                <span class="level-item tag">1</span>
+                <span class="level-item tag">2</span>
             </span>
         </a></li><li>
         <a class="level is-marginless" href="/categories/机器学习/线性回归/">
@@ -842,7 +842,7 @@ var _hmt = _hmt || [];
         <h3 class="menu-label">
             标签云
         </h3>
-        <a href="/tags/ECS/" style="font-size: 13.33px;">ECS</a> <a href="/tags/Gradient-Descent/" style="font-size: 10px;">Gradient Descent</a> <a href="/tags/HAC/" style="font-size: 10px;">HAC</a> <a href="/tags/MAE/" style="font-size: 10px;">MAE</a> <a href="/tags/MAPE/" style="font-size: 10px;">MAPE</a> <a href="/tags/MSE/" style="font-size: 10px;">MSE</a> <a href="/tags/Seafile/" style="font-size: 10px;">Seafile</a> <a href="/tags/Ubuntu/" style="font-size: 13.33px;">Ubuntu</a> <a href="/tags/artificial-neural-network/" style="font-size: 10px;">artificial neural network</a> <a href="/tags/bagging/" style="font-size: 10px;">bagging</a> <a href="/tags/blog/" style="font-size: 13.33px;">blog</a> <a href="/tags/boosting/" style="font-size: 10px;">boosting</a> <a href="/tags/cluster/" style="font-size: 10px;">cluster</a> <a href="/tags/decision-tree/" style="font-size: 10px;">decision tree</a> <a href="/tags/deep-learning/" style="font-size: 10px;">deep learning</a> <a href="/tags/github/" style="font-size: 13.33px;">github</a> <a href="/tags/jekyll/" style="font-size: 10px;">jekyll</a> <a href="/tags/k-means/" style="font-size: 13.33px;">k-means</a> <a href="/tags/k-nearest-neighbors/" style="font-size: 10px;">k-nearest neighbors</a> <a href="/tags/linear-regression/" style="font-size: 13.33px;">linear regression</a> <a href="/tags/machine-learning/" style="font-size: 16.67px;">machine learning</a> <a href="/tags/naive-bayes/" style="font-size: 10px;">naive bayes</a> <a href="/tags/next/" style="font-size: 10px;">next</a> <a href="/tags/perceptron/" style="font-size: 10px;">perceptron</a> <a href="/tags/polynomial-regression/" style="font-size: 10px;">polynomial regression</a> <a href="/tags/python/" style="font-size: 20px;">python</a> <a href="/tags/sort/" style="font-size: 13.33px;">sort</a> <a href="/tags/support-vector-machine/" style="font-size: 10px;">support vector machine</a>
+        <a href="/tags/ECS/" style="font-size: 13.33px;">ECS</a> <a href="/tags/Gradient-Descent/" style="font-size: 13.33px;">Gradient Descent</a> <a href="/tags/HAC/" style="font-size: 10px;">HAC</a> <a href="/tags/MAE/" style="font-size: 10px;">MAE</a> <a href="/tags/MAPE/" style="font-size: 10px;">MAPE</a> <a href="/tags/MSE/" style="font-size: 10px;">MSE</a> <a href="/tags/Seafile/" style="font-size: 10px;">Seafile</a> <a href="/tags/Ubuntu/" style="font-size: 13.33px;">Ubuntu</a> <a href="/tags/artificial-neural-network/" style="font-size: 10px;">artificial neural network</a> <a href="/tags/bagging/" style="font-size: 10px;">bagging</a> <a href="/tags/blog/" style="font-size: 13.33px;">blog</a> <a href="/tags/boosting/" style="font-size: 10px;">boosting</a> <a href="/tags/cluster/" style="font-size: 10px;">cluster</a> <a href="/tags/decision-tree/" style="font-size: 10px;">decision tree</a> <a href="/tags/deep-learning/" style="font-size: 10px;">deep learning</a> <a href="/tags/github/" style="font-size: 13.33px;">github</a> <a href="/tags/jekyll/" style="font-size: 10px;">jekyll</a> <a href="/tags/k-means/" style="font-size: 13.33px;">k-means</a> <a href="/tags/k-nearest-neighbors/" style="font-size: 10px;">k-nearest neighbors</a> <a href="/tags/linear-regression/" style="font-size: 13.33px;">linear regression</a> <a href="/tags/machine-learning/" style="font-size: 16.67px;">machine learning</a> <a href="/tags/naive-bayes/" style="font-size: 10px;">naive bayes</a> <a href="/tags/next/" style="font-size: 10px;">next</a> <a href="/tags/perceptron/" style="font-size: 10px;">perceptron</a> <a href="/tags/polynomial-regression/" style="font-size: 10px;">polynomial regression</a> <a href="/tags/python/" style="font-size: 20px;">python</a> <a href="/tags/sort/" style="font-size: 13.33px;">sort</a> <a href="/tags/support-vector-machine/" style="font-size: 10px;">support vector machine</a>
     </div>
 </div>
 
@@ -856,6 +856,25 @@ var _hmt = _hmt || [];
         <h3 class="menu-label">
             最新文章
         </h3>
+        
+        <article class="media">
+            
+            <a href="/2019/03/12/Gradient_Descent_Plus/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/photo/14.jpg" alt="回归预测|梯度下降详解">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-03-12T00:45:00.000Z">2019-03-12</time></div>
+                    <a href="/2019/03/12/Gradient_Descent_Plus/" class="has-link-black-ter is-size-6">回归预测|梯度下降详解</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/机器学习/">机器学习</a> / <a class="has-link-grey -link" href="/categories/机器学习/梯度下降/">梯度下降</a>
+                    </p>
+                </div>
+            </div>
+        </article>
         
         <article class="media">
             
@@ -933,25 +952,6 @@ var _hmt = _hmt || [];
             </div>
         </article>
         
-        <article class="media">
-            
-            <a href="/2019/02/07/Bagging_and_Boosting/" class="media-left">
-                <p class="image is-64x64">
-                    <img class="thumbnail" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/photo/09.jpg" alt="机器学习|装袋和提升方法详解 (Python 语言描述)">
-                </p>
-            </a>
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-02-06T16:00:00.000Z">2019-02-07</time></div>
-                    <a href="/2019/02/07/Bagging_and_Boosting/" class="has-link-black-ter is-size-6">机器学习|装袋和提升方法详解 (Python 语言描述)</a>
-                    <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/机器学习/">机器学习</a> / <a class="has-link-grey -link" href="/categories/机器学习/装袋/">装袋</a>
-                    </p>
-                </div>
-            </div>
-        </article>
-        
     </div>
 </div>
 
@@ -970,7 +970,7 @@ var _hmt = _hmt || [];
                     <span class="level-item">三月 2019</span>
                 </span>
                 <span class="level-end">
-                    <span class="level-item tag">1</span>
+                    <span class="level-item tag">2</span>
                 </span>
             </a>
         </li>
@@ -1042,7 +1042,7 @@ var _hmt = _hmt || [];
                 <div class="control">
                     <a class="tags has-addons" href="/tags/Gradient-Descent/">
                         <span class="tag">Gradient Descent</span>
-                        <span class="tag is-grey">1</span>
+                        <span class="tag is-grey">2</span>
                     </a>
                 </div>
                 
@@ -1175,7 +1175,7 @@ var _hmt = _hmt || [];
                 <div class="control">
                     <a class="tags has-addons" href="/tags/machine-learning/">
                         <span class="tag">machine learning</span>
-                        <span class="tag is-grey">14</span>
+                        <span class="tag is-grey">15</span>
                     </a>
                 </div>
                 
@@ -1210,7 +1210,7 @@ var _hmt = _hmt || [];
                 <div class="control">
                     <a class="tags has-addons" href="/tags/python/">
                         <span class="tag">python</span>
-                        <span class="tag is-grey">15</span>
+                        <span class="tag is-grey">16</span>
                     </a>
                 </div>
                 
@@ -1253,6 +1253,25 @@ var _hmt = _hmt || [];
         
         <article class="media">
             
+            <a href="/2019/03/12/Gradient_Descent_Plus/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/photo/14.jpg" alt="回归预测|梯度下降详解">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-03-12T00:45:00.000Z">2019-03-12</time></div>
+                    <a href="/2019/03/12/Gradient_Descent_Plus/" class="has-link-black-ter is-size-6">回归预测|梯度下降详解</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/机器学习/">机器学习</a> / <a class="has-link-grey -link" href="/categories/机器学习/梯度下降/">梯度下降</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
             <a href="/2019/03/09/Gradient_Descent/" class="media-left">
                 <p class="image is-64x64">
                     <img class="thumbnail" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/photo/13.jpg" alt="翻译|Gradient Descent in Python">
@@ -1327,25 +1346,6 @@ var _hmt = _hmt || [];
             </div>
         </article>
         
-        <article class="media">
-            
-            <a href="/2019/02/07/Bagging_and_Boosting/" class="media-left">
-                <p class="image is-64x64">
-                    <img class="thumbnail" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/photo/09.jpg" alt="机器学习|装袋和提升方法详解 (Python 语言描述)">
-                </p>
-            </a>
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-02-06T16:00:00.000Z">2019-02-07</time></div>
-                    <a href="/2019/02/07/Bagging_and_Boosting/" class="has-link-black-ter is-size-6">机器学习|装袋和提升方法详解 (Python 语言描述)</a>
-                    <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/机器学习/">机器学习</a> / <a class="has-link-grey -link" href="/categories/机器学习/装袋/">装袋</a>
-                    </p>
-                </div>
-            </div>
-        </article>
-        
     </div>
 </div>
 
@@ -1364,7 +1364,7 @@ var _hmt = _hmt || [];
                     <span class="level-item">三月 2019</span>
                 </span>
                 <span class="level-end">
-                    <span class="level-item tag">1</span>
+                    <span class="level-item tag">2</span>
                 </span>
             </a>
         </li>
@@ -1436,7 +1436,7 @@ var _hmt = _hmt || [];
                 <div class="control">
                     <a class="tags has-addons" href="/tags/Gradient-Descent/">
                         <span class="tag">Gradient Descent</span>
-                        <span class="tag is-grey">1</span>
+                        <span class="tag is-grey">2</span>
                     </a>
                 </div>
                 
@@ -1569,7 +1569,7 @@ var _hmt = _hmt || [];
                 <div class="control">
                     <a class="tags has-addons" href="/tags/machine-learning/">
                         <span class="tag">machine learning</span>
-                        <span class="tag is-grey">14</span>
+                        <span class="tag is-grey">15</span>
                     </a>
                 </div>
                 
@@ -1604,7 +1604,7 @@ var _hmt = _hmt || [];
                 <div class="control">
                     <a class="tags has-addons" href="/tags/python/">
                         <span class="tag">python</span>
-                        <span class="tag is-grey">15</span>
+                        <span class="tag is-grey">16</span>
                     </a>
                 </div>
                 

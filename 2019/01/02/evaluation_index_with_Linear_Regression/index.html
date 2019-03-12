@@ -180,17 +180,21 @@ var _hmt = _hmt || [];
         <div class="content">
             <p>对于回归预测结果，通常会有平均绝对误差、平均绝对百分比误差、均方误差等多个指标进行评价。这里，我们先介绍最常用的3个：</p>
 <a id="more"></a>
-<p><strong>平均绝对误差（MAE）</strong><br>就是绝对误差的平均值，它的计算公式如下：<br>$$<br>MAE(y,\hat{y}) = \frac{1}{n}(\sum_{i = 1}^{n}\left | y - \hat{y} \right |)<br>$$<br>其中，`y_{i}` 表示真实值，`\hat y_{i}` 表示预测值，`n` 则表示值的个数。MAE 的值越小，说明预测模型拥有更好的精确度。</p>
+<p><strong>平均绝对误差（MAE）</strong><br>就是绝对误差的平均值，它的计算公式如下：</p>
+<script type="math/tex; mode=display">
+MAE(y,\hat{y}) = \frac{1}{n}(\sum_{i = 1}^{n}\left | y - \hat{y} \right |)</script><p>其中，`y_{i}` 表示真实值，`\hat y_{i}` 表示预测值，`n` 则表示值的个数。MAE 的值越小，说明预测模型拥有更好的精确度。</p>
 <p>我们可以尝试使用 Python 实现 MAE 计算函数：</p>
 <figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np</span><br><span class="line"></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">mae_value</span><span class="hljs-params">(y_true, y_pred)</span>:</span></span><br><span class="line">    <span class="hljs-string">"""</span></span><br><span class="line"><span class="hljs-string">    参数:</span></span><br><span class="line"><span class="hljs-string">    y_true -- 测试集目标真实值</span></span><br><span class="line"><span class="hljs-string">    y_pred -- 测试集目标预测值</span></span><br><span class="line"><span class="hljs-string">    </span></span><br><span class="line"><span class="hljs-string">    返回:</span></span><br><span class="line"><span class="hljs-string">    mae -- MAE 评价指标</span></span><br><span class="line"><span class="hljs-string">    """</span></span><br><span class="line">    </span><br><span class="line">    n = len(y_true)</span><br><span class="line">    mae = sum(np.abs(y_true - y_pred))/n</span><br><span class="line">    <span class="hljs-keyword">return</span> mae</span><br></pre></td></tr></table></figure>
 <p><strong>均方误差（MSE）</strong></p>
-<p>它表示误差的平方的期望值，它的计算公式如下：<br>$$<br>{MSE}(y, \hat{y} ) = \frac{1}{n} \sum_{i=1}^{n} (y_i - \hat{y})^{2}<br>$$</p>
-<p>其中，`y_{i}` 表示真实值，`\hat y_{i}` 表示预测值，`n` 则表示值的个数。MSE 的值越小，说明预测模型拥有更好的精确度。</p>
+<p>它表示误差的平方的期望值，它的计算公式如下：</p>
+<script type="math/tex; mode=display">
+{MSE}(y, \hat{y} ) = \frac{1}{n} \sum_{i=1}^{n} (y_i - \hat{y})^{2}</script><p>其中，`y_{i}` 表示真实值，`\hat y_{i}` 表示预测值，`n` 则表示值的个数。MSE 的值越小，说明预测模型拥有更好的精确度。</p>
 <p>同样，我们可以尝试使用 Python 实现 MSE 计算函数：</p>
 <figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np</span><br><span class="line"></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">mse_value</span><span class="hljs-params">(y_true, y_pred)</span>:</span></span><br><span class="line">    <span class="hljs-string">"""</span></span><br><span class="line"><span class="hljs-string">    参数:</span></span><br><span class="line"><span class="hljs-string">    y_true -- 测试集目标真实值</span></span><br><span class="line"><span class="hljs-string">    y_pred -- 测试集目标预测值</span></span><br><span class="line"><span class="hljs-string">    </span></span><br><span class="line"><span class="hljs-string">    返回:</span></span><br><span class="line"><span class="hljs-string">    mse -- MSE 评价指标</span></span><br><span class="line"><span class="hljs-string">    """</span></span><br><span class="line">    </span><br><span class="line">    n = len(y_true)</span><br><span class="line">    mse = sum(np.square(y_true - y_pred))/n</span><br><span class="line">    <span class="hljs-keyword">return</span> mse</span><br></pre></td></tr></table></figure>
 <p><strong>平均绝对百分比误差（MAPE）</strong>。</p>
-<p>`MAPE` 是 `MAD` 的变形，它是一个百分比值，因此比其他统计量更容易理解。例如，如果 `MAPE` 为 `5`，则表示预测结果较真实结果平均偏离 `5%`。`MAPE` 的计算公式如下：<br>$$<br>{MAPE}(y, \hat{y} ) = \frac{\sum_{i=1}^{n}{|\frac{y_{i}-\hat y_{i}}{y_{i}}|}}{n} \times 100<br>$$</p>
-<p>其中，`y_{i}` 表示真实值，`\hat y_{i}` 表示预测值，`n` 则表示值的个数。`MAPE` 的值越小，说明预测模型拥有更好的精确度。</p>
+<p>`MAPE` 是 `MAD` 的变形，它是一个百分比值，因此比其他统计量更容易理解。例如，如果 `MAPE` 为 `5`，则表示预测结果较真实结果平均偏离 `5%`。`MAPE` 的计算公式如下：</p>
+<script type="math/tex; mode=display">
+{MAPE}(y, \hat{y} ) = \frac{\sum_{i=1}^{n}{|\frac{y_{i}-\hat y_{i}}{y_{i}}|}}{n} \times 100</script><p>其中，`y_{i}` 表示真实值，`\hat y_{i}` 表示预测值，`n` 则表示值的个数。`MAPE` 的值越小，说明预测模型拥有更好的精确度。</p>
 <p>使用 Python 实现 MSE 计算函数：</p>
 <figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np</span><br><span class="line"></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">mape</span><span class="hljs-params">(y_true, y_pred)</span>:</span></span><br><span class="line">    <span class="hljs-string">"""</span></span><br><span class="line"><span class="hljs-string">    参数:</span></span><br><span class="line"><span class="hljs-string">    y_true -- 测试集目标真实值</span></span><br><span class="line"><span class="hljs-string">    y_pred -- 测试集目标预测值</span></span><br><span class="line"><span class="hljs-string">    </span></span><br><span class="line"><span class="hljs-string">    返回:</span></span><br><span class="line"><span class="hljs-string">    mape -- MAPE 评价指标</span></span><br><span class="line"><span class="hljs-string">    """</span></span><br><span class="line">    </span><br><span class="line">    n = len(y_true)</span><br><span class="line">    mape = sum(np.abs((y_true - y_pred)/y_true))/n*<span class="hljs-number">100</span></span><br><span class="line">    <span class="hljs-keyword">return</span> mape</span><br></pre></td></tr></table></figure>
 <hr>
@@ -333,7 +337,7 @@ var _hmt = _hmt || [];
                         文章
                     </p>
                     <p class="title has-text-weight-normal">
-                        21
+                        22
                     </p>
                 </div>
             </div>
@@ -555,7 +559,7 @@ var _hmt = _hmt || [];
                 <span class="level-item">机器学习</span>
             </span>
             <span class="level-end">
-                <span class="level-item tag">14</span>
+                <span class="level-item tag">15</span>
             </span>
         </a><ul><li>
         <a class="level is-marginless" href="/categories/机器学习/K-Means/">
@@ -619,7 +623,7 @@ var _hmt = _hmt || [];
                 <span class="level-item">梯度下降</span>
             </span>
             <span class="level-end">
-                <span class="level-item tag">1</span>
+                <span class="level-item tag">2</span>
             </span>
         </a></li><li>
         <a class="level is-marginless" href="/categories/机器学习/线性回归/">
@@ -657,7 +661,7 @@ var _hmt = _hmt || [];
         <h3 class="menu-label">
             标签云
         </h3>
-        <a href="/tags/ECS/" style="font-size: 13.33px;">ECS</a> <a href="/tags/Gradient-Descent/" style="font-size: 10px;">Gradient Descent</a> <a href="/tags/HAC/" style="font-size: 10px;">HAC</a> <a href="/tags/MAE/" style="font-size: 10px;">MAE</a> <a href="/tags/MAPE/" style="font-size: 10px;">MAPE</a> <a href="/tags/MSE/" style="font-size: 10px;">MSE</a> <a href="/tags/Seafile/" style="font-size: 10px;">Seafile</a> <a href="/tags/Ubuntu/" style="font-size: 13.33px;">Ubuntu</a> <a href="/tags/artificial-neural-network/" style="font-size: 10px;">artificial neural network</a> <a href="/tags/bagging/" style="font-size: 10px;">bagging</a> <a href="/tags/blog/" style="font-size: 13.33px;">blog</a> <a href="/tags/boosting/" style="font-size: 10px;">boosting</a> <a href="/tags/cluster/" style="font-size: 10px;">cluster</a> <a href="/tags/decision-tree/" style="font-size: 10px;">decision tree</a> <a href="/tags/deep-learning/" style="font-size: 10px;">deep learning</a> <a href="/tags/github/" style="font-size: 13.33px;">github</a> <a href="/tags/jekyll/" style="font-size: 10px;">jekyll</a> <a href="/tags/k-means/" style="font-size: 13.33px;">k-means</a> <a href="/tags/k-nearest-neighbors/" style="font-size: 10px;">k-nearest neighbors</a> <a href="/tags/linear-regression/" style="font-size: 13.33px;">linear regression</a> <a href="/tags/machine-learning/" style="font-size: 16.67px;">machine learning</a> <a href="/tags/naive-bayes/" style="font-size: 10px;">naive bayes</a> <a href="/tags/next/" style="font-size: 10px;">next</a> <a href="/tags/perceptron/" style="font-size: 10px;">perceptron</a> <a href="/tags/polynomial-regression/" style="font-size: 10px;">polynomial regression</a> <a href="/tags/python/" style="font-size: 20px;">python</a> <a href="/tags/sort/" style="font-size: 13.33px;">sort</a> <a href="/tags/support-vector-machine/" style="font-size: 10px;">support vector machine</a>
+        <a href="/tags/ECS/" style="font-size: 13.33px;">ECS</a> <a href="/tags/Gradient-Descent/" style="font-size: 13.33px;">Gradient Descent</a> <a href="/tags/HAC/" style="font-size: 10px;">HAC</a> <a href="/tags/MAE/" style="font-size: 10px;">MAE</a> <a href="/tags/MAPE/" style="font-size: 10px;">MAPE</a> <a href="/tags/MSE/" style="font-size: 10px;">MSE</a> <a href="/tags/Seafile/" style="font-size: 10px;">Seafile</a> <a href="/tags/Ubuntu/" style="font-size: 13.33px;">Ubuntu</a> <a href="/tags/artificial-neural-network/" style="font-size: 10px;">artificial neural network</a> <a href="/tags/bagging/" style="font-size: 10px;">bagging</a> <a href="/tags/blog/" style="font-size: 13.33px;">blog</a> <a href="/tags/boosting/" style="font-size: 10px;">boosting</a> <a href="/tags/cluster/" style="font-size: 10px;">cluster</a> <a href="/tags/decision-tree/" style="font-size: 10px;">decision tree</a> <a href="/tags/deep-learning/" style="font-size: 10px;">deep learning</a> <a href="/tags/github/" style="font-size: 13.33px;">github</a> <a href="/tags/jekyll/" style="font-size: 10px;">jekyll</a> <a href="/tags/k-means/" style="font-size: 13.33px;">k-means</a> <a href="/tags/k-nearest-neighbors/" style="font-size: 10px;">k-nearest neighbors</a> <a href="/tags/linear-regression/" style="font-size: 13.33px;">linear regression</a> <a href="/tags/machine-learning/" style="font-size: 16.67px;">machine learning</a> <a href="/tags/naive-bayes/" style="font-size: 10px;">naive bayes</a> <a href="/tags/next/" style="font-size: 10px;">next</a> <a href="/tags/perceptron/" style="font-size: 10px;">perceptron</a> <a href="/tags/polynomial-regression/" style="font-size: 10px;">polynomial regression</a> <a href="/tags/python/" style="font-size: 20px;">python</a> <a href="/tags/sort/" style="font-size: 13.33px;">sort</a> <a href="/tags/support-vector-machine/" style="font-size: 10px;">support vector machine</a>
     </div>
 </div>
 
@@ -671,6 +675,25 @@ var _hmt = _hmt || [];
         <h3 class="menu-label">
             最新文章
         </h3>
+        
+        <article class="media">
+            
+            <a href="/2019/03/12/Gradient_Descent_Plus/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/photo/14.jpg" alt="回归预测|梯度下降详解">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-03-12T00:45:00.000Z">2019-03-12</time></div>
+                    <a href="/2019/03/12/Gradient_Descent_Plus/" class="has-link-black-ter is-size-6">回归预测|梯度下降详解</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/机器学习/">机器学习</a> / <a class="has-link-grey -link" href="/categories/机器学习/梯度下降/">梯度下降</a>
+                    </p>
+                </div>
+            </div>
+        </article>
         
         <article class="media">
             
@@ -748,25 +771,6 @@ var _hmt = _hmt || [];
             </div>
         </article>
         
-        <article class="media">
-            
-            <a href="/2019/02/07/Bagging_and_Boosting/" class="media-left">
-                <p class="image is-64x64">
-                    <img class="thumbnail" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/photo/09.jpg" alt="机器学习|装袋和提升方法详解 (Python 语言描述)">
-                </p>
-            </a>
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-02-06T16:00:00.000Z">2019-02-07</time></div>
-                    <a href="/2019/02/07/Bagging_and_Boosting/" class="has-link-black-ter is-size-6">机器学习|装袋和提升方法详解 (Python 语言描述)</a>
-                    <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/机器学习/">机器学习</a> / <a class="has-link-grey -link" href="/categories/机器学习/装袋/">装袋</a>
-                    </p>
-                </div>
-            </div>
-        </article>
-        
     </div>
 </div>
 
@@ -785,7 +789,7 @@ var _hmt = _hmt || [];
                     <span class="level-item">三月 2019</span>
                 </span>
                 <span class="level-end">
-                    <span class="level-item tag">1</span>
+                    <span class="level-item tag">2</span>
                 </span>
             </a>
         </li>
@@ -857,7 +861,7 @@ var _hmt = _hmt || [];
                 <div class="control">
                     <a class="tags has-addons" href="/tags/Gradient-Descent/">
                         <span class="tag">Gradient Descent</span>
-                        <span class="tag is-grey">1</span>
+                        <span class="tag is-grey">2</span>
                     </a>
                 </div>
                 
@@ -990,7 +994,7 @@ var _hmt = _hmt || [];
                 <div class="control">
                     <a class="tags has-addons" href="/tags/machine-learning/">
                         <span class="tag">machine learning</span>
-                        <span class="tag is-grey">14</span>
+                        <span class="tag is-grey">15</span>
                     </a>
                 </div>
                 
@@ -1025,7 +1029,7 @@ var _hmt = _hmt || [];
                 <div class="control">
                     <a class="tags has-addons" href="/tags/python/">
                         <span class="tag">python</span>
-                        <span class="tag is-grey">15</span>
+                        <span class="tag is-grey">16</span>
                     </a>
                 </div>
                 
@@ -1068,6 +1072,25 @@ var _hmt = _hmt || [];
         
         <article class="media">
             
+            <a href="/2019/03/12/Gradient_Descent_Plus/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/photo/14.jpg" alt="回归预测|梯度下降详解">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-03-12T00:45:00.000Z">2019-03-12</time></div>
+                    <a href="/2019/03/12/Gradient_Descent_Plus/" class="has-link-black-ter is-size-6">回归预测|梯度下降详解</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/机器学习/">机器学习</a> / <a class="has-link-grey -link" href="/categories/机器学习/梯度下降/">梯度下降</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
             <a href="/2019/03/09/Gradient_Descent/" class="media-left">
                 <p class="image is-64x64">
                     <img class="thumbnail" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/photo/13.jpg" alt="翻译|Gradient Descent in Python">
@@ -1142,25 +1165,6 @@ var _hmt = _hmt || [];
             </div>
         </article>
         
-        <article class="media">
-            
-            <a href="/2019/02/07/Bagging_and_Boosting/" class="media-left">
-                <p class="image is-64x64">
-                    <img class="thumbnail" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/photo/09.jpg" alt="机器学习|装袋和提升方法详解 (Python 语言描述)">
-                </p>
-            </a>
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-02-06T16:00:00.000Z">2019-02-07</time></div>
-                    <a href="/2019/02/07/Bagging_and_Boosting/" class="has-link-black-ter is-size-6">机器学习|装袋和提升方法详解 (Python 语言描述)</a>
-                    <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/机器学习/">机器学习</a> / <a class="has-link-grey -link" href="/categories/机器学习/装袋/">装袋</a>
-                    </p>
-                </div>
-            </div>
-        </article>
-        
     </div>
 </div>
 
@@ -1179,7 +1183,7 @@ var _hmt = _hmt || [];
                     <span class="level-item">三月 2019</span>
                 </span>
                 <span class="level-end">
-                    <span class="level-item tag">1</span>
+                    <span class="level-item tag">2</span>
                 </span>
             </a>
         </li>
@@ -1251,7 +1255,7 @@ var _hmt = _hmt || [];
                 <div class="control">
                     <a class="tags has-addons" href="/tags/Gradient-Descent/">
                         <span class="tag">Gradient Descent</span>
-                        <span class="tag is-grey">1</span>
+                        <span class="tag is-grey">2</span>
                     </a>
                 </div>
                 
@@ -1384,7 +1388,7 @@ var _hmt = _hmt || [];
                 <div class="control">
                     <a class="tags has-addons" href="/tags/machine-learning/">
                         <span class="tag">machine learning</span>
-                        <span class="tag is-grey">14</span>
+                        <span class="tag is-grey">15</span>
                     </a>
                 </div>
                 
@@ -1419,7 +1423,7 @@ var _hmt = _hmt || [];
                 <div class="control">
                     <a class="tags has-addons" href="/tags/python/">
                         <span class="tag">python</span>
-                        <span class="tag is-grey">15</span>
+                        <span class="tag is-grey">16</span>
                     </a>
                 </div>
                 
