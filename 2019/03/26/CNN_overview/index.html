@@ -1,0 +1,1813 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head><meta name="generator" content="Hexo 3.8.0">
+    <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="utf-8">
+<title>深度学习|卷积神经网络概述 - Laugh&#39;s blog</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+    <meta name="description" content="实现简单手写识别完整代码地址 ：👉  https://github.com/laugh12321/Handwriting-Recognition  提到人工智能，人们都会希望自己的智能机器具备「听说读写」这样像人一样的基本感知表达能力，计算机视觉就是研究如何让机器学会「看」的学科。如今，借助深度学习的推动，计算机视觉已经来到了一个飞速发展的时代。人脸识别，自动驾驶，医学图像分析，计算机视觉的成熟">
+<meta name="keywords" content="Deep learning,TensorFlow,CNN">
+<meta property="og:type" content="article">
+<meta property="og:title" content="深度学习|卷积神经网络概述">
+<meta property="og:url" content="https://www.laugh12321.cn/2019/03/26/CNN_overview/index.html">
+<meta property="og:site_name" content="Laugh&#39;s blog">
+<meta property="og:description" content="实现简单手写识别完整代码地址 ：👉  https://github.com/laugh12321/Handwriting-Recognition  提到人工智能，人们都会希望自己的智能机器具备「听说读写」这样像人一样的基本感知表达能力，计算机视觉就是研究如何让机器学会「看」的学科。如今，借助深度学习的推动，计算机视觉已经来到了一个飞速发展的时代。人脸识别，自动驾驶，医学图像分析，计算机视觉的成熟">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/CNN/2.png">
+<meta property="og:image" content="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/CNN/3.png">
+<meta property="og:image" content="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/CNN/4.png">
+<meta property="og:image" content="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/CNN/5.png">
+<meta property="og:image" content="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/CNN/6.png">
+<meta property="og:image" content="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/CNN/7.png">
+<meta property="og:image" content="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/CNN/8.png">
+<meta property="og:image" content="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/CNN/9.png">
+<meta property="og:image" content="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/CNN/10.png">
+<meta property="og:image" content="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/CNN/11.png">
+<meta property="og:image" content="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/CNN/12.png">
+<meta property="og:image" content="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/CNN/13.png">
+<meta property="og:image" content="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/CNN/14.png">
+<meta property="og:image" content="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/CNN/18.png">
+<meta property="og:image" content="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/CNN/19.png">
+<meta property="og:image" content="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/CNN/21.png">
+<meta property="og:image" content="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/CNN/22.png">
+<meta property="og:image" content="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/CNN/24.png">
+<meta property="og:image" content="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/CNN/25.png">
+<meta property="og:image" content="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/CNN/26.png">
+<meta property="og:image" content="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/CNN/27.png">
+<meta property="og:image" content="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/CNN/28.png">
+<meta property="og:image" content="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/CNN/29.png">
+<meta property="og:updated_time" content="2019-03-26T02:01:04.642Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="深度学习|卷积神经网络概述">
+<meta name="twitter:description" content="实现简单手写识别完整代码地址 ：👉  https://github.com/laugh12321/Handwriting-Recognition  提到人工智能，人们都会希望自己的智能机器具备「听说读写」这样像人一样的基本感知表达能力，计算机视觉就是研究如何让机器学会「看」的学科。如今，借助深度学习的推动，计算机视觉已经来到了一个飞速发展的时代。人脸识别，自动驾驶，医学图像分析，计算机视觉的成熟">
+<meta name="twitter:image" content="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/CNN/2.png">
+
+
+
+
+
+<link rel="icon" href="https://avatars0.githubusercontent.com/u/38065710?s=400&u=80ee4d360562451484188e6f1677fa442720891b&v=4">
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.7.2/css/bulma.css">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Ubuntu:400,600|Source+Code+Pro">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/atelier-sulphurpool-dark.css">
+
+
+    
+    
+    
+    <style>body>.footer,body>.navbar,body>.section{opacity:0}</style>
+    
+
+    
+    
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/css/lightgallery.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/css/justifiedGallery.min.css">
+    
+
+    
+    
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/outdatedbrowser@1.1.5/outdatedbrowser/outdatedbrowser.min.css">
+
+
+    
+    
+    
+    
+
+<link rel="stylesheet" href="/css/back-to-top.css">
+
+
+    
+    
+
+    
+    
+<script>
+var _hmt = _hmt || [];
+(function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?b159f3ddbb6d9197633e49de94480102";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+    
+    
+
+    
+    
+<link rel="stylesheet" href="/css/progressbar.css">
+<script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script>
+
+    
+    
+    
+
+    
+
+
+<link rel="stylesheet" href="/css/style.css"><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</head>
+<body class="is-3-column">
+    <!-- hexo-inject:begin --><!-- hexo-inject:end --><nav class="navbar navbar-main">
+    <div class="container">
+        <div class="navbar-brand is-flex-center">
+            <a class="navbar-item navbar-logo" href="/">
+            
+                <img src="/images/logo.svg" alt="深度学习|卷积神经网络概述" height="28">
+            
+            </a>
+        </div>
+        <div class="navbar-menu">
+            
+            <div class="navbar-start">
+                
+                <a class="navbar-item" href="/">Home</a>
+                
+                <a class="navbar-item" href="/archives">Archives</a>
+                
+                <a class="navbar-item" href="/categories">Categories</a>
+                
+                <a class="navbar-item" href="/tags">Tags</a>
+                
+                <a class="navbar-item" href="/about">About</a>
+                
+            </div>
+            
+            <div class="navbar-end">
+                
+                    
+                    
+                    <a class="navbar-item" target="_blank" title="Download on GitHub" href="http://github.com/laugh12321">
+                        
+                        <i class="fab fa-github"></i>
+                        
+                    </a>
+                    
+                
+                
+                
+                <a class="navbar-item search" title="搜索" href="javascript:;">
+                    <i class="fas fa-search"></i>
+                </a>
+                
+            </div>
+        </div>
+    </div>
+</nav>
+    
+
+    <section class="section">
+        <div class="container">
+            <div class="columns">
+                <div class="column is-8-tablet is-8-desktop is-6-widescreen has-order-2 column-main"><div class="card">
+    
+    <div class="card-image">
+        <span class="image is-7by1">
+            <img class="thumbnail" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/photo/15.jpg" alt="深度学习|卷积神经网络概述">
+        </span>
+    </div>
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2019-03-26T01:54:00.000Z">2019-03-26</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/深度学习/">深度学习</a>&nbsp;/&nbsp;<a class="has-link-grey -link" href="/categories/深度学习/卷积神经网络/">卷积神经网络</a>&nbsp;/&nbsp;<a class="has-link-grey -link" href="/categories/深度学习/卷积神经网络/计算机视觉/">计算机视觉</a>
+                </div>
+                
+                
+                <span class="level-item has-text-grey">
+                    
+                    
+                    1 小时 读完 (大约 6929 个字)
+                </span>
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                深度学习|卷积神经网络概述
+            
+        </h1>
+        <div class="content">
+            <p><strong>实现简单手写识别完整代码地址 ：</strong>👉  <a href="https://github.com/laugh12321/Handwriting-Recognition" target="_blank" rel="noopener">https://github.com/laugh12321/Handwriting-Recognition</a> </p>
+<p>提到人工智能，人们都会希望自己的智能机器具备「听说读写」这样像人一样的基本感知表达能力，计算机视觉就是研究如何让机器学会「看」的学科。如今，借助深度学习的推动，计算机视觉已经来到了一个飞速发展的时代。人脸识别，自动驾驶，医学图像分析，计算机视觉的成熟让这一切变得可能甚至远高于我们人类的工作效率。<br><a id="more"></a><br>在计算机视觉领域，卷积神经网络发挥了重要价值。其实它的思想来源很简单，就像神经网络通过模拟生物神经元工作的思路创建，卷积神经网络也在模拟我们的视觉。1959 年，Hubel 和 Wiesel 的实验表明，生物的视觉处理是从简单的形状开始的，比如边缘、直线、曲线。凭借这一发现，Hubel 和 Wiesel 获得了1981 年的诺贝尔生理学或医学奖。卷积神经网络在逐层学习过程中，也模拟着这个过程，第一层学习比较低层的图片结构，第二层学习依据第一层的结果学习高一级的特征，这样最后一层依据前一层学到的高级特征就能完成我们的学习任务。</p>
+<p><img width="700px" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/CNN/2.png"></p>
+<div style="color: #888; font-size: 10px; text-align: right;"><a href="https://www.google.com/" target="_blank" rel="noopener">©️ 图片来源</a></div>
+
+<p>比如识别人脸，第一层可能学到了简单的线条，第二层学到了轮廓，倒数第二层学到了双眼皮和耳垂，最后一层识别出了她是你的高中班主任。可以说，卷积神经网络现在主宰了计算机视觉领域，通过灵活运用卷积神经网络的结构，会让我们的机器「看」得更多、更清楚。</p>
+<p>卷积神经网络一般是由卷积层、池化层和全连接层堆叠而成的前馈神经网络结构。与前面讲到的前馈神经网络相似，卷积神经网络同样使用反向传播算法进行训练。</p>
+<p><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/CNN/3.png" alt=""></p>
+<p>上图展示了一个基础的卷积神经网络结构。当然，我们通常使用到的网络结构更深、更复杂，一般是由许多卷积层、池化层和全连接层交叉堆叠而成。</p>
+<p>接下来的实验内容将带你逐步了解卷积层和池化层的概念，并构建一个深度卷积神经网络。</p>
+<h2 id="卷积层-Convolution-Layer"><a href="#卷积层-Convolution-Layer" class="headerlink" title="卷积层 Convolution Layer"></a>卷积层 Convolution Layer</h2><p>现在我们来逐步深入了解卷积神经网络。首先，你需要了解一张图片在计算机眼中的样子。</p>
+<p>下图表述了像素矩阵的概念。具体来讲，我们可能看到的是一张图的整体视觉效果，但从计算机中读取图片，图片是通过像素矩阵标识的。每一个像素具有一个数值（0-255），代表图片在该信道像素点位置的大小。</p>
+<p><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/CNN/4.png" alt=""></p>
+<div style="color: #888; font-size: 10px; text-align: right;"><a href="https://dzone.com/articles/a-beginners-guide-to-understanding-convolutional-n?spm=5176.100239.blogcont231697.12.hWUElB" target="_blank" rel="noopener">©️ 图片来源</a></div>
+
+<p>信道这个概念，大家可以理解为颜色。我们常用的 RGB 信道分别代表红绿蓝三种。通过把三个信道的像素矩阵叠加起来，就可以组成我们看到的色彩斑斓的图片了。</p>
+<p><img width="700px" style="border:2px solid #888;" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/CNN/5.png"></p>
+<p>所以在计算机中，图片是一个 \(m\times n\times k\) 的三维矩阵，其中 `m` 是矩阵的高度，`n` 是矩阵的宽度，`k` 是矩阵的深度。基于这样的数据结构，接下来可以进行卷积运算了。</p>
+<h3 id="卷积核-Convolution-Kernel"><a href="#卷积核-Convolution-Kernel" class="headerlink" title="卷积核 Convolution Kernel"></a>卷积核 Convolution Kernel</h3><p>接下来，我们首先需要了解卷积核的概念。如下图所示，我们现在有一个图像矩阵，同时定义了一个卷积核（权值矩阵）。</p>
+<p><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/CNN/6.png" alt=""></p>
+<p>其中，卷积核的作用就是从输入矩阵（图像）中提取一定的特征。动画如下：</p>
+<p><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/CNN/7.png" alt=""></p>
+<div style="color: #888; font-size: 10px; text-align: right;"><a href="https://shafeentejani.github.io/2016-12-20/convolutional-neural-nets/" target="_blank" rel="noopener">©️ 图片来源</a></div>
+
+<p>上面的动画过程，其实就是一个卷积的过程，不知你是否能一眼就看明白？</p>
+<p>简单来讲，我们将卷积核沿着图像矩阵的左上角开始移动，不断运算得到右边的矩阵。卷积计算的过程非常简单，就是乘法和加法的运算。例如，当我们第一次把卷积核置于图像矩阵的左上角时：</p>
+<script type="math/tex; mode=display">
+1 \times 0 + 2 \times 1 + 2 \times 1 + 1 \times 2 = 6</script><p>通过不断平移卷积核，同时与输入矩阵进行卷积操作，就可以得到卷积后矩阵。</p>
+<p>如何理解卷积的过程，最简单的就是把卷积核看作是一片滤镜，原矩阵通过滤镜之后就得到了新的特征矩阵。</p>
+<p>如果你想形象一点了解卷积核究竟在做一件什么事情，就可以把卷积后的图片与原图对比呈现。下图就是一张图片通过不同卷积核做卷积操作后的结果，我们可以明显察觉到不同的卷积核可以帮助我们分解出原图片不同层次的特征。</p>
+<p><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/CNN/8.png" alt=""></p>
+<p>所以，如果卷积核能够帮助分解图片特征并运用到机器学习的过程中，例如识别一辆车能看到四个轮子以及车窗的细节，你可以想象这将会对提升准确率有极大帮助。</p>
+<h3 id="卷积步长-Stride"><a href="#卷积步长-Stride" class="headerlink" title="卷积步长 Stride"></a>卷积步长 Stride</h3><p>上面的卷积过程相信你已经看明白了。这时候有一个问题，如果我们在对图片卷积时都依次移动，效率会不会比较低？</p>
+<p>是的，对于一些很大的图片，每次只移动一步运算效率会很低下，同时分解得到的特征也很容易冗余。于是，可以引入一个超参数能对每一次移动的步数进行调节，我们把它称之为卷积步长 Stride。</p>
+<p>同样，我们通过一组动图来查看不同卷积步长 Stride 的移动效果：</p>
+<p>当卷积步长为 <code>1</code> 时，也就是和上面相同的移动过程：</p>
+<p><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/CNN/9.png" alt=""></p>
+<div style="color: #888; font-size: 10px; text-align: right;"><a href="https://github.com/vdumoulin/conv_arithmetic" target="_blank" rel="noopener">©️ 图片来源</a></div>
+
+<p>此时，输出矩阵大小为：</p>
+<script type="math/tex; mode=display">
+output = (input - kernel) + 1</script><p>如果我们将卷积步长设为 <code>2</code>，就是下面的效果：</p>
+<p><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/CNN/10.png" alt=""></p>
+<div style="color: #888; font-size: 10px; text-align: right;"><a href="https://github.com/vdumoulin/conv_arithmetic" target="_blank" rel="noopener">©️ 图片来源</a></div>
+
+<p>可以发现，当 <code>Stride=2</code> 横向移动以及纵向移动时，每一步都跳过了一个单元格。也就是从移动 <code>1</code> 步变成了 <code>2</code> 步。</p>
+<p>此时，输出矩阵大小为（向下取整）：</p>
+<script type="math/tex; mode=display">
+output = \lfloor \frac{input - kernel}{stride} \rfloor + 1</script><h3 id="边距扩展-Padding"><a href="#边距扩展-Padding" class="headerlink" title="边距扩展 Padding"></a>边距扩展 Padding</h3><p>介绍了步长的概念，接下来再介绍一个卷积操作过程中的重要概念，也就是 Padding。Padding 也就是边距，当然我们一般都直接使用英文。步长解决了卷积效率低的问题，但又造成了新的问题。你会发现，随着步长的增大，卷积输出的矩阵将持续变小。但是，在构建网络的时候我们往往希望输出矩阵的大小为指定大小，而不完全由卷积步长的变换而左右。于是，就有了 Padding 的操作。</p>
+<p>一旦我们确定了原矩阵的大小和步长的大小，得到的卷积矩阵大小将是确定的。假如我们希望卷积得到的矩阵大小变大，在不改变卷积核大小和步长的前提下，唯一的方法就是调整原矩阵的大小。于是，我们就通过对原矩阵进行 Padding 操作（扩大边距）达到目的。</p>
+<p>Padding 比较常见的操作是在输入矩阵最外围补上一圈 <code>0</code> 之后，再参与卷积运算。这样，我们就可以自行控制输出矩阵的大小。下面列举几个常见的 Padding 方式：</p>
+<p>Arbitrary Padding 在输入图像周围填充 <code>0</code>，使输出矩阵尺寸大于输入尺寸。例如，下图对 \(5\times5\) 的输入矩阵外围补上 2 圈 <code>0</code> 后，与 \(4\times4\) 的卷积核做卷积运算，最终得到 \(6\times6\) 的输出矩阵的过程。</p>
+<p><img width="300px" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/CNN/11.png"></p>
+<div style="color: #888; font-size: 10px; text-align: right;"><a href="https://github.com/vdumoulin/conv_arithmetic" target="_blank" rel="noopener">©️ 图片来源</a></div>
+
+<p>此时，输出矩阵大小为：</p>
+<script type="math/tex; mode=display">
+output = (input - kernel) + 2 * padding + 1</script><p>Half Padding 也叫 Same Padding，它希望得到的输出矩阵尺寸与输入尺寸一致。下图即为我们对  \(5\times5\)  的输入矩阵外围补上一圈 <code>0</code> 后，与  \(3\times3\)  的卷积核做卷积运算，最终依然得到  \(5\times5\)  的输出矩阵的过程。</p>
+<p><img width="300px" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/CNN/12.png"></p>
+<div style="color: #888; font-size: 10px; text-align: right;"><a href="https://github.com/vdumoulin/conv_arithmetic" target="_blank" rel="noopener">©️ 图片来源</a></div>
+
+<p>还有一种是 Full Padding，卷积核从输入矩阵左角第一个方块开始，依次移动到右下角的最后一个方块。</p>
+<p><img width="300px" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/CNN/13.png"></p>
+<div style="color: #888; font-size: 10px; text-align: right;"><a href="https://github.com/vdumoulin/conv_arithmetic" target="_blank" rel="noopener">©️ 图片来源</a></div>
+
+<p>其实，Padding 并不是说只有这几种，还有其他的一些形式，包括 Padding 和 Stride 结合在一起的一些卷积形式，甚至你可以自定义 Padding 和 Stride 的规则，这里也就不再一一介绍了。</p>
+<h3 id="高维多卷积核过程"><a href="#高维多卷积核过程" class="headerlink" title="高维多卷积核过程"></a>高维多卷积核过程</h3><p>前面，我们已经介绍了矩阵通过单个卷积核的过程，相信你已经对卷积核、步长、Padding 等概念非常熟悉了。</p>
+<p>一张黑白图片形成了单个像素矩阵，但如果是一张用 RGB 通道的彩色图片，将会形成 3 维的像素矩阵。这该怎么办呢？</p>
+<p>对于一个 \(m\times n\times k\) 的三维矩阵，它是如何在这种二维结构的卷积下操作的呢？其实，在卷积神经网络设计上有一个重要原则，就是卷积核也是一个三维 \(a\times b \times k\) 的矩阵(通常 \(a=b\)，且常取 <code>1，3，5，7</code> 这样的数)。更重要的是，一定要保证输入矩阵大小与卷积核大小在第三个维度上值相等。</p>
+<p>这样，我们在第三个维度上对相同深度的输入矩阵与卷积核做如上的卷积运算时，最后叠加所有深度的值得到一个二维的输出矩阵。也就是说，对 \(m\times n\times k\) 的输入矩阵与 \(a\times b \times k\) 的卷积核，我们如果做一个 \(stride=s\)，\(padding=p\) 的卷积操作，那么将会得到一个 \([(m+2p-a)/s+1]\times [(n+2p-a)/s+1]\) 的二维矩阵。</p>
+<p>那么如何保证输出矩阵依然是一个三维矩阵呢？其实，只需要每一层都由多个卷积核来实现操作就行了，最后把得到的所有二维矩阵叠起来，就得到了一个 \([(m+2p-a)/s+1]\times [(n+2p-a)/s+1]\times c\)，\(c\) 为卷积核的个数的输出矩阵。</p>
+<p>整个过程可以由下图更直观地表示，一个 \(5\times5\times3\) 的输入矩阵被两个 \(3\times3\times3\) 的卷积核执行 \(stride = 2\)，\(padding = 1\) 卷积后，得到了 \(3\times3\times2\) 的输出矩阵：</p>
+<p><img width="700px" style="border:2px solid #888;" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/CNN/14.png"></p>
+<div style="color: #888; font-size: 10px; text-align: right;"><a href="http://cs231n.github.io/convolutional-networks/" target="_blank" rel="noopener">©️ 图片来源</a></div>
+
+<p>以上就是一个高维矩阵通过多卷积核的执行过程。</p>
+<h2 id="池化层-Pooling-Layer"><a href="#池化层-Pooling-Layer" class="headerlink" title="池化层 Pooling Layer"></a>池化层 Pooling Layer</h2><p>上面介绍了卷积层，接着介绍卷积神经网络中另一个非常重要的层，也就是池化层。池化操作其实就是降采样操作过程。我们都知道，图片是一个非常大的训练数据，所以想达到很好的训练性能，只有卷积层是不够的。池化层通过降采样的方式，在不影响图像质量的情况下，压缩图片，达到减少训练参数的目的。</p>
+<p>需要注意的是，往往在几个卷积层之后我们就会引入池化层，池化层没有需要学习的参数，且池化层在每一个深度上独立完成，就是说池化后图像的纵深保持不变。下面介绍两种常用的池化方式。</p>
+<h3 id="最大值池化"><a href="#最大值池化" class="headerlink" title="最大值池化"></a>最大值池化</h3><p>对于池化操作，我们需要界定一个过滤器和步长。最大值池化，取输入矩阵在过滤器大小上矩阵块的最大值作为输出矩阵对应位置输出。如下图：</p>
+<p><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/CNN/18.png" alt=""></p>
+<h3 id="平均值池化"><a href="#平均值池化" class="headerlink" title="平均值池化"></a>平均值池化</h3><p>除了最大值池化，另一个常用的池化方法是平均值池化。顾名思义，这是取输入矩阵在过滤器大小上矩阵块的平均值作为输出矩阵对应位置输出。如下图：</p>
+<p><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/CNN/19.png" alt=""></p>
+<p>相比于卷积，池化的过程就更加简单了。相信你通过上面的示意图能很清楚的看出最大池化和平均池化的过程。</p>
+<p><strong>CNN 实现数字手写识别的完整代码可以在我的 GitHub 上查看 ：</strong> 👉 <a href="https://github.com/laugh12321/Handwriting-Recognition/blob/master/CNN_TF.ipynb" target="_blank" rel="noopener">https://github.com/laugh12321/Handwriting-Recognition/blob/master/CNN_TF.ipynb</a></p>
+<h2 id="经典的卷积神经网络"><a href="#经典的卷积神经网络" class="headerlink" title="经典的卷积神经网络"></a>经典的卷积神经网络</h2><p>深度学习领域有很多的技巧需要大量的探索与实践。比如对于一个人脸识别任务，我们搭建的网络具有很强的多样性。大量数据集和多次实验结果下，有些经典的神经网络孕育而生。这些网络从诞生时到现在都有着独特的优越性能和革命性的创新思想。所以，建议大家在深度学习的领域学习中，熟悉这些经典神经网络的架构，这将进一步深化我们对深度神经网络的理解。</p>
+<p>实际上，在对神经网络的理论探索中，尚不具有十分充分的理论证明为什么一些经典网络有如此强大的性能。当然，深度学习还有很多未得到解释的地方，包括神经网络每一步究竟在学习什么，每个参数是如何影响学习性能或者迭代收敛过程，这些问题都有待进一步探寻。所以说，深度神经网络的调参过程充满了「玄学」的感觉，这需要大量的实践积累。</p>
+<h3 id="LeNet-神经网络"><a href="#LeNet-神经网络" class="headerlink" title="LeNet 神经网络"></a>LeNet 神经网络</h3><p>LeNet-5 是一个很早的经典卷积神经网络。Yann LeCun 大牛（被称作卷积神经网络之父）在 1998 年搭建了 LeNet，并且在手写识别网络(MNIST)上广泛使用。LeNet 神经网络的架构如下图：</p>
+<p><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/CNN/21.png" alt=""></p>
+<div style="color: #888; font-size: 10px; text-align: right;"><a href="https://indoml.com/2018/03/07/student-notes-convolutional-neural-networks-cnn-introduction/" target="_blank" rel="noopener">©️ 图片来源</a></div>
+
+<p>其中，网络中的下采样采用了平均值池化。前面各层都由 tanh 激活，最后一层由 RBF 激活。经过测试，LeNet 在 6 万张原始图片的数据集中，错误率能降低到 0.95%。</p>
+<p>LeNet 一经发布就带来了一波卷积神经网络潮流。很可惜，由于那个年代计算能力不强，使得卷积神经网络的多样性受到严重限制，研究者都不愿意将网络深化，卷积神经网络只掀起了一波热潮后又几乎无人问津。</p>
+<h3 id="AlexNet-神经网络"><a href="#AlexNet-神经网络" class="headerlink" title="AlexNet 神经网络"></a>AlexNet 神经网络</h3><p>2012 年 ImageNet 比赛上，一个卷积神经网络的表现力大放异彩，这就是 AlexNet。经过了十几年的硬件发展，计算机运算能力大幅增强，我们可运用的数据也大幅增加，AlexNet 由此孕育而生。</p>
+<p>AlexNet 的结构很像 LeNet-5，但是网络变得更大更深。同时，AlexNet 是第一个将卷积层叠层后再叠上池化层的网络。不仅如此，AlexNet 运用上 Dropout（训练时，按照一定的概率将神经元暂时从网络中丢弃）和数据增强两种方法降低过拟合，以及 LRN(local responce normalization) 做为规划层来促使神经元学到更加广泛的特征。可以说，AlexNet 的出色表现，让计算机视觉领域开始逐渐由卷积神经网络主宰。</p>
+<p>下面就是 AlexNet 的网络结构图：</p>
+<p><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/CNN/22.png" alt=""></p>
+<div style="color: #888; font-size: 10px; text-align: right;"><a href="https://indoml.com/2018/03/07/student-notes-convolutional-neural-networks-cnn-introduction/" target="_blank" rel="noopener">©️ 图片来源</a></div>
+
+<p>原作者在训练 AlexNet 时，一个 GPU 负责图中顶层部分，一个 GPU 运行图中底层部分，GPU 之间仅在某些层互相通信。5 个卷积层，5 个池化层，3 个全连接层，大约 5000 万个可调参数组成了这个经典的卷积神经网络。最后的全连接层输出到 1000 维的 softmax 层，产生一个覆盖 1000 类标记的分布。最终完成了对 ImageNet 的分类任务。</p>
+<p><strong>模仿 AlexNet 搭建一个卷积神经网络用于手写识别网络的完整代码可以在我的 GitHub 上查看 ：</strong> 👉 <a href="https://github.com/laugh12321/Handwriting-Recognition/blob/master/AlexNet_TF.ipynb" target="_blank" rel="noopener">https://github.com/laugh12321/Handwriting-Recognition/blob/master/AlexNet_TF.ipynb</a></p>
+<h3 id="VGG-神经网络"><a href="#VGG-神经网络" class="headerlink" title="VGG 神经网络"></a>VGG 神经网络</h3><p>VGG Net 可以看成是 Alex Net 的加深版本，同样运用 Alex Net 所带来的思路。VGG Net 拥有 5 个卷积组，2 层全图像连接特征和 1 层全连接分类特征。另外，Alex Net 只有 8 层，但是 VGG Net 通常有 16 到 19 层。</p>
+<p>VGG Net 的革命性在于，它在论文中给出了不同的卷积层配置方法，而且从论文实验结果可以看出，随着卷积层从 8 到 16 一步步加深，通过加深卷积层数准确率已经达到了瓶颈数值。这项研究表明了单纯添加卷积层往往并不能起到更好的效果，这将促使以后的卷积神经网络朝向增强卷积层功能的思路发展。</p>
+<p>下图描述了一种配置的 VGG 网络结构：</p>
+<p><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/CNN/24.png" alt=""></p>
+<div style="color: #888; font-size: 10px; text-align: right;"><a href="https://indoml.com/2018/03/07/student-notes-convolutional-neural-networks-cnn-introduction/" target="_blank" rel="noopener">©️ 图片来源</a></div>
+
+<h3 id="Google-Net-神经网络"><a href="#Google-Net-神经网络" class="headerlink" title="Google Net 神经网络"></a>Google Net 神经网络</h3><p>自 VGG Net 之后，卷积神经网络朝向另一个方向演化，那就是增强卷积模块的功能。</p>
+<p>谷歌公司提出的 Google Net 可以说带来了革命性的成果。虽然乍一看好像是因为它将网络变深了，实际上是其中的一个小模块的设计技巧加强了所有卷积层的学习性能。谷歌公司把它称作 Inception，灵感来源于当时同时期的电影 Inception（盗梦空间）。Inception 模块如下图所示：</p>
+<p><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/CNN/25.png" alt=""></p>
+<div style="color: #888; font-size: 10px; text-align: right;"><a href="https://indoml.com/2018/03/07/student-notes-convolutional-neural-networks-cnn-introduction/" target="_blank" rel="noopener">©️ 图片来源</a></div>
+
+<p>这个多层感知卷积层的引入，来源于一个很直观的思想，就是一个卷积网络里面的局部稀疏最优结构往往可以由简单可复用的密集组合来近似或者替代。就像上图里面 <code>1x1, 3x3, 5x5</code> 的卷积层，与 <code>3x3</code> 的池化层的组合一个 <code>Inception</code>。这样做是出于以下几点考虑：</p>
+<ol>
+<li>不同尺寸的卷积核可以提取不同尺度的信息。</li>
+<li>采用 <code>1x1,3x3, 5x5</code> 可以方便对齐，Padding 分别为 <code>0,1,2</code> 就可以对齐。</li>
+<li>由于池化层在 CNN 网络里面的成功运用，也把池化层当做组合的一部分，在 GoogleNet 论文里也说明了它的有效性。</li>
+</ol>
+<p>由于 Google Net 是好几个 Inception 模块的堆叠，而且往往越后面的 Inception 模块能够提取到更加高级抽象的特征。</p>
+<p>前一层经过 \(1\times 1\) 或者池化层降维后，在全连接层过滤器将 \(1\times1\), \(3\times3\), \(5\times5\) 的卷积结果连接起来，使网络的深度和宽度均可以扩大。论文显示，Inception 模块使整个网络的训练过程有 2 到 3 倍的加速，且更容易捕捉到关键特征用以学习。同时，由于网络很深，为了避免梯度消失的问题，Google Net 还巧妙地在不同深度增加了两个损失函数来训练。</p>
+<p>整个 Google Net 结构如下图：</p>
+<p><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/CNN/26.png" alt=""></p>
+<div style="color: #888; font-size: 10px; text-align: right;"><a href="https://indoml.com/2018/03/07/student-notes-convolutional-neural-networks-cnn-introduction/" target="_blank" rel="noopener">©️ 图片来源</a></div>
+
+<p>可以看出 Google Net 已经是非常深的网络了，你可以通过新标签页打开图片查看细节。Google Net 所依赖的训练时间与运算成本都上了一个台阶，Inception 这个创意性的设计，极大地优化了卷积神经网络的学习过程。</p>
+<h3 id="ResNet-神经网络"><a href="#ResNet-神经网络" class="headerlink" title="ResNet 神经网络"></a>ResNet 神经网络</h3><p>如果把网络加深和增强卷积模块功能两个演化方向相结合，就形成了 ResNet。2015 年何明凯团队发布的 ResNet 可以说影响了整个深度学习界。首先让我们看看这个网络有多么震撼：</p>
+<p><img width="500px" style="border:2px solid #888;" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/CNN/27.png"></p>
+<div style="color: #888; font-size: 10px; text-align: right;"><a href="https://indoml.com/2018/03/07/student-notes-convolutional-neural-networks-cnn-introduction/" target="_blank" rel="noopener">©️ 图片来源</a></div>
+
+<p>ResNet 的训练深度达到了 152 层，上图（最右）仅是一个迷你型的 34 层 ResNet 结构。左图是 VGG-19，中间是不具备 Residual 结构的深度神经网络。 </p>
+<p>可以很明显的看出，ResNet 将部分网络进行了一个跳层传递的操作。网络在深化的过程中，可能会出现一种叫网络退化的问题，ResNet 通过引入这个跳层传递，将前面某层的结果与这一层的卷积结果相加，去优化一个残差来规避这些问题。</p>
+<p>ResNet 将我们的网络深度倍数化增加，从最多 20 层一下子拉到了 100 层以上，而且网络也不再是平常的层数堆叠，最终模型预测准确率已经达到了一个巨大的量变提高。</p>
+<p>这些经典的神经网络都有它的开创性和典型性，我们可以像上面实现 AlexNet 一样，用 Tensorflow 实现其他网络。但后面的网络结构都太复杂，实验就不再动手搭建。如果你有兴趣，可以依据网络结构，仔细研读该网络的论文，试着动手搭建这些网络。</p>
+<ul>
+<li>Deep Residual Learning for Image Recognition: <a href="https://arxiv.org/abs/1512.03385" target="_blank" rel="noopener">arXiv:1512.03385</a></li>
+</ul>
+<h3 id="卷积神经网络的发展史"><a href="#卷积神经网络的发展史" class="headerlink" title="卷积神经网络的发展史"></a>卷积神经网络的发展史</h3><p>最后，我们通过一张图来总结卷积神经网络的发展史：</p>
+<p><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/CNN/28.png" alt=""></p>
+<h2 id="为什么要使用卷积神经网络？"><a href="#为什么要使用卷积神经网络？" class="headerlink" title="为什么要使用卷积神经网络？"></a>为什么要使用卷积神经网络？</h2><p>这是一个很关键的问题，大家肯定也有这样的疑问。之前我们的神经网络像全连接网络这样，让每个神经元互相连接然后激活，已经可以达到不错的学习效果，也可以拟合去学习各种复杂的过程。</p>
+<p>那么，经过以上对卷积神经网络的深入了解后，你能否简要回答这个问题呢？</p>
+<p>形象地来讲，卷积神经网络保留了图像的空间信息。</p>
+<p>19 世纪 60 年代，科学家通过对猫的视觉皮层细胞研究发现，每一个视觉神经元只会处理一小块区域的视觉图像，即感受野。我们也看到在卷积神经网络中，一个卷积层可以有多个不同的卷积核（权值），而每个卷积核在输入图像上滑动且每次只处理一小块图像。</p>
+<p>这样，输入端的卷积层可以提取到图像中最基础的特征，比如不同方向的直线或者拐角；接着再组合成高阶特征，比如三角形、正方形等；再继续抽象组合，得到眼睛、鼻子和嘴等五官；最后再将五官组合成一张脸，完成匹配识别。过程中，每个卷积层提取的特征，在后面的层中都会抽象组合成更高阶的特征，最终习得足够多足够关键的特征，完成学习任务。</p>
+<p>从运算上讲，卷积层具有两个关键优势，分别是局部连接和权值共享。</p>
+<p>每个神经元只与上一层的一个局部区域连接，该连接的空间大小可视为神经网络神经元的感受野。权值共享的意义在于，当前层在深度方向上每层神经元都使用同样的权重和偏差。</p>
+<p>这里作了一个合理的假设：如果一个特征在计算某个空间位置 \((x,y)\) 的时候有用，那么它在计算另一个不同位置 \((x2,y2)\) 的时候也有用。我们将局部连接和权值共享结合，就降低了参数量，使训练复杂度大大下降。这样的操作还能减轻过拟合，权值共享同时还赋予了卷积网络对平移的容忍性。</p>
+<p>试想，如果我们用全连接神经网络来做图像识别任务，图片是由像素点组成的，用矩阵表示的，\(28\times28\) 的矩阵，我们得把它「拍平」后，变成一个 \(784\) 的一列向量。如果该列向量和隐含层的 `15` 个神经元连接，就有 \(784\times15=11760\) 个权重 `w`。如果，隐含层和最后的输出层的 `10` 个神经元连接，就有 \(11760\times10=117600\) 个权重 `w` 。最后，再加上隐含层的偏置项 `15` 个和输出层的偏置项 `10` 个，就得到了 `117625` 个参数。这是多么恐怖。</p>
+<p>下图表示一个三层全连接网络的结构，输入为图片即 `784` 个神经元，隐藏层 `15` 个神经元，输出层 `10` 个神经元：</p>
+<p><img width="600px" style="border:2px solid #888;" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/CNN/29.png"></p>
+<div style="color: #888; font-size: 10px; text-align: right;"><a href="https://en.wikipedia.org/wiki/Artificial_neural_network" target="_blank" rel="noopener">©️ 图片来源</a></div>
+
+<p>那么，试想我们如果用卷积神经网络来解决。卷积层里，我们只需要学习卷积核（权值），就像前面搭建的卷积神经网络中，第一个卷积层只需要学习 \(3\times3\times1\times8=72\) 个参数，第二层学习 \(3\times3\times8\times10=720\) 个参数，池化层不需要学习任何参数，全连接层参数也大幅下降。这样算下来，所需要学习的参数相比上面的三层全连接层已经大幅减少。这就是卷积神经网络的好处。</p>
+
+        </div>
+        
+        <div class="level is-size-7 is-uppercase">
+            <div class="level-start">
+                <div class="level-item">
+                    <span class="is-size-6 has-text-grey has-mr-7">#</span>
+                    <a class="has-link-grey -link" href="/tags/CNN/">CNN</a>, <a class="has-link-grey -link" href="/tags/Deep-learning/">Deep learning</a>, <a class="has-link-grey -link" href="/tags/TensorFlow/">TensorFlow</a>
+                </div>
+            </div>
+        </div>
+        
+        
+        
+    </div>
+</div>
+
+
+
+<div class="card">
+    <div class="card-content">
+        <h3 class="menu-label has-text-centered">喜欢这篇文章？打赏一下作者吧</h3>
+        <div class="buttons is-centered">
+            
+                
+<a class="button is-info donate">
+    <span class="icon is-small">
+        <i class="fab fa-alipay"></i>
+    </span>
+    <span>支付宝</span>
+    <div class="qrcode"><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/reward/alipay-reward-image.jpg" alt="支付宝"></div>
+</a>
+
+                
+                
+<a class="button is-success donate">
+    <span class="icon is-small">
+        <i class="fab fa-weixin"></i>
+    </span>
+    <span>微信</span>
+    <div class="qrcode"><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/reward/wechat-reward-image.jpg" alt="微信"></div>
+</a>
+
+                
+        </div>
+    </div>
+</div>
+
+
+
+<div class="card card-transparent">
+    <div class="level post-navigation is-flex-wrap is-mobile">
+        
+        
+        <div class="level-end">
+            <a class="level level-item has-link-grey  article-nav-next" href="/2019/03/12/Gradient_Descent_Plus/">
+                <span class="level-item">回归预测|梯度下降详解</span>
+                <i class="level-item fas fa-chevron-right"></i>
+            </a>
+        </div>
+        
+    </div>
+</div>
+
+
+
+<div class="card">
+    <div class="card-content">
+        <h3 class="title is-5 has-text-weight-normal">评论</h3>
+        
+<div id="valine-thread"></div>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+<script>
+    new Valine({
+        el: '#valine-thread' ,
+        notify: true,
+        verify: false,
+        app_id: 'zzN9t0v9tihDucYhBujOYJUJ-gzGzoHsz',
+        app_key: 'gngT5gD2rOh2hc7C62097Ql6',
+        placeholder: 'Say something...'
+    });
+</script>
+
+    </div>
+</div>
+</div>
+                
+
+
+
+
+<div class="column is-4-tablet is-4-desktop is-3-widescreen  has-order-1 column-left ">
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <nav class="level">
+            <div class="level-item has-text-centered">
+                <div>
+                    <img class="image is-128x128 has-mb-6" src="https://avatars0.githubusercontent.com/u/38065710?s=400&amp;u=80ee4d360562451484188e6f1677fa442720891b&amp;v=4" alt="Laugh">
+                    
+                    <p class="is-size-4 is-block">
+                        Laugh
+                    </p>
+                    
+                    
+                    <p class="is-size-6 is-block">
+                        The life I want, there is no shortcut.
+                    </p>
+                    
+                    
+                    <p class="is-size-6 is-flex is-flex-center has-text-grey">
+                        <i class="fas fa-map-marker-alt has-mr-7"></i>
+                        <span>Northern Hemisphere</span>
+                    </p>
+                    
+                </div>
+            </div>
+        </nav>
+        <nav class="level is-mobile">
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        文章
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        23
+                    </p>
+                </div>
+            </div>
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        分类
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        26
+                    </p>
+                </div>
+            </div>
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        标签
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        31
+                    </p>
+                </div>
+            </div>
+        </nav>
+        <div class="level">
+            <a class="level-item button is-link is-rounded" href="http://github.com/laugh12321">
+                follow</a>
+        </div>
+        
+        
+        <div class="level is-mobile">
+            
+            <a class="level-item button is-white is-marginless" target="_blank" title="Github" href="http://github.com/laugh12321">
+                
+                <i class="fab fa-github"></i>
+                
+            </a>
+            
+            <a class="level-item button is-white is-marginless" target="_blank" title="Steam" href="https://steamcommunity.com/profiles/76561198445204275/">
+                
+                <i class="fab fa-steam-square"></i>
+                
+            </a>
+            
+            <a class="level-item button is-white is-marginless" target="_blank" title="RSS" href="/">
+                
+                <i class="fas fa-rss"></i>
+                
+            </a>
+            
+        </div>
+        
+    </div>
+</div>
+    
+        
+    
+        
+
+<div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+        <h3 class="menu-label">
+            链接
+        </h3>
+        <ul class="menu-list">
+        
+            <li>
+                <a class="level is-mobile" href="https://styx11.github.io/" target="_blank">
+                    <span class="level-left">
+                        <span class="level-item">Styx</span>
+                    </span>
+                    <span class="level-right">
+                        <span class="level-item tag">styx11.github.io</span>
+                    </span>
+                </a>
+            </li>
+        
+            <li>
+                <a class="level is-mobile" href="http://luuuuyang.com/" target="_blank">
+                    <span class="level-left">
+                        <span class="level-item">Luuuuyang</span>
+                    </span>
+                    <span class="level-right">
+                        <span class="level-item tag">luuuuyang.com</span>
+                    </span>
+                </a>
+            </li>
+        
+            <li>
+                <a class="level is-mobile" href="https://www.vseu.com/" target="_blank">
+                    <span class="level-left">
+                        <span class="level-item">幸运草</span>
+                    </span>
+                    <span class="level-right">
+                        <span class="level-item tag">www.vseu.com</span>
+                    </span>
+                </a>
+            </li>
+        
+            <li>
+                <a class="level is-mobile" href="https://tea9.xyz/" target="_blank">
+                    <span class="level-left">
+                        <span class="level-item">tea9</span>
+                    </span>
+                    <span class="level-right">
+                        <span class="level-item tag">tea9.xyz</span>
+                    </span>
+                </a>
+            </li>
+        
+            <li>
+                <a class="level is-mobile" href="https://hongjay233.github.io/" target="_blank">
+                    <span class="level-left">
+                        <span class="level-item">HongJay</span>
+                    </span>
+                    <span class="level-right">
+                        <span class="level-item tag">hongjay233.github.io</span>
+                    </span>
+                </a>
+            </li>
+        
+            <li>
+                <a class="level is-mobile" href="https://www.itfire.cn/" target="_blank">
+                    <span class="level-left">
+                        <span class="level-item">仓鼠‘s blog</span>
+                    </span>
+                    <span class="level-right">
+                        <span class="level-item tag">www.itfire.cn</span>
+                    </span>
+                </a>
+            </li>
+        
+            <li>
+                <a class="level is-mobile" href="https://blog.wzy1999.wang/" target="_blank">
+                    <span class="level-left">
+                        <span class="level-item">执念</span>
+                    </span>
+                    <span class="level-right">
+                        <span class="level-item tag">blog.wzy1999.wang</span>
+                    </span>
+                </a>
+            </li>
+        
+        </ul>
+        </div>
+    </div>
+</div>
+
+
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                分类
+            </h3>
+            <ul class="menu-list">
+            <li>
+        <a class="level is-marginless" href="/categories/Python/">
+            <span class="level-start">
+                <span class="level-item">Python</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">2</span>
+            </span>
+        </a><ul><li>
+        <a class="level is-marginless" href="/categories/Python/排序算法/">
+            <span class="level-start">
+                <span class="level-item">排序算法</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">2</span>
+            </span>
+        </a></li></ul></li><li>
+        <a class="level is-marginless" href="/categories/Ubuntu/">
+            <span class="level-start">
+                <span class="level-item">Ubuntu</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">2</span>
+            </span>
+        </a><ul><li>
+        <a class="level is-marginless" href="/categories/Ubuntu/ECS/">
+            <span class="level-start">
+                <span class="level-item">ECS</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">2</span>
+            </span>
+        </a></li></ul></li><li>
+        <a class="level is-marginless" href="/categories/博客/">
+            <span class="level-start">
+                <span class="level-item">博客</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">2</span>
+            </span>
+        </a><ul><li>
+        <a class="level is-marginless" href="/categories/博客/GitHub-Pages/">
+            <span class="level-start">
+                <span class="level-item">GitHub Pages</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">1</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/博客/主题优化/">
+            <span class="level-start">
+                <span class="level-item">主题优化</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">1</span>
+            </span>
+        </a></li></ul></li><li>
+        <a class="level is-marginless" href="/categories/机器学习/">
+            <span class="level-start">
+                <span class="level-item">机器学习</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">15</span>
+            </span>
+        </a><ul><li>
+        <a class="level is-marginless" href="/categories/机器学习/K-Means/">
+            <span class="level-start">
+                <span class="level-item">K-Means</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">3</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/机器学习/K-近邻算法/">
+            <span class="level-start">
+                <span class="level-item">K-近邻算法</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">1</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/机器学习/决策树/">
+            <span class="level-start">
+                <span class="level-item">决策树</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">1</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/机器学习/多项式回归/">
+            <span class="level-start">
+                <span class="level-item">多项式回归</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">1</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/机器学习/感知机/">
+            <span class="level-start">
+                <span class="level-item">感知机</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">1</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/机器学习/支持向量机/">
+            <span class="level-start">
+                <span class="level-item">支持向量机</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">1</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/机器学习/朴素贝叶斯/">
+            <span class="level-start">
+                <span class="level-item">朴素贝叶斯</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">1</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/机器学习/梯度下降/">
+            <span class="level-start">
+                <span class="level-item">梯度下降</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">2</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/机器学习/线性回归/">
+            <span class="level-start">
+                <span class="level-item">线性回归</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">2</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/机器学习/装袋/">
+            <span class="level-start">
+                <span class="level-item">装袋</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">1</span>
+            </span>
+        </a></li></ul></li><li>
+        <a class="level is-marginless" href="/categories/深度学习/">
+            <span class="level-start">
+                <span class="level-item">深度学习</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">2</span>
+            </span>
+        </a><ul><li>
+        <a class="level is-marginless" href="/categories/深度学习/卷积神经网络/">
+            <span class="level-start">
+                <span class="level-item">卷积神经网络</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">1</span>
+            </span>
+        </a></li></ul></li>
+            </ul>
+        </div>
+    </div>
+</div>
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <h3 class="menu-label">
+            标签云
+        </h3>
+        <a href="/tags/CNN/" style="font-size: 10px;">CNN</a> <a href="/tags/Deep-learning/" style="font-size: 10px;">Deep learning</a> <a href="/tags/ECS/" style="font-size: 13.33px;">ECS</a> <a href="/tags/Gradient-Descent/" style="font-size: 13.33px;">Gradient Descent</a> <a href="/tags/HAC/" style="font-size: 10px;">HAC</a> <a href="/tags/MAE/" style="font-size: 10px;">MAE</a> <a href="/tags/MAPE/" style="font-size: 10px;">MAPE</a> <a href="/tags/MSE/" style="font-size: 10px;">MSE</a> <a href="/tags/Seafile/" style="font-size: 10px;">Seafile</a> <a href="/tags/TensorFlow/" style="font-size: 10px;">TensorFlow</a> <a href="/tags/Ubuntu/" style="font-size: 13.33px;">Ubuntu</a> <a href="/tags/artificial-neural-network/" style="font-size: 10px;">artificial neural network</a> <a href="/tags/bagging/" style="font-size: 10px;">bagging</a> <a href="/tags/blog/" style="font-size: 13.33px;">blog</a> <a href="/tags/boosting/" style="font-size: 10px;">boosting</a> <a href="/tags/cluster/" style="font-size: 10px;">cluster</a> <a href="/tags/decision-tree/" style="font-size: 10px;">decision tree</a> <a href="/tags/deep-learning/" style="font-size: 10px;">deep learning</a> <a href="/tags/github/" style="font-size: 13.33px;">github</a> <a href="/tags/jekyll/" style="font-size: 10px;">jekyll</a> <a href="/tags/k-means/" style="font-size: 13.33px;">k-means</a> <a href="/tags/k-nearest-neighbors/" style="font-size: 10px;">k-nearest neighbors</a> <a href="/tags/linear-regression/" style="font-size: 13.33px;">linear regression</a> <a href="/tags/machine-learning/" style="font-size: 16.67px;">machine learning</a> <a href="/tags/naive-bayes/" style="font-size: 10px;">naive bayes</a> <a href="/tags/next/" style="font-size: 10px;">next</a> <a href="/tags/perceptron/" style="font-size: 10px;">perceptron</a> <a href="/tags/polynomial-regression/" style="font-size: 10px;">polynomial regression</a> <a href="/tags/python/" style="font-size: 20px;">python</a> <a href="/tags/sort/" style="font-size: 13.33px;">sort</a> <a href="/tags/support-vector-machine/" style="font-size: 10px;">support vector machine</a>
+    </div>
+</div>
+
+    
+    
+        <div class="column-right-shadow is-hidden-widescreen ">
+        
+            
+<div class="card widget">
+    <div class="card-content">
+        <h3 class="menu-label">
+            最新文章
+        </h3>
+        
+        <article class="media">
+            
+            <a href="/2019/03/26/CNN_overview/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/photo/15.jpg" alt="深度学习|卷积神经网络概述">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-03-26T01:54:00.000Z">2019-03-26</time></div>
+                    <a href="/2019/03/26/CNN_overview/" class="has-link-black-ter is-size-6">深度学习|卷积神经网络概述</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/深度学习/">深度学习</a> / <a class="has-link-grey -link" href="/categories/深度学习/卷积神经网络/">卷积神经网络</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2019/03/12/Gradient_Descent_Plus/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/photo/14.jpg" alt="回归预测|梯度下降详解">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-03-12T00:45:00.000Z">2019-03-12</time></div>
+                    <a href="/2019/03/12/Gradient_Descent_Plus/" class="has-link-black-ter is-size-6">回归预测|梯度下降详解</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/机器学习/">机器学习</a> / <a class="has-link-grey -link" href="/categories/机器学习/梯度下降/">梯度下降</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2019/03/09/Gradient_Descent/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/photo/13.jpg" alt="翻译|Gradient Descent in Python">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-03-09T06:46:00.000Z">2019-03-09</time></div>
+                    <a href="/2019/03/09/Gradient_Descent/" class="has-link-black-ter is-size-6">翻译|Gradient Descent in Python</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/机器学习/">机器学习</a> / <a class="has-link-grey -link" href="/categories/机器学习/梯度下降/">梯度下降</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2019/02/11/Hierarchical_clustering_method/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/photo/12.jpg" alt="机器学习|层次聚类方法 (Python 语言描述)">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-02-11T14:16:00.000Z">2019-02-11</time></div>
+                    <a href="/2019/02/11/Hierarchical_clustering_method/" class="has-link-black-ter is-size-6">机器学习|层次聚类方法 (Python 语言描述)</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/机器学习/">机器学习</a> / <a class="has-link-grey -link" href="/categories/机器学习/K-Means/">K-Means</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2019/02/09/Image_compression_using_Mini_Batch_k-means/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/photo/11.jpg" alt="使用 Mini Batch K-Means 进行图像压缩 ">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-02-09T15:25:00.000Z">2019-02-09</time></div>
+                    <a href="/2019/02/09/Image_compression_using_Mini_Batch_k-means/" class="has-link-black-ter is-size-6">使用 Mini Batch K-Means 进行图像压缩 </a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/机器学习/">机器学习</a> / <a class="has-link-grey -link" href="/categories/机器学习/K-Means/">K-Means</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+    </div>
+</div>
+
+        
+            <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+        <h3 class="menu-label">
+            归档
+        </h3>
+        <ul class="menu-list">
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/02/">
+                <span class="level-start">
+                    <span class="level-item">二月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">9</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        </ul>
+        </div>
+    </div>
+</div>
+        
+            <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                标签
+            </h3>
+            <div class="field is-grouped is-grouped-multiline">
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/CNN/">
+                        <span class="tag">CNN</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Deep-learning/">
+                        <span class="tag">Deep learning</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/ECS/">
+                        <span class="tag">ECS</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Gradient-Descent/">
+                        <span class="tag">Gradient Descent</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/HAC/">
+                        <span class="tag">HAC</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/MAE/">
+                        <span class="tag">MAE</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/MAPE/">
+                        <span class="tag">MAPE</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/MSE/">
+                        <span class="tag">MSE</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Seafile/">
+                        <span class="tag">Seafile</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/TensorFlow/">
+                        <span class="tag">TensorFlow</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Ubuntu/">
+                        <span class="tag">Ubuntu</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/artificial-neural-network/">
+                        <span class="tag">artificial neural network</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/bagging/">
+                        <span class="tag">bagging</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/blog/">
+                        <span class="tag">blog</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/boosting/">
+                        <span class="tag">boosting</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/cluster/">
+                        <span class="tag">cluster</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/decision-tree/">
+                        <span class="tag">decision tree</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/deep-learning/">
+                        <span class="tag">deep learning</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/github/">
+                        <span class="tag">github</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/jekyll/">
+                        <span class="tag">jekyll</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/k-means/">
+                        <span class="tag">k-means</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/k-nearest-neighbors/">
+                        <span class="tag">k-nearest neighbors</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/linear-regression/">
+                        <span class="tag">linear regression</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/machine-learning/">
+                        <span class="tag">machine learning</span>
+                        <span class="tag is-grey">15</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/naive-bayes/">
+                        <span class="tag">naive bayes</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/next/">
+                        <span class="tag">next</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/perceptron/">
+                        <span class="tag">perceptron</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/polynomial-regression/">
+                        <span class="tag">polynomial regression</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/python/">
+                        <span class="tag">python</span>
+                        <span class="tag is-grey">16</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/sort/">
+                        <span class="tag">sort</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/support-vector-machine/">
+                        <span class="tag">support vector machine</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+        
+        </div>
+    
+</div>
+
+                
+
+
+
+
+<div class="column is-4-tablet is-4-desktop is-3-widescreen is-hidden-touch is-hidden-desktop-only has-order-3 column-right ">
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <h3 class="menu-label">
+            最新文章
+        </h3>
+        
+        <article class="media">
+            
+            <a href="/2019/03/26/CNN_overview/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/photo/15.jpg" alt="深度学习|卷积神经网络概述">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-03-26T01:54:00.000Z">2019-03-26</time></div>
+                    <a href="/2019/03/26/CNN_overview/" class="has-link-black-ter is-size-6">深度学习|卷积神经网络概述</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/深度学习/">深度学习</a> / <a class="has-link-grey -link" href="/categories/深度学习/卷积神经网络/">卷积神经网络</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2019/03/12/Gradient_Descent_Plus/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/photo/14.jpg" alt="回归预测|梯度下降详解">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-03-12T00:45:00.000Z">2019-03-12</time></div>
+                    <a href="/2019/03/12/Gradient_Descent_Plus/" class="has-link-black-ter is-size-6">回归预测|梯度下降详解</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/机器学习/">机器学习</a> / <a class="has-link-grey -link" href="/categories/机器学习/梯度下降/">梯度下降</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2019/03/09/Gradient_Descent/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/photo/13.jpg" alt="翻译|Gradient Descent in Python">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-03-09T06:46:00.000Z">2019-03-09</time></div>
+                    <a href="/2019/03/09/Gradient_Descent/" class="has-link-black-ter is-size-6">翻译|Gradient Descent in Python</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/机器学习/">机器学习</a> / <a class="has-link-grey -link" href="/categories/机器学习/梯度下降/">梯度下降</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2019/02/11/Hierarchical_clustering_method/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/photo/12.jpg" alt="机器学习|层次聚类方法 (Python 语言描述)">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-02-11T14:16:00.000Z">2019-02-11</time></div>
+                    <a href="/2019/02/11/Hierarchical_clustering_method/" class="has-link-black-ter is-size-6">机器学习|层次聚类方法 (Python 语言描述)</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/机器学习/">机器学习</a> / <a class="has-link-grey -link" href="/categories/机器学习/K-Means/">K-Means</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2019/02/09/Image_compression_using_Mini_Batch_k-means/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/photo/11.jpg" alt="使用 Mini Batch K-Means 进行图像压缩 ">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-02-09T15:25:00.000Z">2019-02-09</time></div>
+                    <a href="/2019/02/09/Image_compression_using_Mini_Batch_k-means/" class="has-link-black-ter is-size-6">使用 Mini Batch K-Means 进行图像压缩 </a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/机器学习/">机器学习</a> / <a class="has-link-grey -link" href="/categories/机器学习/K-Means/">K-Means</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+    </div>
+</div>
+
+    
+        <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+        <h3 class="menu-label">
+            归档
+        </h3>
+        <ul class="menu-list">
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/02/">
+                <span class="level-start">
+                    <span class="level-item">二月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">9</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        </ul>
+        </div>
+    </div>
+</div>
+    
+        <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                标签
+            </h3>
+            <div class="field is-grouped is-grouped-multiline">
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/CNN/">
+                        <span class="tag">CNN</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Deep-learning/">
+                        <span class="tag">Deep learning</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/ECS/">
+                        <span class="tag">ECS</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Gradient-Descent/">
+                        <span class="tag">Gradient Descent</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/HAC/">
+                        <span class="tag">HAC</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/MAE/">
+                        <span class="tag">MAE</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/MAPE/">
+                        <span class="tag">MAPE</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/MSE/">
+                        <span class="tag">MSE</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Seafile/">
+                        <span class="tag">Seafile</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/TensorFlow/">
+                        <span class="tag">TensorFlow</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Ubuntu/">
+                        <span class="tag">Ubuntu</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/artificial-neural-network/">
+                        <span class="tag">artificial neural network</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/bagging/">
+                        <span class="tag">bagging</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/blog/">
+                        <span class="tag">blog</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/boosting/">
+                        <span class="tag">boosting</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/cluster/">
+                        <span class="tag">cluster</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/decision-tree/">
+                        <span class="tag">decision tree</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/deep-learning/">
+                        <span class="tag">deep learning</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/github/">
+                        <span class="tag">github</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/jekyll/">
+                        <span class="tag">jekyll</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/k-means/">
+                        <span class="tag">k-means</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/k-nearest-neighbors/">
+                        <span class="tag">k-nearest neighbors</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/linear-regression/">
+                        <span class="tag">linear regression</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/machine-learning/">
+                        <span class="tag">machine learning</span>
+                        <span class="tag is-grey">15</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/naive-bayes/">
+                        <span class="tag">naive bayes</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/next/">
+                        <span class="tag">next</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/perceptron/">
+                        <span class="tag">perceptron</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/polynomial-regression/">
+                        <span class="tag">polynomial regression</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/python/">
+                        <span class="tag">python</span>
+                        <span class="tag is-grey">16</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/sort/">
+                        <span class="tag">sort</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/support-vector-machine/">
+                        <span class="tag">support vector machine</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+    
+    
+</div>
+
+            </div>
+        </div>
+    </section>
+    <footer class="footer">
+    <div class="container">
+        <div class="level">
+            <div class="level-start has-text-centered-mobile">
+                <a class="footer-logo is-block has-mb-6" href="/">
+                
+                    <img src="/images/logo.svg" alt="深度学习|卷积神经网络概述" height="28">
+                
+                </a>
+                <p class="is-size-7">
+                &copy; 2019 Laugh&nbsp;
+                Powered by <a href="http://hexo.io/" target="_blank">Hexo</a> & <a href="http://github.com/ppoffice/hexo-theme-icarus">Icarus</a>
+                </p>
+            </div>
+            <div class="level-end">
+            
+                <div class="field has-addons is-flex-center-mobile has-mt-5-mobile is-flex-wrap is-flex-middle">
+                
+                
+                <p class="control">
+                    <a class="button is-white is-large" target="_blank" title="Creative Commons" href="https://creativecommons.org/">
+                        
+                        <i class="fab fa-creative-commons"></i>
+                        
+                    </a>
+                </p>
+                
+                <p class="control">
+                    <a class="button is-white is-large" target="_blank" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/">
+                        
+                        <i class="fab fa-creative-commons-by"></i>
+                        
+                    </a>
+                </p>
+                
+                <p class="control">
+                    <a class="button is-white is-large" target="_blank" title="Download on GitHub" href="http://github.com/ppoffice/hexo-theme-icarus">
+                        
+                        <i class="fab fa-github"></i>
+                        
+                    </a>
+                </p>
+                
+                </div>
+            
+            </div>
+        </div>
+    </div>
+</footer>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script>
+<script>moment.locale("zh-CN");</script>
+
+
+    
+    
+    
+    <script src="/js/animation.js"></script>
+    
+
+    
+    
+    
+    <script src="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/js/lightgallery.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js" defer></script>
+    <script src="/js/gallery.js" defer></script>
+    
+
+    
+    
+
+<div id="outdated">
+    <h6>Your browser is out-of-date!</h6>
+    <p>Update your browser to view this website correctly. <a id="btnUpdateBrowser" href="http://outdatedbrowser.com/">Update
+            my browser now </a></p>
+    <p class="last"><a href="#" id="btnCloseUpdateBrowser" title="Close">&times;</a></p>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/outdatedbrowser@1.1.5/outdatedbrowser/outdatedbrowser.min.js" defer></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        outdatedBrowser({
+            bgColor: '#f25648',
+            color: '#ffffff',
+            lowerThan: 'flex'
+        });
+    });
+</script>
+
+
+    
+    
+<script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    MathJax.Hub.Config({
+        'HTML-CSS': {matchFontHeight: false},
+        SVG: {matchFontHeight: false},
+        CommonHTML: {matchFontHeight: false}
+    });
+});
+</script>
+
+    
+    
+
+<a id="back-to-top" title="回到顶端" href="javascript:;">
+    <i class="fas fa-chevron-up"></i>
+</a>
+<script src="/js/back-to-top.js" defer></script>
+
+
+    
+    
+
+    
+    
+    
+    
+
+    
+    
+    
+    
+    
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script>
+    <script src="/js/clipboard.js" defer></script>
+    
+
+    
+
+
+<script src="/js/main.js" defer></script>
+
+    
+    <div class="searchbox ins-search">
+    <div class="searchbox-container ins-search-container">
+        <div class="searchbox-input-wrapper">
+            <input type="text" class="searchbox-input ins-search-input" placeholder="想要查找什么...">
+            <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="searchbox-result-wrapper ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+    (function (window) {
+        var INSIGHT_CONFIG = {
+            TRANSLATION: {
+                POSTS: '文章',
+                PAGES: '页面',
+                CATEGORIES: '分类',
+                TAGS: '标签',
+                UNTITLED: '(无标题)',
+            },
+            CONTENT_URL: '/content.json',
+        };
+        window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+    })(window);
+</script>
+<script src="/js/insight.js" defer></script>
+<link rel="stylesheet" href="/css/search.css">
+<link rel="stylesheet" href="/css/insight.css"><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+    
+</body>
+</html>
