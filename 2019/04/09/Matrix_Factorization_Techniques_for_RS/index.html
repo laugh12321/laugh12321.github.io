@@ -21,7 +21,7 @@
 <meta property="og:image" content="https://pic3.zhimg.com/80/v2-395f6137f38c886a302c0a1640050d62_hd.png">
 <meta property="og:image" content="https://pic3.zhimg.com/80/v2-97256d582224518e00e544f97d4c8ec2_hd.png">
 <meta property="og:image" content="https://pic4.zhimg.com/80/v2-c93b10c2392179d0e2261576106a5527_hd.png">
-<meta property="og:updated_time" content="2019-04-09T14:23:08.604Z">
+<meta property="og:updated_time" content="2019-04-09T14:27:50.755Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="推荐系统|矩阵分解概述">
 <meta name="twitter:description" content="&amp;emsp;推荐系统的研究从上世纪90年代初发展至今，目前有三大主流算法作为几乎全部的推荐算法的基石，它们就是基于内容的过滤算法（content-based filtering，简称CBF）、邻域算法（neighborhood methods）、隐语义模型（latent factor models，简称LFM），其中后两者统称为协同过滤算法（collaborative filtering，简CF）">
@@ -198,10 +198,10 @@ var _hmt = _hmt || [];
 <p>&emsp;如前面所介绍的，矩阵分解可以融入多种额外信息，不断地对待分解矩阵进行升级、改良，整体的矩阵分解框架如下图所示：</p>
 <p><img src="https://pic3.zhimg.com/80/v2-97256d582224518e00e544f97d4c8ec2_hd.png" alt=""></p>
 <p>我们首先看一下没有融合额外信息的时候，是如何来预测评分的：</p>
-<script type="math/tex; mode=display">
-\hat{r}_{u i}=q_{i}^{T} * p_{u}</script><p>&emsp;可以看出，其实很简单的。当我们要预测 `u` 对 `i` 评分的时候，就直接把对应的用户隐向量、物品隐向量直接点乘起来就好了，就得到预测的评分了。但是这两个矩阵是怎么来的呢？当然是训练出来的啦，我们要通过优化下面这个目标函数来训练出这两个矩阵，这就是标准的“机器学习版”的矩阵分解算法，也是推荐系统领域非常重要的算法：</p>
-<script type="math/tex; mode=display">
-\min _{q^{\*}, p^{\*}} \sum_{(u, i) \in K}\left(r_{u i}-q_{i}^{T} \* p_{u}\right)^{2}+\lambda \*\left(\left\|q_{i}\right\|^{2}+\left\|p_{u}\right\|^{2}\right)</script><p>我们采用随机梯度下降（SGD）算法来训练两个隐向量矩阵：</p>
+<p>$$<br>\hat{r}_{u i}=q_{i}^{T} * p_{u}<br>$$</p>
+<p>&emsp;可以看出，其实很简单的。当我们要预测 `u` 对 `i` 评分的时候，就直接把对应的用户隐向量、物品隐向量直接点乘起来就好了，就得到预测的评分了。但是这两个矩阵是怎么来的呢？当然是训练出来的啦，我们要通过优化下面这个目标函数来训练出这两个矩阵，这就是标准的“机器学习版”的矩阵分解算法，也是推荐系统领域非常重要的算法：</p>
+<p>$$<br>\min _{q^{<em>}, p^{</em>}} \sum_{(u, i) \in K}\left(r_{u i}-q_{i}^{T} <em> p_{u}\right)^{2}+\lambda </em>\left(\left|q_{i}\right|^{2}+\left|p_{u}\right|^{2}\right)<br>$$</p>
+<p>我们采用随机梯度下降（SGD）算法来训练两个隐向量矩阵：</p>
 <p>\begin{aligned} q_{i} &amp;=q_{i}+\gamma *\left(e_{u i} * p_{u}-\lambda * q_{i}\right)<br>\end{aligned}</p>
 <p>\begin{aligned}p_{u}&amp;=p_{u}+\gamma *\left(e_{u i} * q_{i}-\lambda * p_{u}\right)\end{aligned}</p>
 <p>整个SGD的函数代码如下所示：</p>
@@ -209,10 +209,10 @@ var _hmt = _hmt || [];
 <p>&emsp;这样我们就训练出了两个隐向量矩阵，将他们相乘便得到了预测版的评分矩阵，可以和真实评分矩阵对比一下，如果训练的次数足够，训练步长不大的话其实预测的评分已经比较准了。</p>
 <p>&emsp;但是，有一个问题我们需要考虑一下。如果有的用户比较苛刻，对他来说，烂片最多打1分，好的片子也就得3-4分，有的用户比较宽容，他认为人家拍个电影挺不容易的，烂片也给了3分，好的片子一律给5分，那对于这两种用户，我们要采取同样的对待方式进行预测吗？如果有的电影拍的真心好，普遍评分都很高，有的电影烂出了新高度，基本上上3分那都是绝对的高分了，那这两种电影真的都处于0-5分这一分段吗？</p>
 <p>&emsp;在这种情况下，我们其实需要为每个用户和每个物品加入一些偏置元素 <code>bu</code> 和 <code>bi</code>，代表了他们自带的与其他事物无关的属性，融入了这些元素，才能区别且正确地对待每一个用户和每一个物品，才能在预测中显得更加个性化。所以，预测评分的计算公式就变成了这样：</p>
-<script type="math/tex; mode=display">
-\hat{r}_{u i}=b_{u i}+q_{i}^{T} * p_{u}</script><p>&emsp;我们要优化、训练参数的目标公式也就变成了下图所示，要训练的参数除了用户、物品隐向量还要加上用户、物品偏置值，训练的方法同样是采用随机梯度下降法：</p>
-<script type="math/tex; mode=display">
-\min _{q^{\*}, p^{\*}} \sum_{(u, i) \in K}\left(r_{u i}-b_{u i}-q_{i}^{T} \* p_{u}\right)^{2}+\lambda \*\left(\left\|q_{i}\right\|^{2}+\left\|p_{u}\right\|^{2}+b_{u}^{2}+b_{i}^{2}\right)</script><p>整个SGD_bias的函数的代码如下所示：</p>
+<p>$$<br>\hat{r}_{u i}=b_{u i}+q_{i}^{T} * p_{u}<br>$$</p>
+<p>&emsp;我们要优化、训练参数的目标公式也就变成了下图所示，要训练的参数除了用户、物品隐向量还要加上用户、物品偏置值，训练的方法同样是采用随机梯度下降法：</p>
+<p>$$<br>\min _{q^{<em>}, p^{</em>}} \sum_{(u, i) \in K}\left(r_{u i}-b_{u i}-q_{i}^{T} <em> p_{u}\right)^{2}+\lambda </em>\left(\left|q_{i}\right|^{2}+\left|p_{u}\right|^{2}+b_{u}^{2}+b_{i}^{2}\right)<br>$$</p>
+<p>整个SGD_bias的函数的代码如下所示：</p>
 <figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">sgd_bias</span><span class="hljs-params">(data_matrix, user, item, alpha, lam, iter_num, miu)</span>:</span></span><br><span class="line"></span><br><span class="line">    b_u = [<span class="hljs-number">1</span>] * rating_matrix.shape[<span class="hljs-number">0</span>]</span><br><span class="line">    b_i = [<span class="hljs-number">1</span>] * rating_matrix.shape[<span class="hljs-number">1</span>]</span><br><span class="line">    <span class="hljs-keyword">for</span> j <span class="hljs-keyword">in</span> range(iter_num):</span><br><span class="line">        <span class="hljs-keyword">for</span> u <span class="hljs-keyword">in</span> range(data_matrix.shape[<span class="hljs-number">0</span>]):</span><br><span class="line">            <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> range(data_matrix.shape[<span class="hljs-number">1</span>]):</span><br><span class="line">                <span class="hljs-keyword">if</span> data_matrix[u][i] != <span class="hljs-number">0</span>:</span><br><span class="line">                    b_ui = b_u[u] + b_i[i] + miu</span><br><span class="line">                    e_ui = data_matrix[u][i] - b_ui - sum(user[u,:] * item[i,:])</span><br><span class="line">                    user[u,:] += alpha * (e_ui * item[i,:] - lam * user[u,:])</span><br><span class="line">                    item[i,:] += alpha * (e_ui * user[u,:] - lam * item[i,:])</span><br><span class="line">                    b_u[u] += alpha * (e_ui - lam * b_u[u])</span><br><span class="line">                    b_i[i] += alpha * (e_ui - lam * b_i[i])</span><br><span class="line">    <span class="hljs-keyword">return</span> user, item, b_u, b_i</span><br></pre></td></tr></table></figure>
 <p>&emsp;在加入偏置后，预测的就更加准确一些了。在编程实验中，笔者采用了推荐系统算法常见的评测标准——MSE来进行两种分解算法的评测，两者的结果如下所示（注：训练步长0.001，正则化系数0.1，训练次数：1000次）：</p>
 <p><img src="https://pic4.zhimg.com/80/v2-c93b10c2392179d0e2261576106a5527_hd.png" alt="可以看到，效果的提升幅度还是很大的"></p>
