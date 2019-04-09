@@ -21,7 +21,7 @@
 <meta property="og:image" content="https://pic3.zhimg.com/80/v2-395f6137f38c886a302c0a1640050d62_hd.png">
 <meta property="og:image" content="https://pic3.zhimg.com/80/v2-97256d582224518e00e544f97d4c8ec2_hd.png">
 <meta property="og:image" content="https://pic4.zhimg.com/80/v2-c93b10c2392179d0e2261576106a5527_hd.png">
-<meta property="og:updated_time" content="2019-04-09T13:43:34.794Z">
+<meta property="og:updated_time" content="2019-04-09T13:48:37.685Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="推荐系统|矩阵分解概述">
 <meta name="twitter:description" content="&amp;emsp;推荐系统的研究从上世纪90年代初发展至今，目前有三大主流算法作为几乎全部的推荐算法的基石，它们就是基于内容的过滤算法（content-based filtering，简称CBF）、邻域算法（neighborhood methods）、隐语义模型（latent factor models，简称LFM），其中后两者统称为协同过滤算法（collaborative filtering，简CF）">
@@ -187,7 +187,7 @@ var _hmt = _hmt || [];
         <div class="content">
             <p>&emsp;推荐系统的研究从上世纪90年代初发展至今，目前有三大主流算法作为几乎全部的推荐算法的基石，它们就是基于内容的过滤算法（content-based filtering，简称CBF）、邻域算法（neighborhood methods）、隐语义模型（latent factor models，简称LFM），其中后两者统称为协同过滤算法（collaborative filtering，简CF）。<br><a id="more"></a><br>&emsp;CBF通过给用户、物品定义显式的属性（通常会找所涉及的推荐领域的人类专家来定义）来描述他们的本质，然后为用户推荐与他们本质“门当户对”的物品；CF则是通过发动“群体的力量”，从其他用户、物品中学习到宝贵的信息，无需显式地定义属性：CF下的邻域算法着重于学习用户与用户、物品与物品之间的关系，为目标用户推荐与目标用户相似的用户所选择的物品（user-based）或者与目标用户所选择的物品相似的物品（item-based）；CF下的隐语义模型则是通过学习用户与用户、物品与物品之间的关系来自动获得用户、物品的隐属性（这里的“隐”指的是学习到的属性是不可解释的），相当于把用户-评分矩阵分解成用户隐属性矩阵和物品隐属性矩阵，然后通过用户隐属性向量u与物品隐属性向量i作点乘来获取到该用户对该物品的评分，以此为依据进行推荐。</p>
 <p><img src="https://pic4.zhimg.com/v2-c4062ad09bbc76861eac7a45eb287957_r.jpg" alt="三种主流方法优缺点"></p>
-<h2 id="矩阵分解的主要思想"><a href="#矩阵分解的主要思想" class="headerlink" title="矩阵分解的主要思想"></a>矩阵分解的主要思想</h2><p>&emsp;如上图所示，矩阵分解是构建隐语义模型的主要方法，即通过把整理、提取好的“用户—物品”评分矩阵进行分解，来得到一个用户隐向量矩阵和一个物品隐向量矩阵。假设现在有一个 $$M <em> N$$ 的矩阵，\(M\) 代表用户数，\(N\) 代表物品数，想将用户、物品分别训练出两个隐属性，即每个用户、每个物品都对应着一个二维向量，即得到了一个 $$M </em> 2$$ 的用户隐向量矩阵和一个 \(N * 2\) 的矩阵，分解示意图如下所示：</p>
+<h2 id="矩阵分解的主要思想"><a href="#矩阵分解的主要思想" class="headerlink" title="矩阵分解的主要思想"></a>矩阵分解的主要思想</h2><p>&emsp;如上图所示，矩阵分解是构建隐语义模型的主要方法，即通过把整理、提取好的“用户—物品”评分矩阵进行分解，来得到一个用户隐向量矩阵和一个物品隐向量矩阵。<br>假设现在有一个 \(M <em> N\) 的矩阵，\(M\) 代表用户数，\(N\) 代表物品数，想将用户、物品分别训练出两个隐属性，即每个用户、每个物品都对应着一个二维向量，即得到了一个 \(M </em> 2\) 的用户隐向量矩阵和一个 \(N * 2\) 的矩阵，分解示意图如下所示：</p>
 <p><img src="https://pic2.zhimg.com/80/v2-3392294ba67ce603a10dc1b5407cd8a1_hd.png" alt=""></p>
 <p>&emsp;在得到用户隐向量和物品隐向量（均是2维向量）之后，我们可以将每个用户、物品对应的二维隐向量看作是一个坐标，将其画在坐标轴上。虽然我们得到的是不可解释的隐向量，但是可以为其赋予一定的意义来帮助我们理解这个分解结果。比如我们把用户、物品的2维的隐向量赋予严肃文学（Serious）vs.消遣文学（Escapist）、针对男性（Geared towards males）vs.针对女性（Geared towards females），那么可以形成如下图的可视化图片：</p>
 <p><img src="https://pic1.zhimg.com/80/v2-36ccfc703b0c5a63327592c50aff89ec_hd.png" alt=""></p>
