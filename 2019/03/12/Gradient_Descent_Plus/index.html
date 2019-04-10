@@ -195,8 +195,8 @@ var _hmt = _hmt || [];
 <p>关于<b>线性回归</b>的具体讲解本文不详细涉及，只简单列出几个相关公式。(关于线性回归可以看这篇 👉<a href="https://www.laugh12321.cn/2019/01/01/Linear_Regression/#more">传送门</a>)</p>
 <a id="more"></a>
 <h3 id="线性回归"><a href="#线性回归" class="headerlink" title="线性回归"></a>线性回归</h3><p><b>公式 4-1：线性回归模型预测</b></p>
-<script type="math/tex; mode=display">
-\hat{y} = \theta_0 + \theta_1x_{1} + \theta_2x_{2} + ... + \theta_nx_{n}</script><ul>
+<p>$$<br>\hat{y} = \theta_0 + \theta_1x_{1} + \theta_2x_{2} + … + \theta_nx_{n}<br>$$</p>
+<ul>
 <li>\(\hat{y}\) 是预测值</li>
 <li>`n` 是特征的数量</li>
 <li>`x_{i}` 是  `i` 个特征值</li>
@@ -204,8 +204,8 @@ var _hmt = _hmt || [];
 </ul>
 <p>也可以用更为简洁的向量化形式表达</p>
 <p><b>公式 4-2：线性回归模型预测 (向量化)</b></p>
-<script type="math/tex; mode=display">
-\hat{y} = h_{\theta}(X) = \theta^T \cdot X</script><ul>
+<p>$$<br>\hat{y} = h_{\theta}(X) = \theta^T \cdot X<br>$$</p>
+<ul>
 <li>\(\theta\) 是模型的参数向量，包括偏置项 \(\theta_0\) 以及特征权重 \(\theta_1\) 到 \(\theta_n\)</li>
 <li>\(\theta^T\) 是 \(\theta\) 的转置向量 (为行向量，而不再是列向量)</li>
 <li>`X` 是实例的特征向量，包括从 \(\theta_0\) 到 \(\theta_n, \theta_0\) 永远为 `1`</li>
@@ -213,11 +213,11 @@ var _hmt = _hmt || [];
 <li>\(h_{\theta}\) 是模型参数 \(\theta\) 的假设函数</li>
 </ul>
 <p><b>公式 4-3：线性回归模型的 `MSE` 成本函数</b></p>
-<script type="math/tex; mode=display">
-MSE(X, h_{\theta}) = \frac{1}{m}\sum_{i=1}^{m} (\theta^T \cdot X^{(i)} - y^{(i)})^2</script><h3 id="标准方程"><a href="#标准方程" class="headerlink" title="标准方程"></a>标准方程</h3><p>为了得到使成本函数最小的 \(\theta\) 值，有一个闭式解方法——也就是一个直接得出结果的数学方程，即标准方程。</p>
+<p>$$<br>MSE(X, h_{\theta}) = \frac{1}{m}\sum_{i=1}^{m} (\theta^T \cdot X^{(i)} - y^{(i)})^2<br>$$</p>
+<h3 id="标准方程"><a href="#标准方程" class="headerlink" title="标准方程"></a>标准方程</h3><p>为了得到使成本函数最小的 \(\theta\) 值，有一个闭式解方法——也就是一个直接得出结果的数学方程，即标准方程。</p>
 <p><b>公式 4-4：标准方程</b></p>
-<script type="math/tex; mode=display">
-MSE(X, h_{\theta}) = \frac{1}{m}\sum_{i=1}^{m} (\theta^T \cdot X^{(i)} - y^{(i)})^2</script><ul>
+<p>$$<br>MSE(X, h_{\theta}) = \frac{1}{m}\sum_{i=1}^{m} (\theta^T \cdot X^{(i)} - y^{(i)})^2<br>$$</p>
+<ul>
 <li>\(\hat{\theta}\) 是使成本函数最小的 \(\theta\) 值</li>
 <li>`y` 是包含 \(y^{(1)}\) 到 \(y^{(m)}\) 的目标值量</li>
 </ul>
@@ -266,24 +266,17 @@ MSE(X, h_{\theta}) = \frac{1}{m}\sum_{i=1}^{m} (\theta^T \cdot X^{(i)} - y^{(i)}
 <p>这张图也说明，训练模型也就是搜寻使成本函数（在训练集上）最小化的参数组合。这是模型参数空间层面上的搜索：模型的参数越多，这个空间的维度就越多，搜索就越难。同样是在干草堆里寻找一根针，在一个三百维的空间里就比在一个三维空间里要棘手得多。幸运的是，线性回归模型的成本函数是凸函数，针就躺在碗底。</p>
 <h3 id="批量梯度下降"><a href="#批量梯度下降" class="headerlink" title="批量梯度下降"></a>批量梯度下降</h3><p>要实现梯度下降，你需要计算每个模型关于参数 \(\theta_j\) 的成本函数的梯度。换言之，你需要计算的是如果改变 \(\theta_j\) ，成本函数会改变多少。 这被称为偏导数。这就好比是在问 “如果我面向东，我脚下的坡度斜率是多少？” 然后面向北问同样的问题（如果你想象超过三个维度的宇宙，对于其他的维度以此类推）。公式4-5计算了关于参数 \(\theta_j\) 的成本函数的偏导数，计作 \(\frac{\partial}{\partial \theta_j}MSE(\theta)\)</p>
 <p><b>公式 4-5 ：成本函数的偏导数</b></p>
-<script type="math/tex; mode=display">
-\frac{\partial}{\partial \theta_j}MSE(\theta) = \frac{2}{m}\sum_{i=1}^{m} (\theta^T \cdot X^{(i)} - y^{(i)})x_j^{(i)}</script><p>如果不想单独计算这些梯度，可以使用公式4-6对其进行一次性计算。梯度向量，记作 \(\nabla_\theta MSE(\theta)\) ，包含所有成本函数（每个模型参数一个）的偏导数。</p>
+<p>$$<br>\frac{\partial}{\partial \theta_j}MSE(\theta) = \frac{2}{m}\sum_{i=1}^{m} (\theta^T \cdot X^{(i)} - y^{(i)})x_j^{(i)}<br>$$</p>
+<p>如果不想单独计算这些梯度，可以使用公式4-6对其进行一次性计算。梯度向量，记作 \(\nabla_\theta MSE(\theta)\) ，包含所有成本函数（每个模型参数一个）的偏导数。</p>
 <p><b>公式 4-6 ：成本函数的梯度向量</b></p>
-<script type="math/tex; mode=display">
-\nabla_\theta MSE(\theta) =  \left[
- \begin{matrix}
-   \frac{\partial}{\partial \theta_0}MSE(\theta) \\
-   \frac{\partial}{\partial \theta_1}MSE(\theta) \\
-   ... \\
-   \frac{\partial}{\partial \theta_n}MSE(\theta)
-  \end{matrix}
-  \right] = \frac{2}{m}X^T \cdot (X \cdot \theta - y)</script><blockquote>
+<p>$$<br>\nabla_\theta MSE(\theta) =  \left[<br> \begin{matrix}<br>   \frac{\partial}{\partial \theta_0}MSE(\theta) \\<br>   \frac{\partial}{\partial \theta_1}MSE(\theta) \\<br>   … \\<br>   \frac{\partial}{\partial \theta_n}MSE(\theta)<br>  \end{matrix}<br>  \right] = \frac{2}{m}X^T \cdot (X \cdot \theta - y)<br>$$</p>
+<blockquote>
 <p><font color="red"><strong>注意：</strong></font> 公式4-6在计算梯度下降的每一步时，都是基于完整的训练集 `X` 的。这就是为什么该算法会被称为批量梯度下降：每一步都使用整批训练数据。因此，面对非常庞大的训练集时，算法会变得极慢（不过我们即将看到快得多的梯度下降算法）。但是，梯度下降算法随特征数量扩展的表现比较好：如果要训练的线性模型拥有几十万个特征，使用梯度下降比标准方程要快得多。</p>
 </blockquote>
 <p>一旦有了梯度向量，哪个点向上，就朝反方向下坡。也就是从 \(\theta\) 中减去 \(\nabla_\theta MSE(\theta)\) 。这时学习率 \(\eta\) 就发挥作用了：用梯度向量乘以 \(\eta\) 确定下坡步长的大小（公式4-7）。 </p>
 <p><b>公式 4-6 ：梯度下降步长</b></p>
-<script type="math/tex; mode=display">
-\theta^{(next \ step)} = \theta - \eta\nabla_\theta MSE(\theta)</script><figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">eta = <span class="hljs-number">0.1</span>  <span class="hljs-comment"># learning rate </span></span><br><span class="line">n_iterations = <span class="hljs-number">1000</span> </span><br><span class="line">m = <span class="hljs-number">100</span></span><br><span class="line"></span><br><span class="line">theta = np.random.randn(<span class="hljs-number">2</span>,<span class="hljs-number">1</span>)  <span class="hljs-comment"># random initialization</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">for</span> iteration <span class="hljs-keyword">in</span> range(n_iterations):    </span><br><span class="line">    gradients = <span class="hljs-number">2</span>/m * X_b.T.dot(X_b.dot(theta) - y)    </span><br><span class="line">    theta = theta - eta * gradients</span><br></pre></td></tr></table></figure>
+<p>$$<br>\theta^{(next  step)} = \theta - \eta\nabla_\theta MSE(\theta)<br>$$</p>
+<figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">eta = <span class="hljs-number">0.1</span>  <span class="hljs-comment"># learning rate </span></span><br><span class="line">n_iterations = <span class="hljs-number">1000</span> </span><br><span class="line">m = <span class="hljs-number">100</span></span><br><span class="line"></span><br><span class="line">theta = np.random.randn(<span class="hljs-number">2</span>,<span class="hljs-number">1</span>)  <span class="hljs-comment"># random initialization</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">for</span> iteration <span class="hljs-keyword">in</span> range(n_iterations):    </span><br><span class="line">    gradients = <span class="hljs-number">2</span>/m * X_b.T.dot(X_b.dot(theta) - y)    </span><br><span class="line">    theta = theta - eta * gradients</span><br></pre></td></tr></table></figure>
 <figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">theta</span><br></pre></td></tr></table></figure>
 <pre><code>array([[4.0939709 ],
        [3.08934507]])
@@ -313,7 +306,7 @@ MSE(X, h_{\theta}) = \frac{1}{m}\sum_{i=1}^{m} (\theta^T \cdot X^{(i)} - y^{(i)}
 <figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">import</span> warnings</span><br><span class="line">warnings.filterwarnings(<span class="hljs-string">'ignore'</span>)</span><br><span class="line"><span class="hljs-keyword">from</span> sklearn.linear_model <span class="hljs-keyword">import</span> SGDRegressor </span><br><span class="line"></span><br><span class="line">sgd_reg = SGDRegressor(n_iter=<span class="hljs-number">50</span>, penalty=<span class="hljs-keyword">None</span>, eta0=<span class="hljs-number">0.1</span>) </span><br><span class="line">sgd_reg.fit(X, y.ravel())</span><br></pre></td></tr></table></figure>
 <pre><code>SGDRegressor(alpha=0.0001, average=False, early_stopping=False, epsilon=0.1,
        eta0=0.1, fit_intercept=True, l1_ratio=0.15,
-       learning_rate=&#39;invscaling&#39;, loss=&#39;squared_loss&#39;, max_iter=None,
+       learning_rate=&apos;invscaling&apos;, loss=&apos;squared_loss&apos;, max_iter=None,
        n_iter=50, n_iter_no_change=5, penalty=None, power_t=0.25,
        random_state=None, shuffle=True, tol=None, validation_fraction=0.1,
        verbose=0, warm_start=False)

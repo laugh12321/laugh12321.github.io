@@ -239,7 +239,7 @@ var _hmt = _hmt || [];
 <p><img width="250px" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/Hierarchical%20clustering%20method/6.png"></p>
 <p>看完上面的演示过程，你会发现「自底向上层次聚类法」原来这么简单呀！</p>
 <h3 id="距离计算方法"><a href="#距离计算方法" class="headerlink" title="距离计算方法"></a>距离计算方法</h3><p>虽然聚类过程看似简单，但不知道你是否意识到一个问题：<strong>当一个类别中包含多个元素时，类别与类别之间的距离是怎样确定的呢？</strong></p>
-<p>也就是说，上面的演示过程中，为什么要把 `5` 归为 `<3, 4="">` 组成的那一类，而不是 `<1, 2="">` 组成的类呢？或者说，为什么不先把 `<1, 2="">` 与 `<3, 4="">` 合并，最后才合并 `5` 呢？</3,></1,></1,></3,></p>
+<p>也就是说，上面的演示过程中，为什么要把 `5` 归为 `&lt;3, 4&gt;` 组成的那一类，而不是 `&lt;1, 2&gt;` 组成的类呢？或者说，为什么不先把 `&lt;1, 2&gt;` 与 `&lt;3, 4&gt;` 合并，最后才合并 `5` 呢？</p>
 <p>这就涉及到 Agglomerative 聚类过程中的距离计算方式。简单来讲，我们一般有 3 种不同的距离计算方式：</p>
 <h4 id="单连接（Single-linkage）"><a href="#单连接（Single-linkage）" class="headerlink" title="单连接（Single-linkage）"></a>单连接（Single-linkage）</h4><p>单连接的计算方式是根据两种类别之间<strong>最近</strong>的元素间距离作为两类别之间的距离。</p>
 <p><img width="250px" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/Hierarchical%20clustering%20method/7.png"></p>
@@ -598,8 +598,8 @@ array([[ 3.40447914, -2.70986843]])
 <p>BIRCH 最大的特点就是高效，可用于大型数据集的快速聚类。</p>
 <h3 id="CF-聚类特征"><a href="#CF-聚类特征" class="headerlink" title="`CF`  聚类特征"></a>`CF`  聚类特征</h3><p>BIRCH 的聚类过程主要是涉及到 `CF`  聚类特征和 `CF`  Tree 聚类特征树的概念。所以，我们需要先了解什么是聚类特征。</p>
 <p>一组样本的 `CF`  聚类特征定义为如下所示的三元组：</p>
-<script type="math/tex; mode=display">
-CF = \langle ( N, LS, SS ) \rangle</script><p>其中，`N` 表示该 `CF`  中拥有的样本点的数量； `LS` 表示该 `CF` 中拥有的样本点各特征维度的和向量；`SS` 表示该 `CF` 中拥有的样本点各特征维度的平方和。</p>
+<p>$$<br>CF = \langle ( N, LS, SS ) \rangle<br>$$</p>
+<p>其中，`N` 表示该 `CF`  中拥有的样本点的数量； `LS` 表示该 `CF` 中拥有的样本点各特征维度的和向量；`SS` 表示该 `CF` 中拥有的样本点各特征维度的平方和。</p>
 <p>例如，我们有 5 个样本，分别为：`(1,3), (2,5), (1,3), (7,9), (8,8)`，那么：</p>
 <ul>
 <li>`N = 5`</li>
@@ -607,10 +607,10 @@ CF = \langle ( N, LS, SS ) \rangle</script><p>其中，`N` 表示该 `CF`  中�
 <li>\(SS = (1^2+2^2+1^2+7^2+8^2+3^2+5^2+3^2+9^2+8^2) = (307)\)</li>
 </ul>
 <p>于是，对应的 `CF` 值就为：</p>
-<script type="math/tex; mode=display">
-CF = \langle 5, (19,28), (307) \rangle</script><p>`CF` 拥有可加性，例如当 \(CF’= \langle 3, (35, 36), 857 \rangle\) 时：</p>
-<script type="math/tex; mode=display">
-CF' + CF = \langle 5, (19,28), (307) \rangle + \langle 3, (12, 26), 87 \rangle = \langle 8, (31, 54), (394) \rangle</script><p>`CF` 聚类特征本质上是定义类别（簇）的信息，并有效地对数据进行压缩。</p>
+<p>$$<br>CF = \langle 5, (19,28), (307) \rangle<br>$$</p>
+<p>`CF` 拥有可加性，例如当 \(CF’= \langle 3, (35, 36), 857 \rangle\) 时：</p>
+<p>$$<br>CF’ + CF = \langle 5, (19,28), (307) \rangle + \langle 3, (12, 26), 87 \rangle = \langle 8, (31, 54), (394) \rangle<br>$$</p>
+<p>`CF` 聚类特征本质上是定义类别（簇）的信息，并有效地对数据进行压缩。</p>
 <h3 id="CF-聚类特征树"><a href="#CF-聚类特征树" class="headerlink" title="`CF`  聚类特征树"></a>`CF`  聚类特征树</h3><p>接下来，我们介绍第二个概念 `CF`  聚类特征树。</p>
 <p>`CF` 树由根节点（root node）、枝节点（branch node）和叶节点（leaf node）构成。另包含有三个参数，分别为：枝平衡因子 \(\beta\)、叶平衡因子 \(\lambda\) 和空间阈值 \(\tau\)。而非叶节点（nonleaf node）中包含不多于 \(\beta\) 个 \([CF,child_{i}]\) 的元项。</p>
 <p><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/Hierarchical%20clustering%20method/21.png" alt=""></p>
@@ -650,19 +650,14 @@ CF' + CF = \langle 5, (19,28), (307) \rangle + \langle 3, (12, 26), 87 \rangle =
 </ol>
 <p>现在，假定我们需要将特征维度从 `n` 维降到 `m` 维，PCA 的计算流程如下：</p>
 <p><strong>1.对各维度特征进行标准化处理：</strong></p>
-<script type="math/tex; mode=display">
-x_j^{(i)}=\frac{x_j^{(i)}-\mu_j}{s_j}</script><p>其中，\(\mu_j\) 为特征 `j` 的均值，`s_j` 为特征 `j` 的标准差。</p>
-<p><strong>2.计算对应的协方差矩阵：</strong></p>
-<script type="math/tex; mode=display">
-\Sigma = \frac{1}{m}\sum\limits_{i=1}^{m}(x^{(i)})(x^{(i)})^T = \frac{1}{m} \cdot X^TX</script><p><strong>3.对协方差矩阵进行奇异值分解（SVD），得到特征向量：</strong></p>
-<script type="math/tex; mode=display">
-(U,S,V^T) = SVD(\Sigma)</script><p><strong>4.从 `U` 中取出前 `m` 个左奇异向量，构成一个约减矩阵 \(U_{reduce}\) ：</strong></p>
-<script type="math/tex; mode=display">
-U_{reduce} = (u^{(1)},u^{(2)},\cdots,u^{(k)})</script><p><strong>5.计算新的特征向量 \(z^{(i)}\)：</strong></p>
-<script type="math/tex; mode=display">
-z^{(i)}=U_{reduce}^T \cdot x^{(i)}</script><p><strong>6.最后根据新的特征向量执行特征还原：</strong></p>
-<script type="math/tex; mode=display">
-x_{new}=U_{reduce}z^{(i)}</script><p>PCA 的过程听起来简单，执行起来还是比较麻烦的。所以，我们这里直接使用 scikit-learn 中 <code>PCA</code> 方法完成：</p>
+<p>$$<br>x_j^{(i)}=\frac{x_j^{(i)}-\mu_j}{s_j}<br>$$</p>
+<p>其中，\(\mu_j\) 为特征 `j` 的均值，`s_j` 为特征 `j` 的标准差。</p>
+<p><strong>2.计算对应的协方差矩阵：</strong><br>$$<br>\Sigma = \frac{1}{m}\sum\limits_{i=1}^{m}(x^{(i)})(x^{(i)})^T = \frac{1}{m} \cdot X^TX<br>$$</p>
+<p><strong>3.对协方差矩阵进行奇异值分解（SVD），得到特征向量：</strong><br>$$<br>(U,S,V^T) = SVD(\Sigma)<br>$$</p>
+<p><strong>4.从 `U` 中取出前 `m` 个左奇异向量，构成一个约减矩阵 \(U_{reduce}\) ：</strong><br>$$<br>U_{reduce} = (u^{(1)},u^{(2)},\cdots,u^{(k)})<br>$$</p>
+<p><strong>5.计算新的特征向量 \(z^{(i)}\)：</strong><br>$$<br>z^{(i)}=U_{reduce}^T \cdot x^{(i)}<br>$$</p>
+<p><strong>6.最后根据新的特征向量执行特征还原：</strong><br>$$<br>x_{new}=U_{reduce}z^{(i)}<br>$$</p>
+<p>PCA 的过程听起来简单，执行起来还是比较麻烦的。所以，我们这里直接使用 scikit-learn 中 <code>PCA</code> 方法完成：</p>
 <figure class="highlight python hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sklearn.decomposition.PCA(n_components=<span class="hljs-keyword">None</span>, copy=<span class="hljs-keyword">True</span>, whiten=<span class="hljs-keyword">False</span>, svd_solver=<span class="hljs-string">'auto'</span>)</span><br></pre></td></tr></table></figure>
 <p>其中：</p>
 <ul>
