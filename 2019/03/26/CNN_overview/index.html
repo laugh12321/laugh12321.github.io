@@ -228,8 +228,8 @@ var _hmt = _hmt || [];
 
 <p>上面的动画过程，其实就是一个卷积的过程，不知你是否能一眼就看明白？</p>
 <p>简单来讲，我们将卷积核沿着图像矩阵的左上角开始移动，不断运算得到右边的矩阵。卷积计算的过程非常简单，就是乘法和加法的运算。例如，当我们第一次把卷积核置于图像矩阵的左上角时：</p>
-<p>$$<br>1 \times 0 + 2 \times 1 + 2 \times 1 + 1 \times 2 = 6<br>$$</p>
-<p>通过不断平移卷积核，同时与输入矩阵进行卷积操作，就可以得到卷积后矩阵。</p>
+<script type="math/tex; mode=display">
+1 \times 0 + 2 \times 1 + 2 \times 1 + 1 \times 2 = 6</script><p>通过不断平移卷积核，同时与输入矩阵进行卷积操作，就可以得到卷积后矩阵。</p>
 <p>如何理解卷积的过程，最简单的就是把卷积核看作是一片滤镜，原矩阵通过滤镜之后就得到了新的特征矩阵。</p>
 <p>如果你想形象一点了解卷积核究竟在做一件什么事情，就可以把卷积后的图片与原图对比呈现。下图就是一张图片通过不同卷积核做卷积操作后的结果，我们可以明显察觉到不同的卷积核可以帮助我们分解出原图片不同层次的特征。</p>
 <p><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/CNN/8.png" alt=""></p>
@@ -242,15 +242,15 @@ var _hmt = _hmt || [];
 <div style="color: #888; font-size: 10px; text-align: right;"><a href="https://github.com/vdumoulin/conv_arithmetic" target="_blank" rel="noopener">©️ 图片来源</a></div>
 
 <p>此时，输出矩阵大小为：</p>
-<p>$$<br>output = (input - kernel) + 1<br>$$</p>
-<p>如果我们将卷积步长设为 <code>2</code>，就是下面的效果：</p>
+<script type="math/tex; mode=display">
+output = (input - kernel) + 1</script><p>如果我们将卷积步长设为 <code>2</code>，就是下面的效果：</p>
 <p><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh&#39;s%20blog/images/CNN/10.png" alt=""></p>
 <div style="color: #888; font-size: 10px; text-align: right;"><a href="https://github.com/vdumoulin/conv_arithmetic" target="_blank" rel="noopener">©️ 图片来源</a></div>
 
 <p>可以发现，当 <code>Stride=2</code> 横向移动以及纵向移动时，每一步都跳过了一个单元格。也就是从移动 <code>1</code> 步变成了 <code>2</code> 步。</p>
 <p>此时，输出矩阵大小为（向下取整）：</p>
-<p>$$<br>output = \lfloor \frac{input - kernel}{stride} \rfloor + 1<br>$$</p>
-<h3 id="边距扩展-Padding"><a href="#边距扩展-Padding" class="headerlink" title="边距扩展 Padding"></a>边距扩展 Padding</h3><p>介绍了步长的概念，接下来再介绍一个卷积操作过程中的重要概念，也就是 Padding。Padding 也就是边距，当然我们一般都直接使用英文。步长解决了卷积效率低的问题，但又造成了新的问题。你会发现，随着步长的增大，卷积输出的矩阵将持续变小。但是，在构建网络的时候我们往往希望输出矩阵的大小为指定大小，而不完全由卷积步长的变换而左右。于是，就有了 Padding 的操作。</p>
+<script type="math/tex; mode=display">
+output = \lfloor \frac{input - kernel}{stride} \rfloor + 1</script><h3 id="边距扩展-Padding"><a href="#边距扩展-Padding" class="headerlink" title="边距扩展 Padding"></a>边距扩展 Padding</h3><p>介绍了步长的概念，接下来再介绍一个卷积操作过程中的重要概念，也就是 Padding。Padding 也就是边距，当然我们一般都直接使用英文。步长解决了卷积效率低的问题，但又造成了新的问题。你会发现，随着步长的增大，卷积输出的矩阵将持续变小。但是，在构建网络的时候我们往往希望输出矩阵的大小为指定大小，而不完全由卷积步长的变换而左右。于是，就有了 Padding 的操作。</p>
 <p>一旦我们确定了原矩阵的大小和步长的大小，得到的卷积矩阵大小将是确定的。假如我们希望卷积得到的矩阵大小变大，在不改变卷积核大小和步长的前提下，唯一的方法就是调整原矩阵的大小。于是，我们就通过对原矩阵进行 Padding 操作（扩大边距）达到目的。</p>
 <p>Padding 比较常见的操作是在输入矩阵最外围补上一圈 <code>0</code> 之后，再参与卷积运算。这样，我们就可以自行控制输出矩阵的大小。下面列举几个常见的 Padding 方式：</p>
 <p>Arbitrary Padding 在输入图像周围填充 <code>0</code>，使输出矩阵尺寸大于输入尺寸。例如，下图对 \(5\times5\) 的输入矩阵外围补上 2 圈 <code>0</code> 后，与 \(4\times4\) 的卷积核做卷积运算，最终得到 \(6\times6\) 的输出矩阵的过程。</p>
@@ -258,8 +258,8 @@ var _hmt = _hmt || [];
 <div style="color: #888; font-size: 10px; text-align: right;"><a href="https://github.com/vdumoulin/conv_arithmetic" target="_blank" rel="noopener">©️ 图片来源</a></div>
 
 <p>此时，输出矩阵大小为：</p>
-<p>$$<br>output = (input - kernel) + 2 * padding + 1<br>$$</p>
-<p>Half Padding 也叫 Same Padding，它希望得到的输出矩阵尺寸与输入尺寸一致。下图即为我们对  \(5\times5\)  的输入矩阵外围补上一圈 <code>0</code> 后，与  \(3\times3\)  的卷积核做卷积运算，最终依然得到  \(5\times5\)  的输出矩阵的过程。</p>
+<script type="math/tex; mode=display">
+output = (input - kernel) + 2 * padding + 1</script><p>Half Padding 也叫 Same Padding，它希望得到的输出矩阵尺寸与输入尺寸一致。下图即为我们对  \(5\times5\)  的输入矩阵外围补上一圈 <code>0</code> 后，与  \(3\times3\)  的卷积核做卷积运算，最终依然得到  \(5\times5\)  的输出矩阵的过程。</p>
 <p><img width="300px" src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh's%20blog/images/CNN/12.png"></p>
 <div style="color: #888; font-size: 10px; text-align: right;"><a href="https://github.com/vdumoulin/conv_arithmetic" target="_blank" rel="noopener">©️ 图片来源</a></div>
 
