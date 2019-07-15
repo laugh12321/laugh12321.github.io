@@ -16,7 +16,7 @@
 <meta property="og:description" content="&amp;emsp;已经显示 \(learning-to-rank\) 算法允许推荐系统利用一元用户反馈。我们提出了 \(Multi-feedback \,Bayesian\, Personalized\, Ranking\) (多反馈贝叶斯个性化排序)，即利用扩展采样与不同类型反馈的成对方法。反馈类型来自不同的 \(channels\)，其中 \(users\) 与 \(items\) 相互作用 (\(">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh%27s%20blog/images/translate/Figure-1.png">
-<meta property="og:updated_time" content="2019-07-15T11:14:51.503Z">
+<meta property="og:updated_time" content="2019-07-15T11:47:28.671Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="译|Bayesian Personalized Ranking with Multi-Channel User Feedback">
 <meta name="twitter:description" content="&amp;emsp;已经显示 \(learning-to-rank\) 算法允许推荐系统利用一元用户反馈。我们提出了 \(Multi-feedback \,Bayesian\, Personalized\, Ranking\) (多反馈贝叶斯个性化排序)，即利用扩展采样与不同类型反馈的成对方法。反馈类型来自不同的 \(channels\)，其中 \(users\) 与 \(items\) 相互作用 (\(">
@@ -168,7 +168,7 @@ var _hmt = _hmt || [];
                 <span class="level-item has-text-grey">
                     
                     
-                    17 分钟 读完 (大约 2620 个字)
+                    20 分钟 读完 (大约 2985 个字)
                 </span>
                 
             </div>
@@ -191,13 +191,23 @@ var _hmt = _hmt || [];
 <h2 id="MULTI-FEEDBACK-BPR"><a href="#MULTI-FEEDBACK-BPR" class="headerlink" title="MULTI-FEEDBACK BPR"></a>MULTI-FEEDBACK BPR</h2><p>&emsp;`BPR-MF` 基于以下见解：通过各种渠道收集的用户反馈反映了用户偏好的不同优势，`BPR`的抽样方法可以利用这些差异。简而言之，我们允许 `BPR` 从以下事实中学习：例如，点击代表不同程度的 \(commitment\) 或 \(preference\) 类似于 \(like\)。</p>
 <p>&emsp;对于由给定训练集 `S` 组成的 \(user-item\) 对 \((u, i)\)，标准 `BPR` 通过从 `S` 中采集观察到的反馈对 \((u，i)\) 来创建元组 \((u，i，j)\)，其中 \(negative\,\, item\)\(\,\,j\) 表示 `u` 中未观察到的项目。对于每个采样元组，`BPR` 算法以随机梯度下降的方式更新参数，使得 `i` 的排名高于 `j`，`MF-BPR` 则将不同类型的反馈映射到 \(levels\) 上，这允许我们约束抽样以反映我们与反馈类型相关联的偏好程度 \((preference\,\, strengths)\)。图1将标准 `BPR` 采样方法`(A)`与 `MF-BPR` 使用的扩展采样方法`(B)`进行了比较，后者对正反馈的类型施加了一个顺序，这使得在学习阶段可用的反馈之间存在更细微的差异。</p>
 <p><center><img src="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh%27s%20blog/images/translate/Figure-1.png"></center><br>&emsp;现在我们将正式介绍 `MF-BPR` 如何利用反馈 \(levels\)。令 \(\mathbb{L}=\left(L_{1}, \ldots, L_{p}\right)\) 表示数据集中给定的有序 \(levels\) 集合，使得与 \(L_{i+1}\) 中的反馈相比，\(L_{i}\)中反馈的 \(interest\) 信号更强，即 \(L_{i} \succ L_{i+1}\)。 一般来说，未观察到的反馈也被认为属于 \(L_{uo}\)，因此对于每个正反馈级别 \(L_{i}\) 和负反馈级别 \(L_{j}\) ，有 \(L_{i} \succ L_{uo}\) 和 \(L_{uo} \succ L_{j}\)。级别 `L` 的训练反馈集由 \(S_{L}\)表示。我们将 \(\mathbb{L}^{+}\) 和 \(\mathbb{L}^{-}\) 定义为正反馈水平和负反馈水平。在标准 `BPR`中，因为 \(|\mathbb{L}|=2\)，\(\left|\mathrm{L}^{+}\right|=1\) 和 \(\left|\mathbb{L}^{-}\right|=0\)，对于未观察到的反馈，只有一个级别的正反馈，而另一个级别没有明确的负反馈。我们还将 \(I_{L, u}\) 定义为用户 `u` 与之交互的级别 `L` 中的项目，将 \(I_{u}\) 定义为 `u` 与之交互的所有项目（在所有级别中）。`MF-BPR` 的 \(D_{M F}\) 中所有首选项组合的集合可以定义为：</p>
-<p>$$<br>D_{M F}=\left\{(u, i, j) | i \in I_{L, u} \wedge j \in I_{N, u} \wedge L \in \mathbb{L}^{+} \wedge L \succ N\right\}   \tag{1}<br>$$</p>
-<p>&emsp;在标准 `BPR` 中，元组\((u,i,j)\)被均匀地采样，但是在 `MF-BPR` 中，我们引入了非均匀采样器，其考虑了反馈信道的层次（重要性）。要使用多个级别，`MF-BPR` 需要从 \(\mathbb{L}\) 采样 `L` 和 `N`，然后可以相对于给定级别对元组\((u,i,j)\)进行采样。通过对 `S` 使用采样分布 \(p(u, i, L)\) 抽样观察反馈来对 \(positive\,\, item\) 采样，同时也对 \(positive\,\, level\,\, L\) 进行采样。概率分布 \(p(u, i, L)\) 可以进一步扩展为 \(p(u, i, L)=p(u, i | L) p(L)\)，使得 \(p(u, i | L)\) 是均匀分布在 \(S_{L}\) 和 \(p(L)\) 上的 `L` 级采样分布。\(p(L)\) 的一个简单选择是在所有级别上的均匀分布。然而，如果分布均匀，基数较小的 \(levels\) 将被过采样，这可能导致采样不良。我们提出了非均匀分布的 \(p(L)\)，其中反馈的基数以及 \(levels\) 的重要性与权重因子一起考虑。概率分布 \(p(L)\) 定义为：</p>
-<p>$$<br>p(L)=\frac{w_{L}\left|S_{L}\right|}{\sum_{Q \in \mathrm{L}^{+}} w_{Q}\left|S_{Q}\right|}<br>\tag{2}<br>$$</p>
-<p>其中，\(w_{L}\) 是等级 `L` 的权重。在权重相等的情况下，从所有级别均匀地对正项进行采样，这相当于标准 `BPR` 的正采样器。可以定义非均匀分布的权重值以反映 \(levels\) 的重要性。在实验中，我们发现正 \(levels\) 的逆是权重的良好候选者\((即\,\,w_{1}=1, w_{2}=\frac{1}{2}, \ldots )\)。如果 \(levels\) 的顺序不是已知的先验（例如，是否应该认为 \(like\) 比 \(share\) 更重要，反之亦然），则可以通过使用超参数搜索算法来寻找近似最佳权重。</p>
+<script type="math/tex; mode=display">
+D_{M F}=\left\{(u, i, j) | i \in I_{L, u} \wedge j \in I_{N, u} \wedge L \in \mathbb{L}^{+} \wedge L \succ N\right\}   \tag{1}</script><p>&emsp;在标准 `BPR` 中，元组\((u,i,j)\)被均匀地采样，但是在 `MF-BPR` 中，我们引入了非均匀采样器，其考虑了反馈信道的层次（重要性）。要使用多个级别，`MF-BPR` 需要从 \(\mathbb{L}\) 采样 `L` 和 `N`，然后可以相对于给定级别对元组\((u,i,j)\)进行采样。通过对 `S` 使用采样分布 \(p(u, i, L)\) 抽样观察反馈来对 \(positive\,\, item\) 采样，同时也对 \(positive\,\, level\,\, L\) 进行采样。概率分布 \(p(u, i, L)\) 可以进一步扩展为 \(p(u, i, L)=p(u, i | L) p(L)\)，使得 \(p(u, i | L)\) 是均匀分布在 \(S_{L}\) 和 \(p(L)\) 上的 `L` 级采样分布。\(p(L)\) 的一个简单选择是在所有级别上的均匀分布。然而，如果分布均匀，基数较小的 \(levels\) 将被过采样，这可能导致采样不良。我们提出了非均匀分布的 \(p(L)\)，其中反馈的基数以及 \(levels\) 的重要性与权重因子一起考虑。概率分布 \(p(L)\) 定义为：</p>
+<script type="math/tex; mode=display">
+p(L)=\frac{w_{L}\left|S_{L}\right|}{\sum_{Q \in \mathrm{L}^{+}} w_{Q}\left|S_{Q}\right|}
+\tag{2}</script><p>其中，\(w_{L}\) 是等级 `L` 的权重。在权重相等的情况下，从所有级别均匀地对正项进行采样，这相当于标准 `BPR` 的正采样器。可以定义非均匀分布的权重值以反映 \(levels\) 的重要性。在实验中，我们发现正 \(levels\) 的逆是权重的良好候选者\((即\,\,w_{1}=1, w_{2}=\frac{1}{2}, \ldots )\)。如果 \(levels\) 的顺序不是已知的先验（例如，是否应该认为 \(like\) 比 \(share\) 更重要，反之亦然），则可以通过使用超参数搜索算法来寻找近似最佳权重。</p>
 <p>&emsp;要对负项目 `j` 进行采样，应该给出正项目的级别以便采样器从其下面的一个级别中采样项目。给定正 \(level \,\, L\) 和正 \(user-item\) 对 \((u, i)\)，我们将采样分布 \(p(j, N | u, L)\) 表示为负样本 `j` 及其对应的 \(level \,\, N\)。与正采样器类似，负采样器可以扩展为 \(p(j, N | u, L)=p(j | u, L, N) p(N | u, L)\) 其中 \(p(j | u, L, N)\)是负项目采样器，\(p(N | u, L)\) 是条件负级采样器。我们还提出了一个非均匀的负项目采样器类似于（2），它考虑了基数和基数的权重。 \(negative\,\, level\) 采样器 \(p(N | u, L)\) 定义为：</p>
-<p>$$<br>\begin{equation}<br>\begin{aligned} p(N | u, L)=\left\{\begin{array}{ll}{\frac{(1-\beta) w_{N}\left|S_{N}\right|}{\sum_{Q \succ L} w_{Q}\left|S_{Q}\right|}} &amp; {N \neq L_{u o}} \\ {\beta} &amp; {N=L_{u o}}\end{array}\right.\end{aligned}<br>\end{equation}<br>\tag{3}<br>$$</p>
-
+<script type="math/tex; mode=display">
+\begin{equation}
+\begin{aligned} p(N | u, L)=\left\{\begin{array}{ll}{\frac{(1-\beta) w_{N}\left|S_{N}\right|}{\sum_{Q \succ L} w_{Q}\left|S_{Q}\right|}} & {N \neq L_{u o}} \\\ {\beta} & {N=L_{u o}}\end{array}\right.\end{aligned}
+\end{equation}
+\tag{3}</script><p>\(0 \leq \beta \leq 1\) 是控制采样中未观察到的反馈的比率的参数。对于标准 `BPR` \(\beta=1\) 是因为所有负项目都是从未观察到的反馈中采样的，正确 \(\beta\) 值可以通过实验得到。在实验中，我们发现在 \(\beta\) 值较高的情况下模型更准确。关于对 \(\beta\) 正确值的观察将在第4节中更详细地讨论。</p>
+<p>&emsp;与标准 `BPR` 类似，如果 \(N \neq L_{u o}\) 则负采样器 \(p(j | u, L, N)\) 可以从 \(I_{N, u}\) 均匀地对负项目采样，如果 \(N = L_{u o}\)，则可以从 \(I \backslash I_{u}\) 采样。我们将 \(p_{u n i}(j | u, L, N)\) 表示为统一负项目采样器，定义为：</p>
+<script type="math/tex; mode=display">
+p_{u n i}(j | u, L, N)=\left\{\begin{array}{ll}{\frac{1}{\left|I_{N, u}\right|}} & {N \neq L_{u o} \wedge j \in I_{N, u}} \\\ {\frac{1}{|I \backslash I_{u} |}} & {N=L_{u o} \wedge j \in I \backslash I_{u}} \\\ {0} & {\text { otherwise }}\end{array}\right.
+\tag{4}</script><p>此外，当 `N` 是未观察到的等级 \(L_{u o}\) 时，我们还提出了提出一个带有非均匀采样器的多级项目采样器。将多级负项目采样器 \(p_{ml}(j | u, L, N)\) 定义为：</p>
+<script type="math/tex; mode=display">
+p_{m l}(j | u, L, N)=\left\{\begin{array}{ll}{\frac{1}{\left|I_{N, u}\right|}} & {N \neq L_{u o} \wedge j \in I_{N, u}} \\\ {p\left(j, u^{\prime}, L^{\prime} | u\right)} & {N=L_{u o} \wedge j \in I \backslash I_{u}} \\\ {0} & {\text { otherwise }}\end{array}\right.</script>
         </div>
         
         <div class="level is-size-7 is-uppercase">
