@@ -16,7 +16,7 @@
 <meta property="og:description" content="&amp;emsp;已经显示 \(learning-to-rank\) 算法允许推荐系统利用一元用户反馈。我们提出了 \(Multi-feedback \,Bayesian\, Personalized\, Ranking\) (多反馈贝叶斯个性化排序)，即利用扩展采样与不同类型反馈的成对方法。反馈类型来自不同的 \(channels\)，其中 \(users\) 与 \(items\) 相互作用 (\(">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://laugh12321-1258080753.cos.ap-chengdu.myqcloud.com/laugh%27s%20blog/images/translate/Figure-1.png">
-<meta property="og:updated_time" content="2019-07-15T11:47:28.671Z">
+<meta property="og:updated_time" content="2019-07-15T11:49:14.015Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="译|Bayesian Personalized Ranking with Multi-Channel User Feedback">
 <meta name="twitter:description" content="&amp;emsp;已经显示 \(learning-to-rank\) 算法允许推荐系统利用一元用户反馈。我们提出了 \(Multi-feedback \,Bayesian\, Personalized\, Ranking\) (多反馈贝叶斯个性化排序)，即利用扩展采样与不同类型反馈的成对方法。反馈类型来自不同的 \(channels\)，其中 \(users\) 与 \(items\) 相互作用 (\(">
@@ -168,7 +168,7 @@ var _hmt = _hmt || [];
                 <span class="level-item has-text-grey">
                     
                     
-                    20 分钟 读完 (大约 2985 个字)
+                    20 分钟 读完 (大约 2986 个字)
                 </span>
                 
             </div>
@@ -207,7 +207,8 @@ p(L)=\frac{w_{L}\left|S_{L}\right|}{\sum_{Q \in \mathrm{L}^{+}} w_{Q}\left|S_{Q}
 p_{u n i}(j | u, L, N)=\left\{\begin{array}{ll}{\frac{1}{\left|I_{N, u}\right|}} & {N \neq L_{u o} \wedge j \in I_{N, u}} \\\ {\frac{1}{|I \backslash I_{u} |}} & {N=L_{u o} \wedge j \in I \backslash I_{u}} \\\ {0} & {\text { otherwise }}\end{array}\right.
 \tag{4}</script><p>此外，当 `N` 是未观察到的等级 \(L_{u o}\) 时，我们还提出了提出一个带有非均匀采样器的多级项目采样器。将多级负项目采样器 \(p_{ml}(j | u, L, N)\) 定义为：</p>
 <script type="math/tex; mode=display">
-p_{m l}(j | u, L, N)=\left\{\begin{array}{ll}{\frac{1}{\left|I_{N, u}\right|}} & {N \neq L_{u o} \wedge j \in I_{N, u}} \\\ {p\left(j, u^{\prime}, L^{\prime} | u\right)} & {N=L_{u o} \wedge j \in I \backslash I_{u}} \\\ {0} & {\text { otherwise }}\end{array}\right.</script>
+p_{m l}(j | u, L, N)=\left\{\begin{array}{ll}{\frac{1}{\left|I_{N, u}\right|}} & {N \neq L_{u o} \wedge j \in I_{N, u}} \\\ {p\left(j, u^{\prime}, L^{\prime} | u\right)} & {N=L_{u o} \wedge j \in I \backslash I_{u}} \\\ {0} & {\text { otherwise }}\end{array}\right.
+\tag{5}</script>
         </div>
         
         <div class="level is-size-7 is-uppercase">
